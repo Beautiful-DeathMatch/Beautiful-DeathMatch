@@ -1,5 +1,3 @@
-# Beautiful-DeathMatch
-
 ## 11.15 회의록
 
 > 전체 게임 플로우
