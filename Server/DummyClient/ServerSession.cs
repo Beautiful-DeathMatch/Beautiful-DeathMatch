@@ -8,7 +8,7 @@ namespace DummyClient
 {
 	class ServerSession : PacketSession
 	{
-		public override void OnConnected(EndPoint endPoint)
+		public override void OnConnected(EndPoint endPoint, Room room)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");			
 		}
@@ -18,7 +18,7 @@ namespace DummyClient
 			Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
 
-		public override void OnRecvPacket(ArraySegment<byte> buffer)
+		public override void OnReceivePacket(ArraySegment<byte> buffer)
 		{
 			PacketManager.Instance.OnRecvPacket(this, buffer);
 		}

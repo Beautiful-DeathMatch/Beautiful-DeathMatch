@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,35 +10,67 @@ using ServerCore;
 
 namespace Server
 {
-	class Program
+    internal class Program
 	{
-		static Listener _listener = new Listener();
-		public static GameRoom Room = new GameRoom();
+		private static IPEndPoint myIPEndPoint = null;
+		private static int myPortNumber = 7777;
 
-		static void FlushRoom()
+		private static Listener mylistener = new Listener(10, 100);
+		private static List<Room> myRooms = new List<Room>();
+
+		private static JobTimer jobTimer = new JobTimer();
+		private static int flushWaitTime = 250;
+
+		private static void FlushMyRoom()
 		{
-			Room.Push(() => Room.Flush());
-			JobTimer.Instance.Push(FlushRoom, 250);
+			foreach(var room in myRooms)
+			{
+				room.Flush();
+			}
+
+			jobTimer.Push(FlushMyRoom, flushWaitTime);
 		}
 
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
-			// DNS (Domain Name System)
-			string host = Dns.GetHostName();
-			IPHostEntry ipHost = Dns.GetHostEntry(host);
-			IPAddress ipAddr = ipHost.AddressList[0];
-			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+			myIPEndPoint = GetMyEndPoint(myPortNumber);
+			if (myIPEndPoint == null)
+				return;
 
-			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
-			Console.WriteLine("Listening...");
-
-			//FlushRoom();
-			JobTimer.Instance.Push(FlushRoom);
+			mylistener.Start(myIPEndPoint, MakeSession, MakeRoom);
+			jobTimer.Start(FlushMyRoom);
 
 			while (true)
 			{
-				JobTimer.Instance.Flush();
+				jobTimer.Tick();
 			}
+		}
+
+		private static Session MakeSession()
+		{
+			return SessionFactory.Instance.Make(SessionType.InGame);
+		}
+
+		private static Room MakeRoom()
+		{
+			foreach(var room in myRooms)
+			{
+				if (room.IsFull == false)
+				{
+					return room;
+				}
+			}
+
+			return RoomFactory.Instance.Make(RoomType.InGame); 
+		}
+
+		private static IPEndPoint GetMyEndPoint(int portNumber)
+		{
+			string host = Dns.GetHostName();
+			IPHostEntry ipHost = Dns.GetHostEntry(host);
+			IPAddress ipAddress = ipHost.AddressList.FirstOrDefault();
+
+			return new IPEndPoint(ipAddress, portNumber);
 		}
 	}
 }

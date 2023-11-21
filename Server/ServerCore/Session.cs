@@ -11,8 +11,12 @@ namespace ServerCore
 	{
 		public static readonly int HeaderSize = 2;
 
+		protected PacketSession(int sessionId) : base(sessionId)
+		{
+		}
+
 		// [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ]
-		public sealed override int OnRecv(ArraySegment<byte> buffer)
+		public sealed override int OnReceive(ArraySegment<byte> buffer)
 		{
 			int processLen = 0;
 			int packetCount = 0;
@@ -29,7 +33,7 @@ namespace ServerCore
 					break;
 
 				// 여기까지 왔으면 패킷 조립 가능
-				OnRecvPacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
+				OnReceivePacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
 				packetCount++;
 
 				processLen += dataSize;
@@ -42,11 +46,18 @@ namespace ServerCore
 			return processLen;
 		}
 
-		public abstract void OnRecvPacket(ArraySegment<byte> buffer);
+		public abstract void OnReceivePacket(ArraySegment<byte> buffer);
 	}
 
 	public abstract class Session
 	{
+		public readonly int sessionId;
+
+		public Session(int sessionId)
+		{
+			this.sessionId = sessionId;
+		}
+
 		Socket _socket;
 		int _disconnected = 0;
 
@@ -55,11 +66,12 @@ namespace ServerCore
 		object _lock = new object();
 		Queue<ArraySegment<byte>> _sendQueue = new Queue<ArraySegment<byte>>();
 		List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
+
 		SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
 		SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
 
-		public abstract void OnConnected(EndPoint endPoint);
-		public abstract int  OnRecv(ArraySegment<byte> buffer);
+		public abstract void OnConnected(EndPoint endPoint, Room connectedRoom);
+		public abstract int OnReceive(ArraySegment<byte> buffer);
 		public abstract void OnSend(int numOfBytes);
 		public abstract void OnDisconnected(EndPoint endPoint);
 
@@ -79,7 +91,7 @@ namespace ServerCore
 			_recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
 			_sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
-			RegisterRecv();
+			RegisterReceive();
 		}
 
 		public void Send(List<ArraySegment<byte>> sendBuffList)
@@ -172,7 +184,7 @@ namespace ServerCore
 			}
 		}
 
-		void RegisterRecv()
+		void RegisterReceive()
 		{
 			if (_disconnected == 1)
 				return;
@@ -207,7 +219,7 @@ namespace ServerCore
 					}
 
 					// 컨텐츠 쪽으로 데이터를 넘겨주고 얼마나 처리했는지 받는다
-					int processLen = OnRecv(_recvBuffer.ReadSegment);
+					int processLen = OnReceive(_recvBuffer.ReadSegment);
 					if (processLen < 0 || _recvBuffer.DataSize < processLen)
 					{
 						Disconnect();
@@ -221,7 +233,7 @@ namespace ServerCore
 						return;
 					}
 
-					RegisterRecv();
+					RegisterReceive();
 				}
 				catch (Exception e)
 				{

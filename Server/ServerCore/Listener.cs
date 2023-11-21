@@ -8,50 +8,70 @@ namespace ServerCore
 {
 	public class Listener
 	{
-		Socket _listenSocket;
-		Func<Session> _sessionFactory;
+		private Socket listenSocket;
 
-		public void Init(IPEndPoint endPoint, Func<Session> sessionFactory, int register = 10, int backlog = 100)
+		private Func<Session> _sessionFactory;
+		private Func<Room> _roomFactory;
+
+		private int acceptCount = 0;
+		private int backLogCount = 0;
+
+		public Listener(int listenCount, int backLogCount)
 		{
-			_listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-			_sessionFactory += sessionFactory;
+			this.acceptCount = listenCount;
+			this.backLogCount = backLogCount;
+		}
 
-			// 문지기 교육
-			_listenSocket.Bind(endPoint);
+		public void Start(IPEndPoint endPoint, Func<Session> sessionFactory, Func<Room> roomFactory)
+		{
+			listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-			// 영업 시작
-			// backlog : 최대 대기수
-			_listenSocket.Listen(backlog);
+			_sessionFactory = sessionFactory;
+			_roomFactory = roomFactory;
 
-			for (int i = 0; i < register; i++)
+			listenSocket.Bind(endPoint);
+			listenSocket.Listen(backLogCount);
+
+			TryAcceptAsyncAll(acceptCount);
+			Console.WriteLine($"{endPoint}에서 {acceptCount} 개의 소켓 리스닝 시작...");
+		}
+
+		private void TryAcceptAsyncAll(int acceptCount)
+		{
+			for (int i = 0; i < acceptCount; i++)
 			{
-				SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+				var args = new SocketAsyncEventArgs();
 				args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
-				RegisterAccept(args);
+
+				TryAcceptAsync(args);
 			}
 		}
 
-		void RegisterAccept(SocketAsyncEventArgs args)
+		private void TryAcceptAsync(SocketAsyncEventArgs args)
 		{
 			args.AcceptSocket = null;
 
-			bool pending = _listenSocket.AcceptAsync(args);
+			bool pending = listenSocket.AcceptAsync(args);
 			if (pending == false)
+			{
 				OnAcceptCompleted(null, args);
+			}	
 		}
 
-		void OnAcceptCompleted(object sender, SocketAsyncEventArgs args)
+		private void OnAcceptCompleted(object sender, SocketAsyncEventArgs args)
 		{
 			if (args.SocketError == SocketError.Success)
 			{
 				Session session = _sessionFactory.Invoke();
 				session.Start(args.AcceptSocket);
-				session.OnConnected(args.AcceptSocket.RemoteEndPoint);
+				session.OnConnected(args.AcceptSocket.RemoteEndPoint, _roomFactory.Invoke());
 			}
 			else
+			{
 				Console.WriteLine(args.SocketError.ToString());
-
-			RegisterAccept(args);
+			}
+				
+			TryAcceptAsync(args);
 		}
 	}
 }
