@@ -22,7 +22,7 @@
 [Aa]ssets/Plugins/Editor/JetBrains*
 
 # External Resources
-
+[Aa]ssets/Resources/External/
 
 # Visual Studio cache directory
 .vs/
