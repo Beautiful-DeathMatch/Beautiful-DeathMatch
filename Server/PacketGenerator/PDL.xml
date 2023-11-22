@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PDL>
-  <packet name="S_BroadcastEnterGame">
+  <packet name="RES_BROADCAST_ENTER_GAME">
 	<int name="playerId"/>
 	<float name="posX"/>
 	<float name="posY"/>
 	<float name="posZ"/>
   </packet>
-  <packet name="C_LeaveGame">
+  <packet name="REQ_LEAVE_GAME">
   </packet>
-  <packet name="S_BroadcastLeaveGame">
+  <packet name="RES_BROADCAST_LEAVE_GAME">
 	<int name="playerId"/>
   </packet>
-  <packet name="S_PlayerList">
+  <packet name="RES_PLAYER_LIST">
 	<list name="player">
 	  <bool name="isSelf"/>
 	  <int name="playerId"/>
@@ -20,12 +20,12 @@
 	  <float name="posZ"/>
 	</list>
   </packet>
-  <packet name="C_Move">
+  <packet name="REQ_MOVE">
 	<float name="posX"/>
 	<float name="posY"/>
 	<float name="posZ"/>
   </packet>
-  <packet name="S_BroadcastMove">
+  <packet name="RES_MOVE">
 	<int name="playerId"/>
 	<float name="posX"/>
 	<float name="posY"/>
