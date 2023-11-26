@@ -48,11 +48,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        NetworkManager.Instance.OnUpdateInstance();
-    }
-
     /// <summary> 모든 정보 초기화 </summary>
     public static void Clear()
     {

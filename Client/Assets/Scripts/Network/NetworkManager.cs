@@ -13,9 +13,9 @@ public class NetworkManager : Singleton<NetworkManager>
 
     private SessionConnector connector = new SessionConnector();
 
-    public void Send(ArraySegment<byte> sendBuff)
+    public void Send(IPacket packet)
 	{
-        packetSession.Send(sendBuff);
+        packetSession.Send(packet.Write());
 	}
 
 	public void Receive(IPacket packet)
@@ -49,14 +49,17 @@ public class NetworkManager : Singleton<NetworkManager>
 
     private PacketSession MakeSession()
     {
-        var session = SessionFactory.Instance.Make(SessionType.InGame);
-        if(session is PacketSession packetSession)
+        if (packetSession == null)
         {
-            this.packetSession = packetSession;
-            return packetSession;
-        }
-
-        return null;
+			var session = SessionFactory.Instance.Make(SessionType.InGame);
+			if (session is PacketSession pSession)
+			{
+				packetSession = pSession;
+				return packetSession;
+			}
+		}
+		
+        return packetSession;
     }
 
     private static IPEndPoint GetMyEndPoint(int portNumber)
