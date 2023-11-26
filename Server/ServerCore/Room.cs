@@ -12,10 +12,12 @@ namespace ServerCore
 		public bool IsFull => roomSessions.Count > maxSessionCount;
 		public bool IsEmpty => roomSessions.Any() == false;
 
-
 		protected List<Session> roomSessions = new List<Session>();
 
-		private int maxSessionCount = 0;
+        protected JobQueue jobQueue = new JobQueue();
+        protected List<ArraySegment<byte>> pendingList = new List<ArraySegment<byte>>();
+
+        private int maxSessionCount = 0;
 
 
 		public Room(int roomId, int maxSessionCount)
@@ -24,10 +26,48 @@ namespace ServerCore
 			this.maxSessionCount = maxSessionCount;
 		}
 
-		public abstract void Flush();
+		public void Flush()
+		{
+            jobQueue.Push(OnFlush);
+        }
 
-		public abstract void Enter(Session session);
+        private void OnFlush()
+        {
+            foreach (var s in roomSessions)
+            {
+                s.Send(pendingList);
+            }
 
-		public abstract void Leave(Session session);
+            pendingList.Clear();
+        }
+
+        protected void Broadcast(ArraySegment<byte> segment)
+        {
+            pendingList.Add(segment);
+        }
+
+        public void Enter(Session session)
+        {
+            jobQueue.Push(() =>
+            {
+                OnEnter(session);
+            });
+        }
+
+        public void Leave(Session session)
+        {
+            jobQueue.Push(() =>
+            {
+                OnLeave(session);
+            });
+        }
+
+        protected virtual void OnEnter(Session session)
+        {
+        }
+
+        protected virtual void OnLeave(Session session)
+        {
+        }
 	}
 }

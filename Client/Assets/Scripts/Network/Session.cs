@@ -11,8 +11,13 @@ namespace ServerCore
 	{
 		public static readonly int HeaderSize = 2;
 
-		// [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ]
-		public sealed override int OnRecv(ArraySegment<byte> buffer)
+        protected PacketSession(int sessionId) : base(sessionId)
+        {
+        }
+
+
+        // [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ]
+        public sealed override int OnRecv(ArraySegment<byte> buffer)
 		{
 			int processLen = 0;
 			int packetCount = 0;
@@ -47,7 +52,14 @@ namespace ServerCore
 
 	public abstract class Session
 	{
-		Socket _socket;
+        public readonly int sessionId;
+
+        public Session(int sessionId)
+        {
+            this.sessionId = sessionId;
+        }
+
+        Socket _socket;
 		int _disconnected = 0;
 
 		RecvBuffer _recvBuffer = new RecvBuffer(65535);

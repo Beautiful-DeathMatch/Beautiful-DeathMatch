@@ -2,31 +2,27 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class PacketManager
+public class PacketManager : Singleton<PacketManager>
 {
-	#region Singleton
-	static PacketManager _instance = new PacketManager();
-	public static PacketManager Instance { get { return _instance; } }
-	#endregion
-
-	PacketManager()
-	{
-		Register();
-	}
+	protected override void OnAwakeInstance()
+    {
+        base.OnAwakeInstance();
+        Register();
+    }
 
 	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
 	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
 		
 	public void Register()
 	{
-		_makeFunc.Add((ushort)PacketID.S_BroadcastEnterGame, MakePacket<S_BroadcastEnterGame>);
-		_handler.Add((ushort)PacketID.S_BroadcastEnterGame, PacketHandler.S_BroadcastEnterGameHandler);
-		_makeFunc.Add((ushort)PacketID.S_BroadcastLeaveGame, MakePacket<S_BroadcastLeaveGame>);
-		_handler.Add((ushort)PacketID.S_BroadcastLeaveGame, PacketHandler.S_BroadcastLeaveGameHandler);
-		_makeFunc.Add((ushort)PacketID.S_PlayerList, MakePacket<S_PlayerList>);
-		_handler.Add((ushort)PacketID.S_PlayerList, PacketHandler.S_PlayerListHandler);
-		_makeFunc.Add((ushort)PacketID.S_BroadcastMove, MakePacket<S_BroadcastMove>);
-		_handler.Add((ushort)PacketID.S_BroadcastMove, PacketHandler.S_BroadcastMoveHandler);
+		_makeFunc.Add((ushort)PacketID.RES_BROADCAST_ENTER_GAME, MakePacket<RES_BROADCAST_ENTER_GAME>);
+		_handler.Add((ushort)PacketID.RES_BROADCAST_ENTER_GAME, PacketHandler.ON_RES_BROADCAST_ENTER_GAME);
+		_makeFunc.Add((ushort)PacketID.RES_BROADCAST_LEAVE_GAME, MakePacket<RES_BROADCAST_LEAVE_GAME>);
+		_handler.Add((ushort)PacketID.RES_BROADCAST_LEAVE_GAME, PacketHandler.ON_RES_BROADCAST_LEAVE_GAME);
+		_makeFunc.Add((ushort)PacketID.RES_PLAYER_LIST, MakePacket<RES_PLAYER_LIST>);
+		_handler.Add((ushort)PacketID.RES_PLAYER_LIST, PacketHandler.ON_RES_PLAYER_LIST);
+		_makeFunc.Add((ushort)PacketID.RES_MOVE, MakePacket<RES_MOVE>);
+		_handler.Add((ushort)PacketID.RES_MOVE, PacketHandler.ON_RES_MOVE);
 
 	}
 
@@ -50,7 +46,7 @@ public class PacketManager
 		}
 	}
 
-	T MakePacket<T>(PacketSession session, ArraySegment<byte> buffer) where T : IPacket, new()
+	private T MakePacket<T>(PacketSession session, ArraySegment<byte> buffer) where T : IPacket, new()
 	{
 		T pkt = new T();
 		pkt.Read(buffer);

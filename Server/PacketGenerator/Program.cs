@@ -68,9 +68,9 @@ namespace PacketGenerator
 			genPackets += string.Format(PacketFormat.packetFormat, packetName, t.Item1, t.Item2, t.Item3);
 			packetEnums += string.Format(PacketFormat.packetEnumFormat, packetName, ++packetId) + Environment.NewLine + "\t";
 			
-			if (packetName.StartsWith("REQ_"))
+			if (packetName.StartsWith("RES_"))
 				clientRegister += string.Format(PacketFormat.managerRegisterFormat, packetName) + Environment.NewLine;
-			else if(packetName.StartsWith("RES_"))
+			else if(packetName.StartsWith("REQ_"))
 				serverRegister += string.Format(PacketFormat.managerRegisterFormat, packetName) + Environment.NewLine;
 		}
 

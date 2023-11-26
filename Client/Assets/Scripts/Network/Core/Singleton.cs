@@ -21,6 +21,16 @@ public class Singleton
 {
 	protected Singleton()
 	{
+		OnAwakeInstance();
+	}
+
+	protected virtual void OnAwakeInstance()
+	{
+
+	}
+	
+	public virtual void OnUpdateInstance()
+	{
 
 	}
 }

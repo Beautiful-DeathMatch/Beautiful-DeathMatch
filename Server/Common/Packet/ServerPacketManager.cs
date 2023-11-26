@@ -2,27 +2,23 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class PacketManager
+public class PacketManager : Singleton<PacketManager>
 {
-	#region Singleton
-	static PacketManager _instance = new PacketManager();
-	public static PacketManager Instance { get { return _instance; } }
-	#endregion
-
-	PacketManager()
-	{
-		Register();
-	}
+	protected override void OnAwakeInstance()
+    {
+        base.OnAwakeInstance();
+        Register();
+    }
 
 	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
 	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
 		
 	public void Register()
 	{
-		_makeFunc.Add((ushort)PacketID.C_LeaveGame, MakePacket<C_LeaveGame>);
-		_handler.Add((ushort)PacketID.C_LeaveGame, PacketHandler.C_LeaveGameHandler);
-		_makeFunc.Add((ushort)PacketID.C_Move, MakePacket<C_Move>);
-		_handler.Add((ushort)PacketID.C_Move, PacketHandler.C_MoveHandler);
+		_makeFunc.Add((ushort)PacketID.REQ_LEAVE_GAME, MakePacket<REQ_LEAVE_GAME>);
+		_handler.Add((ushort)PacketID.REQ_LEAVE_GAME, PacketHandler.ON_REQ_LEAVE_GAME);
+		_makeFunc.Add((ushort)PacketID.REQ_MOVE, MakePacket<REQ_MOVE>);
+		_handler.Add((ushort)PacketID.REQ_MOVE, PacketHandler.ON_REQ_MOVE);
 
 	}
 
@@ -46,7 +42,7 @@ public class PacketManager
 		}
 	}
 
-	T MakePacket<T>(PacketSession session, ArraySegment<byte> buffer) where T : IPacket, new()
+	private T MakePacket<T>(PacketSession session, ArraySegment<byte> buffer) where T : IPacket, new()
 	{
 		T pkt = new T();
 		pkt.Read(buffer);

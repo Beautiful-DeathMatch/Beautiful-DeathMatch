@@ -6,26 +6,28 @@ using System.Text;
 
 namespace ServerCore
 {
-	public class Connector
+	public class SessionConnector
 	{
+		public bool IsConnected { get; private set; } = false;
+
 		Func<Session> _sessionFactory;
 
-		public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory, int count = 1)
+
+		public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory)
 		{
-			for (int i = 0; i < count; i++)
-			{
-				// 휴대폰 설정
-				Socket socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-				_sessionFactory = sessionFactory;
+            IsConnected = false;
 
-				SocketAsyncEventArgs args = new SocketAsyncEventArgs();
-				args.Completed += OnConnectCompleted;
-				args.RemoteEndPoint = endPoint;
-				args.UserToken = socket;
+            // 휴대폰 설정
+            Socket socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _sessionFactory = sessionFactory;
 
-				RegisterConnect(args);
-			}
-		}
+            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+            args.Completed += OnConnectCompleted;
+            args.RemoteEndPoint = endPoint;
+            args.UserToken = socket;
+
+            RegisterConnect(args);
+        }
 
 		void RegisterConnect(SocketAsyncEventArgs args)
 		{
@@ -45,10 +47,14 @@ namespace ServerCore
 				Session session = _sessionFactory.Invoke();
 				session.Start(args.ConnectSocket);
 				session.OnConnected(args.RemoteEndPoint);
-			}
+
+				IsConnected = true;
+            }
 			else
 			{
 				Console.WriteLine($"OnConnectCompleted Fail: {args.SocketError}");
+
+				IsConnected = false;
 			}
 		}
 	}

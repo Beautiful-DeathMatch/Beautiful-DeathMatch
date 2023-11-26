@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PacketQueue
 {
-    public static PacketQueue Instance { get; } = new PacketQueue();
-
     Queue<IPacket> _packetQueue = new Queue<IPacket>();
     object _lock = new object();
 

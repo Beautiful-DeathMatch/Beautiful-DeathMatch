@@ -9,11 +9,11 @@ using System.Net;
 
 namespace Server
 {
-    public class ClientSession : PacketSession
+    public class IngameSession : PacketSession
 	{
 		private InGameRoom sessionRoom;
 
-		public ClientSession(int sessionId) : base(sessionId)
+		public IngameSession(int sessionId) : base(sessionId)
 		{
 
 		}
@@ -31,7 +31,7 @@ namespace Server
 			return true;
 		}
 
-		public bool TryMove(C_Move movePacket)
+		public bool TryMove(REQ_MOVE movePacket)
 		{
 			if (sessionRoom == null)
 				return false;
@@ -40,15 +40,18 @@ namespace Server
 			return true;
 		}
 
-		public override void OnConnected(EndPoint endPoint, Room room)
+		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
-
-			sessionRoom = room as InGameRoom;
-			sessionRoom?.Enter(this);
 		}
 
-		public override void OnReceivePacket(ArraySegment<byte> buffer)
+        public override void OnConnectedRoom(Room room)
+        {
+            sessionRoom = room as InGameRoom;
+            sessionRoom?.Enter(this);
+        }
+
+        public override void OnReceivePacket(ArraySegment<byte> buffer)
 		{
 			PacketManager.Instance.OnRecvPacket(this, buffer);
 		}

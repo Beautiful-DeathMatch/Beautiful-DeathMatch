@@ -26,6 +26,11 @@ namespace ServerCore
 	{
 		protected Singleton()
 		{
+			OnAwakeInstance();
+        }
+
+		protected virtual void OnAwakeInstance()
+		{
 
 		}
 	}

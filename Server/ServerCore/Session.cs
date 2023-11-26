@@ -70,7 +70,8 @@ namespace ServerCore
 		SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
 		SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
 
-		public abstract void OnConnected(EndPoint endPoint, Room connectedRoom);
+		public abstract void OnConnected(EndPoint endPoint);
+		public abstract void OnConnectedRoom(Room room);
 		public abstract int OnReceive(ArraySegment<byte> buffer);
 		public abstract void OnSend(int numOfBytes);
 		public abstract void OnDisconnected(EndPoint endPoint);

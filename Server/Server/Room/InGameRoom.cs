@@ -8,67 +8,21 @@ namespace Server
 {
     public class InGameRoom : Room
 	{
-        private JobQueue jobQueue = new JobQueue();
-        private List<ArraySegment<byte>> pendingList = new List<ArraySegment<byte>>();
 
 		public InGameRoom(int roomId, int maxSessionCount) : base(roomId, maxSessionCount)
 		{
 		}
 
-		public override void Flush()
-        {
-            jobQueue.Push(OnFlush);
-        }
-
-		public override void Enter(Session session)
-		{
-			jobQueue.Push(() =>
-			{
-				OnEnter(session as ClientSession);
-			});
-		}
-
-		public override void Leave(Session session)
-		{
-			jobQueue.Push(() =>
-			{
-				OnLeave(session as ClientSession);
-			});
-		}
-
-		public void Move(ClientSession session, C_Move packet)
-		{
-			jobQueue.Push(() =>
-			{
-				OnMove(session, packet);
-			});
-		}
-
-		private void OnFlush()
-        {
-            foreach (var s in roomSessions)
-            {
-                s.Send(pendingList);
-            }
-
-            pendingList.Clear();
-        }
-
-		private void Broadcast(ArraySegment<byte> segment)
-		{
-			pendingList.Add(segment);
-		}
-
-		private void OnEnter(ClientSession session)
+        protected override void OnEnter(Session session)
         {
             // 플레이어 추가하고
             roomSessions.Add(session);
 
             // 신입생한테 모든 플레이어 목록 전송
-            S_PlayerList players = new S_PlayerList();
-            foreach (ClientSession s in roomSessions)
+            var players = new RES_PLAYER_LIST();
+            foreach (IngameSession s in roomSessions)
             {
-                players.players.Add(new S_PlayerList.Player()
+                players.players.Add(new RES_PLAYER_LIST.Player()
                 {
                     isSelf = s == session,
                     playerId = s.sessionId,
@@ -80,7 +34,7 @@ namespace Server
             session.Send(players.Write());
 
             // 신입생 입장을 모두에게 알린다
-            S_BroadcastEnterGame enter = new S_BroadcastEnterGame();
+            var enter = new RES_BROADCAST_ENTER_GAME();
             enter.playerId = session.sessionId;
             enter.posX = 0;
             enter.posY = 0;
@@ -89,19 +43,27 @@ namespace Server
             Broadcast(enter.Write());
         }
 
-        private void OnLeave(ClientSession session)
+        protected override void OnLeave(Session session)
         {
             // 플레이어 제거하고
             roomSessions.Remove(session);
 
             // 모두에게 알린다
-            S_BroadcastLeaveGame leave = new S_BroadcastLeaveGame();
+            var leave = new RES_BROADCAST_LEAVE_GAME();
             leave.playerId = session.sessionId;
 
             Broadcast(leave.Write());
         }
 
-        private void OnMove(ClientSession session, C_Move packet)
+        public void Move(IngameSession session, REQ_MOVE packet)
+		{
+			jobQueue.Push(() =>
+			{
+				OnMove(session, packet);
+			});
+		}
+
+        private void OnMove(IngameSession session, REQ_MOVE packet)
         {
             // 좌표 바꿔주고
             session.PosX = packet.posX;
@@ -109,7 +71,7 @@ namespace Server
             session.PosZ = packet.posZ;
 
             // 모두에게 알린다
-            S_BroadcastMove move = new S_BroadcastMove();
+            var move = new RES_MOVE();
             move.playerId = session.sessionId;
             move.posX = session.PosX;
             move.posY = session.PosY;

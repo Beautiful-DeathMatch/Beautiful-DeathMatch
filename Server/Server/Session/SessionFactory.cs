@@ -38,13 +38,13 @@ namespace Server
 			switch (type)
 			{
 				case SessionType.InGame:
-					return new ClientSession(++currentSessionId);
+					return new IngameSession(++currentSessionId);
 			}
 
 			return null;
 		}
 
-		public void Remove(ClientSession session)
+		public void Remove(IngameSession session)
 		{
 			lock (lockObj)
 			{

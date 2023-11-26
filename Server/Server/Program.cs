@@ -15,7 +15,7 @@ namespace Server
 		private static IPEndPoint myIPEndPoint = null;
 		private static int myPortNumber = 7777;
 
-		private static Listener mylistener = new Listener(10, 100);
+		private static Listener mylistener = new Listener(ProtocolType.Tcp, 10, 100);
 		private static List<Room> myRooms = new List<Room>();
 
 		private static JobTimer jobTimer = new JobTimer();

@@ -14,10 +14,11 @@ using System.Collections.Generic;
 
 public class PacketManager : Singleton<PacketManager>
 {{
-	PacketManager()
-	{{
-		Register();
-	}}
+	protected override void OnAwakeInstance()
+    {{
+        base.OnAwakeInstance();
+        Register();
+    }}
 
 	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
 	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
@@ -47,7 +48,7 @@ public class PacketManager : Singleton<PacketManager>
 		}}
 	}}
 
-	T MakePacket<T>(PacketSession session, ArraySegment<byte> buffer) where T : IPacket, new()
+	private T MakePacket<T>(PacketSession session, ArraySegment<byte> buffer) where T : IPacket, new()
 	{{
 		T pkt = new T();
 		pkt.Read(buffer);
@@ -65,7 +66,7 @@ public class PacketManager : Singleton<PacketManager>
 		// {0} 패킷 이름
 		public static string managerRegisterFormat =
 @"		_makeFunc.Add((ushort)PacketID.{0}, MakePacket<{0}>);
-		_handler.Add((ushort)PacketID.{0}, PacketHandler.{0}Handler);";
+		_handler.Add((ushort)PacketID.{0}, PacketHandler.ON_{0});";
 
 		// {0} 패킷 이름/번호 목록
 		// {1} 패킷 목록
