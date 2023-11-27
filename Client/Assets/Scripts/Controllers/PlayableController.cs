@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayableController : MonoBehaviour
+public class PlayableController : SyncComponent
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Move(Vector3 targetPos)
     {
-        
+        transform.position = targetPos;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	public override void OnReceive(IPacket packet)
+	{
+		
+	}
+
+	public override void TrySend()
+	{
+		
+	}
 }

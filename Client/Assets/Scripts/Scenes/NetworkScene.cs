@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NetworkScene : GameScene
 {
-    protected override void Start()
-    {
+    public void TryConnect()
+	{
 		NetworkManager.Instance.TryConnect();
 	}
 

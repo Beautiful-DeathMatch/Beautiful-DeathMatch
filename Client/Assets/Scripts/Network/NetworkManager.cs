@@ -5,23 +5,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using UnityEngine;
+using System.Net.Sockets;
 
 public class NetworkManager : Singleton<NetworkManager>
 {
 	private PacketQueue packetQueue = new PacketQueue();
     private PacketSession packetSession = null;
 
-    private SessionConnector connector = new SessionConnector();
+    private SessionConnector connector = new SessionConnector(ProtocolType.Tcp, 5);
+
+    private List<int> playerIdList = new List<int>();
+    private Dictionary<int, SyncComponent> syncComponentDictionary = new Dictionary<int, SyncComponent>();
 
     public void Send(IPacket packet)
 	{
-        packetSession.Send(packet.Write());
+        packetSession?.Send(packet.Write());
 	}
 
 	public void Receive(IPacket packet)
 	{
 		packetQueue.Push(packet);
 	}
+
+    public void RegisterComponent(SyncComponent syncComponent)
+	{
+		if (syncComponent == null)
+			return;
+
+		syncComponentDictionary[syncComponent.PlayerId] = syncComponent;
+	}
+
+    public void UnregisterComponent(SyncComponent syncComponent)
+    {
+        if (syncComponent == null)
+            return;
+
+        if (syncComponentDictionary.ContainsKey(syncComponent.PlayerId))
+        {
+            syncComponentDictionary.Remove(syncComponent.PlayerId);
+        }
+    }
 
     public bool TryConnect()
     {
@@ -43,7 +66,14 @@ public class NetworkManager : Singleton<NetworkManager>
 
 		foreach (IPacket packet in packetQueue.PopAll())
 		{
+            Debug.Log(packet.GetType().ToString());
+
             PacketManager.Instance.HandlePacket(packetSession, packet);
+
+            foreach(var syncComponent in syncComponentDictionary.Values)
+            {
+                syncComponent.OnReceive(packet);
+			}
         }
     }
 
