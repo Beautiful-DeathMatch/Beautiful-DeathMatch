@@ -6,12 +6,10 @@ public class NetworkScene : GameScene
 {
     public void TryConnect()
 	{
-		NetworkManager.Instance.TryConnect();
+		SessionManager.Instance.TryConnect();
 	}
-
-	// Update is called once per frame
 	protected override void Update()	
     {
-		NetworkManager.Instance.OnUpdateInstance();
+		SessionManager.Instance.OnUpdateInstance();
 	}
 }

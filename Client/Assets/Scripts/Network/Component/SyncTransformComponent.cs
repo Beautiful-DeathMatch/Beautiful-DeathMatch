@@ -11,7 +11,7 @@ public class SyncTransformComponent : SyncComponent
 		TrySend();
 	}
 
-	public override void TrySend()
+	public void TrySend()
 	{
 		var myPos = myTransform.position;
 
@@ -20,7 +20,7 @@ public class SyncTransformComponent : SyncComponent
 		movePacket.posY = myPos.y;
 		movePacket.posZ = myPos.z;
 
-		NetworkManager.Instance.Send(movePacket);
+		SessionManager.Instance.Send(movePacket);
 	}
 
 	public override void OnReceive(IPacket packet)
@@ -31,7 +31,7 @@ public class SyncTransformComponent : SyncComponent
 		if (movePacket == null)
 			return;
 
-		if (movePacket.playerId != PlayerId)
+		if (movePacket.playerId != playerId)
 			return;
 
 		myTransform.position = new Vector3(movePacket.posX, movePacket.posY, movePacket.posZ);

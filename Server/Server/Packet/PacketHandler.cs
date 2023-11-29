@@ -8,26 +8,26 @@ public class PacketHandler
 {
 	public static void ON_REQ_BROADCAST_ENTER_GAME(PacketSession session, IPacket packet)
 	{
-		if(session is IngameSession clientSession)
-		{
-			clientSession.TryLeave();
-		}
+		
 	}
 
     internal static void ON_REQ_BROADCAST_LEAVE_GAME(PacketSession session, IPacket packet)
     {
-        throw new NotImplementedException();
-    }
+		
+	}
 
     internal static void ON_REQ_PLAYER_LIST(PacketSession session, IPacket packet)
     {
-        throw new NotImplementedException();
+        
     }
 	
 	internal static void ON_REQ_LEAVE_GAME(PacketSession session, IPacket packet)
 	{
-        throw new NotImplementedException();
-    }
+		if (session is IngameSession clientSession)
+		{
+			clientSession.TryLeave();
+		}
+	}
 
     internal static void ON_REQ_MOVE(PacketSession session, IPacket packet)
 	{

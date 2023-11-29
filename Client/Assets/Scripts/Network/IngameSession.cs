@@ -13,24 +13,24 @@ public class IngameSession : PacketSession
 
     public override void OnConnected(EndPoint endPoint)
     {
-        Console.WriteLine($"OnConnected : {endPoint}");
+        // Console.WriteLine($"OnConnected : {endPoint}");
     }
 
     public override void OnDisconnected(EndPoint endPoint)
     {
-        Console.WriteLine($"OnDisconnected : {endPoint}");
+        // Console.WriteLine($"OnDisconnected : {endPoint}");
     }
 
     public override void OnRecvPacket(ArraySegment<byte> buffer)
     {
         PacketManager.Instance.OnRecvPacket(this, buffer, (s, p) =>
         {
-            NetworkManager.Instance.Receive(p);
+            SessionManager.Instance.Receive(p);
         });
     }
 
     public override void OnSend(int numOfBytes)
     {
-        //Console.WriteLine($"Transferred bytes: {numOfBytes}");
+        // Console.WriteLine($"Transferred bytes: {numOfBytes}");
     }
 }

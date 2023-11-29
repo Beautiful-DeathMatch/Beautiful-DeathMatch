@@ -2,26 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SyncComponent : MonoBehaviour
+public interface IPacketReceiver
 {
-	public int PlayerId { get; private set; }
+	public void OnReceive(IPacket packet);
+}
 
-	public virtual void Initialize(int playerId)
+public abstract class SyncComponent : MonoBehaviour, IPacketReceiver
+{
+	protected int playerId;
+
+	public bool IsEqualPlayer(SyncComponent component)
 	{
-		this.PlayerId = playerId;
+		if (component == null)
+			return false;
+
+		return this.playerId == component.playerId;
 	}
 
-	private void OnEnable()
+	public virtual void Initialize(int playerId = -1)
 	{
-		NetworkManager.Instance.RegisterComponent(this);
+		this.playerId = playerId;
+		SessionManager.Instance.RegisterPacketReceiver(this);
 	}
 
-	private void OnDisable()
+	public virtual void Clear()
 	{
-		NetworkManager.Instance.UnregisterComponent(this);
+		SessionManager.Instance.UnRegisterPacketReceiver(this);
 	}
-
-	public abstract void TrySend();
 
 	public abstract void OnReceive(IPacket packet);
 }

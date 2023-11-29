@@ -7,15 +7,15 @@ using System.Net;
 using UnityEngine;
 using System.Net.Sockets;
 
-public class NetworkManager : Singleton<NetworkManager>
+public class SessionManager : Singleton<SessionManager>
 {
 	private PacketQueue packetQueue = new PacketQueue();
     private PacketSession packetSession = null;
 
     private SessionConnector connector = new SessionConnector(ProtocolType.Tcp, 5);
 
-    private List<int> playerIdList = new List<int>();
-    private Dictionary<int, SyncComponent> syncComponentDictionary = new Dictionary<int, SyncComponent>();
+    private List<IPacketReceiver> packetReceivers = new();
+    private Queue<IPacketReceiver> pendingPacketReceiverQueue = new();
 
     public void Send(IPacket packet)
 	{
@@ -27,25 +27,26 @@ public class NetworkManager : Singleton<NetworkManager>
 		packetQueue.Push(packet);
 	}
 
-    public void RegisterComponent(SyncComponent syncComponent)
-	{
-		if (syncComponent == null)
+    public void RegisterPacketReceiver(IPacketReceiver receiver)
+    {
+		if (receiver == null)
 			return;
 
-		syncComponentDictionary[syncComponent.PlayerId] = syncComponent;
+		pendingPacketReceiverQueue.Enqueue(receiver);
 	}
 
-    public void UnregisterComponent(SyncComponent syncComponent)
+    public void UnRegisterPacketReceiver(IPacketReceiver receiver)
     {
-        if (syncComponent == null)
-            return;
+		if (receiver == null)
+			return;
 
-        if (syncComponentDictionary.ContainsKey(syncComponent.PlayerId))
-        {
-            syncComponentDictionary.Remove(syncComponent.PlayerId);
-        }
-    }
+		if (packetReceivers.Contains(receiver) == false)
+			return;
 
+        packetReceivers.Remove(receiver);
+	}
+
+	// 여기 커넥트가 완전히 되었는 지를 판단해야 한다.
     public bool TryConnect()
     {
 		var endPoint = GetMyEndPoint(7777);
@@ -58,24 +59,43 @@ public class NetworkManager : Singleton<NetworkManager>
 
     public override void OnUpdateInstance()
     {
-        if (connector == null)
+        if (IsConnectedSession() == false)
             return;
 
-        if (connector.IsConnected == false)
-            return;
+		FlushSession();
+	}
+
+    private void FlushSession()
+    {
+		while(pendingPacketReceiverQueue.TryDequeue(out var pendingReceiver))
+		{
+			if (packetReceivers.Contains(pendingReceiver))
+				continue;
+
+			packetReceivers.Add(pendingReceiver);
+		}
 
 		foreach (IPacket packet in packetQueue.PopAll())
 		{
-            Debug.Log(packet.GetType().ToString());
+			Debug.Log(packet.GetType().ToString());
 
-            PacketManager.Instance.HandlePacket(packetSession, packet);
-
-            foreach(var syncComponent in syncComponentDictionary.Values)
-            {
-                syncComponent.OnReceive(packet);
+			foreach (var receiver in packetReceivers)
+			{
+				receiver.OnReceive(packet);
 			}
-        }
-    }
+		}
+	}
+
+    private bool IsConnectedSession()
+    {
+		if (connector == null)
+			return false;
+
+		if (connector.IsConnected == false)
+			return false;
+
+        return true;
+	}
 
     private PacketSession MakeSession()
     {

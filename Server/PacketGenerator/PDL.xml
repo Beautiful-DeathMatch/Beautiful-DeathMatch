@@ -15,6 +15,9 @@
 	<list name="player">
 	  <bool name="isSelf"/>
 	  <int name="playerId"/>
+	  <float name="posX"/>
+	  <float name="posY"/>
+      <float name="posZ"/>
 	</list>
   </packet>
   <packet name="REQ_MOVE">

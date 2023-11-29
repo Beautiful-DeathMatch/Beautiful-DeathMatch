@@ -61,7 +61,10 @@ namespace Server
 				}
 			}
 
-			return RoomFactory.Instance.Make(RoomType.InGame); 
+			var newRoom = RoomFactory.Instance.Make(RoomType.InGame);
+			myRooms.Add(newRoom);
+
+			return newRoom;
 		}
 
 		private static IPEndPoint GetMyEndPoint(int portNumber)
