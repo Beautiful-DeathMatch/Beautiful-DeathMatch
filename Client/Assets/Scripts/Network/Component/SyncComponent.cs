@@ -9,15 +9,7 @@ public interface IPacketReceiver
 
 public abstract class SyncComponent : MonoBehaviour, IPacketReceiver
 {
-	protected int playerId;
-
-	public bool IsEqualPlayer(SyncComponent component)
-	{
-		if (component == null)
-			return false;
-
-		return this.playerId == component.playerId;
-	}
+	public int playerId { get; private set; }
 
 	public virtual void Initialize(int playerId = -1)
 	{

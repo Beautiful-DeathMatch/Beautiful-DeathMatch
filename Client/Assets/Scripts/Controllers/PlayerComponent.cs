@@ -1,10 +1,15 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayableController : SyncComponent
+public class PlayerComponent : SyncComponent
 {
+	[SerializeField] private ThirdPersonController controller = null;
+	[SerializeField] private Transform cameraHead = null;
+
 	private IEnumerable<SyncComponent> childSyncComponents = null;
 
 	public override void Initialize(int playerId)
@@ -28,9 +33,19 @@ public class PlayableController : SyncComponent
 		}
 	}
 
-	public void Move(Vector3 targetPos)
+	public void SetInput(PlayerInput inputComponent, StarterAssetsInputs inputAsset)
+	{
+		controller.SetInput(inputComponent, inputAsset);	
+	}
+
+	public void SetCamera(Cinemachine.CinemachineVirtualCamera virtualCamera)
+	{
+		virtualCamera.Follow = cameraHead;
+	}
+
+	public void SetPosition(Vector3 pos)
     {
-        transform.position = targetPos;
+        transform.position = pos;
     }
 
 	public override void OnReceive(IPacket packet)

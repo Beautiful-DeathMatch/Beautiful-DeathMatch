@@ -8,7 +8,7 @@ public class SyncTransformComponent : SyncComponent
 
 	private void Update()
 	{
-		TrySend();
+		// TrySend();
 	}
 
 	public void TrySend()
@@ -34,6 +34,6 @@ public class SyncTransformComponent : SyncComponent
 		if (movePacket.playerId != playerId)
 			return;
 
-		myTransform.position = new Vector3(movePacket.posX, movePacket.posY, movePacket.posZ);
+		// myTransform.position = new Vector3(movePacket.posX, movePacket.posY, movePacket.posZ);
 	}
 }
