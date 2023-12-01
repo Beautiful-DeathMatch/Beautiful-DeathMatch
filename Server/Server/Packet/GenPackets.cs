@@ -8,10 +8,11 @@ public enum PacketID
 {
 	RES_BROADCAST_ENTER_GAME = 1,
 	REQ_LEAVE_GAME = 2,
-	RES_BROADCAST_LEAVE_GAME = 3,
-	RES_PLAYER_LIST = 4,
-	REQ_MOVE = 5,
-	RES_MOVE = 6,
+	REQ_PLAYER_LIST = 3,
+	RES_BROADCAST_LEAVE_GAME = 4,
+	RES_PLAYER_LIST = 5,
+	REQ_MOVE = 6,
+	RES_MOVE = 7,
 	
 }
 
@@ -91,6 +92,36 @@ public class REQ_LEAVE_GAME : IPacket
 
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.REQ_LEAVE_GAME), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+public class REQ_PLAYER_LIST : IPacket
+{
+	
+
+	public ushort Protocol { get { return (ushort)PacketID.REQ_PLAYER_LIST; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.REQ_PLAYER_LIST), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		
 

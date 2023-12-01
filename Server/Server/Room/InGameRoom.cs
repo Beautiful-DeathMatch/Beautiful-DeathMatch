@@ -55,6 +55,32 @@ namespace Server
             Broadcast(leave.Write());
         }
 
+        public void BroadcastPlayerList(Session session)
+        {
+            jobQueue.Push(() =>
+            {
+                OnBroadcastPlayerList(session);
+			});
+        }
+
+        private void OnBroadcastPlayerList(Session session)
+        {
+			var players = new RES_PLAYER_LIST();
+			foreach (IngameSession s in roomSessions)
+			{
+				players.players.Add(new RES_PLAYER_LIST.Player()
+				{
+					isSelf = s == session,
+					playerId = s.sessionId,
+					posX = s.PosX,
+					posY = s.PosY,
+					posZ = s.PosZ,
+				});
+			}
+			session.Send(players.Write());
+		}
+
+
         public void Move(IngameSession session, REQ_MOVE packet)
 		{
 			jobQueue.Push(() =>

@@ -40,6 +40,15 @@ namespace Server
 			return true;
 		}
 
+		public bool TryBroadcastPlayerList()
+		{
+			if (sessionRoom == null)
+				return false;
+
+			sessionRoom.BroadcastPlayerList(this);
+			return true;
+		}
+
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");

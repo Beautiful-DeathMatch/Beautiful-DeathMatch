@@ -48,11 +48,14 @@ public class SpawnSystem : SyncComponent
 	{
 		if (packet is RES_BROADCAST_ENTER_GAME enterPacket)
 		{
-			// 플레이어 리스트 요청
+			var req = new REQ_PLAYER_LIST();
+			SessionManager.Instance.Send(req);
+
 		}
 		else if(packet is RES_BROADCAST_LEAVE_GAME leavePacket)
 		{
-			// 플레이어 리스트 요청
+			var req = new REQ_PLAYER_LIST();
+			SessionManager.Instance.Send(req);
 		}
 		else if(packet is RES_PLAYER_LIST playerListPacket)
 		{

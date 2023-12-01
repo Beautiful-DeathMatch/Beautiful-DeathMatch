@@ -8,6 +8,8 @@
   </packet>
   <packet name="REQ_LEAVE_GAME">
   </packet>
+  <packet name="REQ_PLAYER_LIST">
+  </packet>
   <packet name="RES_BROADCAST_LEAVE_GAME">
 	<int name="playerId"/>
   </packet>

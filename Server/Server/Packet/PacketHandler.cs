@@ -17,9 +17,12 @@ public class PacketHandler
 	}
 
     internal static void ON_REQ_PLAYER_LIST(PacketSession session, IPacket packet)
-    {
-        
-    }
+	{
+		if (session is IngameSession clientSession)
+		{
+			clientSession.TryBroadcastPlayerList();
+		}
+	}
 	
 	internal static void ON_REQ_LEAVE_GAME(PacketSession session, IPacket packet)
 	{
