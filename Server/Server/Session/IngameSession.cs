@@ -28,6 +28,8 @@ namespace Server
 				return false;
 
 			sessionRoom.Leave(this);
+			sessionRoom.BroadcastPlayerList(this);
+
 			return true;
 		}
 
@@ -56,9 +58,10 @@ namespace Server
 
         public override void OnConnectedRoom(Room room)
         {
-            sessionRoom = room as InGameRoom;
+			sessionRoom = room as InGameRoom;
             sessionRoom?.Enter(this);
-        }
+			sessionRoom?.BroadcastPlayerList(this);
+		}
 
         public override void OnReceivePacket(ArraySegment<byte> buffer)
 		{

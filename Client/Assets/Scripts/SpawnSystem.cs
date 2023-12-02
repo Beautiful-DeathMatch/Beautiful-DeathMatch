@@ -46,18 +46,7 @@ public class SpawnSystem : SyncComponent
 
 	public override void OnReceive(IPacket packet)
 	{
-		if (packet is RES_BROADCAST_ENTER_GAME enterPacket)
-		{
-			var req = new REQ_PLAYER_LIST();
-			SessionManager.Instance.Send(req);
-
-		}
-		else if(packet is RES_BROADCAST_LEAVE_GAME leavePacket)
-		{
-			var req = new REQ_PLAYER_LIST();
-			SessionManager.Instance.Send(req);
-		}
-		else if(packet is RES_PLAYER_LIST playerListPacket)
+		if(packet is RES_PLAYER_LIST playerListPacket)
 		{
 			foreach (var id in GetLeftPlayerIds(playerListPacket.players))
 			{

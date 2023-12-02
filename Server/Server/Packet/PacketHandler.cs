@@ -18,17 +18,17 @@ public class PacketHandler
 
     internal static void ON_REQ_PLAYER_LIST(PacketSession session, IPacket packet)
 	{
-		if (session is IngameSession clientSession)
+		if (session is IngameSession ingameSession)
 		{
-			clientSession.TryBroadcastPlayerList();
+			ingameSession.TryBroadcastPlayerList();
 		}
 	}
 	
 	internal static void ON_REQ_LEAVE_GAME(PacketSession session, IPacket packet)
 	{
-		if (session is IngameSession clientSession)
+		if (session is IngameSession ingameSession)
 		{
-			clientSession.TryLeave();
+			ingameSession.TryLeave();
 		}
 	}
 
@@ -36,9 +36,9 @@ public class PacketHandler
 	{
 		var movePacket = packet as REQ_MOVE;
 
-		if (session is IngameSession clientSession)
+		if (session is IngameSession ingameSession)
 		{
-			clientSession.TryMove(movePacket);
+			ingameSession.TryMove(movePacket);
 		}
 	}
 

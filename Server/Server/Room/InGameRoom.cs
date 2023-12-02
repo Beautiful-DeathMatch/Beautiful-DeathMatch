@@ -18,23 +18,8 @@ namespace Server
             // 플레이어 추가하고
             roomSessions.Add(session);
 
-            // 신입생한테 모든 플레이어 목록 전송
-            var players = new RES_PLAYER_LIST();
-            foreach (IngameSession s in roomSessions)
-            {
-                players.players.Add(new RES_PLAYER_LIST.Player()
-                {
-                    isSelf = s == session,
-                    playerId = s.sessionId,
-                    posX = s.PosX,
-                    posY = s.PosY,
-                    posZ = s.PosZ,
-                });
-            }
-            session.Send(players.Write());
-
-            // 신입생 입장을 모두에게 알린다
-            var enter = new RES_BROADCAST_ENTER_GAME();
+			// 신입생 입장을 모두에게 알린다
+			var enter = new RES_BROADCAST_ENTER_GAME();
             enter.playerId = session.sessionId;
             enter.posX = 0;
             enter.posY = 0;
@@ -79,7 +64,6 @@ namespace Server
 			}
 			session.Send(players.Write());
 		}
-
 
         public void Move(IngameSession session, REQ_MOVE packet)
 		{
