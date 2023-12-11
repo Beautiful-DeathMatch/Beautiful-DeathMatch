@@ -22,7 +22,10 @@
 [Aa]ssets/Plugins/Editor/JetBrains*
 
 # External Resources
-[Aa]ssets/Resources/External/
+[Aa]ssets/Resources/External/FreeTestCharacterAsuna
+[Aa]ssets/Resources/External/StarterAssets
+[Aa]ssets/Resources/External/TerrainDemoScene_URP
+[Aa]ssets/Resources/External/*.meta
 
 # Visual Studio cache directory
 .vs/
