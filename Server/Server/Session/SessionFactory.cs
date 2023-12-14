@@ -15,7 +15,6 @@ namespace Server
 	{
 		int currentSessionId = 0; // 해시값을 추출하는 함수가 필요하다.
 
-		Dictionary<int, Session> sessions = new Dictionary<int, Session>();
 		object lockObj = new object();
 
 		public Session Make(SessionType type)
@@ -26,9 +25,7 @@ namespace Server
 				if (session == null)
 					return null;
 
-				sessions[session.sessionId] = session;
-				Console.WriteLine($"Connected : {session.sessionId}");
-
+				SessionManager.Instance.RegisterSession(session);
 				return session;
 			}
 		}
@@ -44,11 +41,11 @@ namespace Server
 			return null;
 		}
 
-		public void Remove(IngameSession session)
+		public void Remove(Session session)
 		{
 			lock (lockObj)
 			{
-				sessions.Remove(session.sessionId);
+				SessionManager.Instance.UnRegisterSession(session);
 			}
 		}
 	}

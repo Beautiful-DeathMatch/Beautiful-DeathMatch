@@ -22,16 +22,51 @@ namespace ServerCore
 		private static T instance = null;
 	}
 
-	public class Singleton
+	public class Singleton : IDisposable
 	{
+		private bool disposedValue;
+
 		protected Singleton()
 		{
 			OnAwakeInstance();
         }
 
+		// Dispose를 반드시 부르도록 하는 게 좋을까?
+		~Singleton()
+		{
+			Dispose(disposing: false);
+		}
+
 		protected virtual void OnAwakeInstance()
 		{
 
+		}
+
+		// 비관리형 리소스 취급
+		protected virtual void OnDestroyInstance()
+		{
+
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposedValue)
+			{
+				if (disposing)
+				{
+					// 관리형 리소스
+				}
+
+				OnDestroyInstance();
+				disposedValue = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			// 이 코드를 변경하지 마세요. 'Dispose(bool disposing)' 메서드에 정리 코드를 입력합니다.
+			Dispose(disposing: true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }

@@ -41,7 +41,7 @@ namespace ServerCore
 			}
 
 			if (packetCount > 1)
-				Console.WriteLine($"패킷 모아보내기 : {packetCount}");
+				Console.WriteLine($"패킷 모아 보내기 : {packetCount}");
 
 			return processLen;
 		}
@@ -70,6 +70,12 @@ namespace ServerCore
 		SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
 		SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
 
+		public DateTime LastActivityTime
+		{
+			get;
+			private set;
+		}
+
 		public abstract void OnConnected(EndPoint endPoint);
 		public abstract void OnConnectedRoom(Room room);
 		public abstract int OnReceive(ArraySegment<byte> buffer);
@@ -89,7 +95,7 @@ namespace ServerCore
 		{
 			_socket = socket;
 
-			_recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
+			_recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnReceiveCompleted);
 			_sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
 			RegisterReceive();
@@ -131,9 +137,7 @@ namespace ServerCore
 			Clear();
 		}
 
-		#region 네트워크 통신
-
-		void RegisterSend()
+		private void RegisterSend()
 		{
 			if (_disconnected == 1)
 				return;
@@ -157,7 +161,7 @@ namespace ServerCore
 			}
 		}
 
-		void OnSendCompleted(object sender, SocketAsyncEventArgs args)
+		private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
 		{
 			lock (_lock)
 			{
@@ -185,7 +189,7 @@ namespace ServerCore
 			}
 		}
 
-		void RegisterReceive()
+		private void RegisterReceive()
 		{
 			if (_disconnected == 1)
 				return;
@@ -198,7 +202,7 @@ namespace ServerCore
 			{
 				bool pending = _socket.ReceiveAsync(_recvArgs);
 				if (pending == false)
-					OnRecvCompleted(null, _recvArgs);
+					OnReceiveCompleted(null, _recvArgs);
 			}
 			catch (Exception e)
 			{
@@ -206,8 +210,10 @@ namespace ServerCore
 			}
 		}
 
-		void OnRecvCompleted(object sender, SocketAsyncEventArgs args)
+		private void OnReceiveCompleted(object sender, SocketAsyncEventArgs args)
 		{
+			LastActivityTime = DateTime.Now;
+
 			if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
 			{
 				try
@@ -246,7 +252,5 @@ namespace ServerCore
 				Disconnect();
 			}
 		}
-
-		#endregion
 	}
 }
