@@ -58,13 +58,13 @@ Shader "Custom/Outline"
         Pass
         {
             Name "Outline"
-            Tags {"LightMode" = "Outline"} // ForwardRenderer ¾Ö¼ÂÀÇ ·»´õ ÇÇÃÄ¿¡ Render Objects¸¦ Ãß°¡ÇÑ µÚ Filters > LightMode Tags¿¡ Outline À» Ãß°¡ÇÏ¸é Ãß°¡ ÆĞ½º·Î ±×·ÁÁü
+            Tags {"LightMode" = "Outline"} // ForwardRenderer ì• ì…‹ì˜ ë Œë” í”¼ì³ì— Render Objectsë¥¼ ì¶”ê°€í•œ ë’¤ Filters > LightMode Tagsì— Outline ì„ ì¶”ê°€í•˜ë©´ ì¶”ê°€ íŒ¨ìŠ¤ë¡œ ê·¸ë ¤ì§
 
             Cull Front
 
             HLSLPROGRAM
-            #pragma vertex vert // ¹öÅØ½º ½¦ÀÌ´õ ÁøÀÔ ÇÔ¼ö ÀÌ¸§ ¼³Á¤
-            #pragma fragment frag // ÇÈ¼¿ ½¦ÀÌ´õ ÁøÀÔ ÇÔ¼ö ÀÌ¸§ ¼³Á¤
+            #pragma vertex vert // ë²„í…ìŠ¤ ì‰ì´ë” ì§„ì… í•¨ìˆ˜ ì´ë¦„ ì„¤ì •
+            #pragma fragment frag // í”½ì…€ ì‰ì´ë” ì§„ì… í•¨ìˆ˜ ì´ë¦„ ì„¤ì •
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             struct Attributes
@@ -86,25 +86,25 @@ Shader "Custom/Outline"
                 Varyings OUT;
                 //OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
                 
-                // ¿ùµå ³ë¸» ¹æ½Ä, Ä«¸Ş¶ó °Å¸®¿¡ µû¸¥ ¿ø±Ù ±³Á¤ X
+                // ì›”ë“œ ë…¸ë§ ë°©ì‹, ì¹´ë©”ë¼ ê±°ë¦¬ì— ë”°ë¥¸ ì›ê·¼ êµì • X
                 float3 positionWS = TransformObjectToWorld(IN.positionOS.xyz);
                 float3 normalWS = mul(UNITY_MATRIX_M, IN.normalOS.xyz);
                 positionWS += normalWS * _OutlineDistance;
                 OUT.positionHCS = TransformWorldToHClip(positionWS);
 
                 /*
-                // ¿ùµå ³ë¸Ö ¹æ½Ä, Ä«¸Ş¶ó °Å¸®¿¡ µû¸¥ ¿ø±Ù ±³Á¤ O
+                // ì›”ë“œ ë…¸ë©€ ë°©ì‹, ì¹´ë©”ë¼ ê±°ë¦¬ì— ë”°ë¥¸ ì›ê·¼ êµì • O
                 float3 positionWS = TransformObjectToWorld(IN.positionOS.xyz);
                 float3 normalWS = mul(UNITY_MATRIX_M, IN.normalOS.xyz);
                 float distToCam = length(_WorldSpaceCameraPos - positionWS);
                 positionWS += normalWS * _OutlineDistance * distToCam;
                 OUT.positionHCS = TransformWorldToHClip(positionWS);
 
-                // ½ºÅ©¸° ³ë¸Ö ¹æ½Ä, Ä«¸Ş¶ó °Å¸®¿¡ µû¸¥ ¿ø±Ù ±³Á¤ O
+                // ìŠ¤í¬ë¦° ë…¸ë©€ ë°©ì‹, ì¹´ë©”ë¼ ê±°ë¦¬ì— ë”°ë¥¸ ì›ê·¼ êµì • O
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
-                float3 clipNormal = TransformObjectToHClip(IN.normalOS * 100); // 100À» °öÇÏ´Â ÀÌÀ¯ : 1 ÀÌÇÏ·Î ÀÛÀº °ªÀÎ ³ë¸» ¹æÇâÀº Å¬¸³½ºÆäÀÌ½ºÀÇ ÆÛ½ºÆåÆ¼ºê°¡ Àû¿ëµÇ¸é¼­ È­¸é ¹Ù±ùÂÊ¿¡¼­´Â ¹æÇâÀÌ µÚÁıÈ÷´Â ¿Ö°îÀÌ ¹ß»ıÇÏ¹Ç·Î Å¬¸³ º¯È¯ Àü¿¡ ¹æÇâÀÌ µÚÁıÈ÷Áö ¾ÊÀ» Á¤µµ·Î ÃæºĞÈ÷ Å« º¤ÅÍ·Î °¡°ø
-                clipNormal = normalize(float3(clipNormal.xy, 0)); // ¸Å¿ì Å« ¹æÇâ°ªÀ» Á¤±ÔÈ­
-                OUT.positionHCS.xyz += normalize(clipNormal) * _OutlineDistance * OUT.positionHCS.w; // Å¬¸³°ø°£ÀÇ w °ªÀº Ä«¸Ş¶ó °ø°£ÀÇ z°ª°ú °°´Ù. Áï, Ä«¸Ş¶ó·ÎºÎÅÍ ¹öÅÃ½º±îÁöÀÇ °Å¸®
+                float3 clipNormal = TransformObjectToHClip(IN.normalOS * 100); // 100ì„ ê³±í•˜ëŠ” ì´ìœ  : 1 ì´í•˜ë¡œ ì‘ì€ ê°’ì¸ ë…¸ë§ ë°©í–¥ì€ í´ë¦½ìŠ¤í˜ì´ìŠ¤ì˜ í¼ìŠ¤í™í‹°ë¸Œê°€ ì ìš©ë˜ë©´ì„œ í™”ë©´ ë°”ê¹¥ìª½ì—ì„œëŠ” ë°©í–¥ì´ ë’¤ì§‘íˆëŠ” ì™œê³¡ì´ ë°œìƒí•˜ë¯€ë¡œ í´ë¦½ ë³€í™˜ ì „ì— ë°©í–¥ì´ ë’¤ì§‘íˆì§€ ì•Šì„ ì •ë„ë¡œ ì¶©ë¶„íˆ í° ë²¡í„°ë¡œ ê°€ê³µ
+                clipNormal = normalize(float3(clipNormal.xy, 0)); // ë§¤ìš° í° ë°©í–¥ê°’ì„ ì •ê·œí™”
+                OUT.positionHCS.xyz += normalize(clipNormal) * _OutlineDistance * OUT.positionHCS.w; // í´ë¦½ê³µê°„ì˜ w ê°’ì€ ì¹´ë©”ë¼ ê³µê°„ì˜ zê°’ê³¼ ê°™ë‹¤. ì¦‰, ì¹´ë©”ë¼ë¡œë¶€í„° ë²„íƒìŠ¤ê¹Œì§€ì˜ ê±°ë¦¬
                 */
 
                 return OUT;

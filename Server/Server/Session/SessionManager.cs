@@ -11,8 +11,8 @@ namespace Server
 	{
 		private readonly ConcurrentDictionary<int, Session> sessions = new ConcurrentDictionary<int, Session>();
 
-		private const int SessionTimeOutSeconds = 5;
-		private const int SessionCheckIntervalSeconds = 1;
+		private const int SessionTimeOutSeconds = 10;
+		private const int SessionCheckIntervalSeconds = 2;
 
 		private Timer sessionCleanUpTimer = null;
 
@@ -23,9 +23,9 @@ namespace Server
 			sessionCleanUpTimer = new Timer(CleanUpSessions, null, TimeSpan.Zero, TimeSpan.FromSeconds(SessionCheckIntervalSeconds));
 		}
 
-		protected override void OnDestroyInstance()
+		protected override void OnDisposeInstance()
 		{
-			base.OnDestroyInstance();
+			base.OnDisposeInstance();
 
 			sessionCleanUpTimer.Change(Timeout.Infinite, Timeout.Infinite);
 		}
@@ -52,7 +52,7 @@ namespace Server
 			if (sessions.TryAdd(session.sessionId, session) == false)
 				return;
 
-			Console.WriteLine($"Connected : {session.sessionId}");
+			Console.WriteLine($"Connected : {session.sessionId} : {DateTime.Now}");
 		}
 
 		public void UnRegisterSession(Session session)
@@ -69,7 +69,7 @@ namespace Server
 				return;
 			}
 
-			Console.WriteLine($"OnDisconnected : {session.sessionId}");
+			Console.WriteLine($"OnDisconnected : {session.sessionId} : {DateTime.Now}");
 
 		}
 
@@ -80,7 +80,7 @@ namespace Server
 
 			TimeSpan delta = DateTime.Now - session.LastActivityTime;
 
-			return delta.TotalSeconds < SessionTimeOutSeconds;
+			return delta.TotalSeconds <= SessionTimeOutSeconds;
 		}
 	}
 }

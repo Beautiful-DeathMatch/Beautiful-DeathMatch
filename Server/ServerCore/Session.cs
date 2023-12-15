@@ -98,6 +98,7 @@ namespace ServerCore
 			_recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnReceiveCompleted);
 			_sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
+			LastActivityTime = DateTime.Now;
 			RegisterReceive();
 		}
 

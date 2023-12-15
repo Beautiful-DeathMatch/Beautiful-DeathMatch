@@ -42,8 +42,12 @@ namespace ServerCore
 
 		}
 
-		// 비관리형 리소스 취급
 		protected virtual void OnDestroyInstance()
+		{
+
+		}
+
+		protected virtual void OnDisposeInstance()
 		{
 
 		}
@@ -55,9 +59,11 @@ namespace ServerCore
 				if (disposing)
 				{
 					// 관리형 리소스
+					OnDestroyInstance();
 				}
 
-				OnDestroyInstance();
+				// 비관리형 리소스
+				OnDisposeInstance();
 				disposedValue = true;
 			}
 		}
