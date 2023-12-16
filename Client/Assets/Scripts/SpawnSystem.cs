@@ -39,7 +39,7 @@ public class SpawnSystem : SyncComponent
 		}
 
 		playerComponent.Initialize(playerId);
-		playerComponent.SetPosition(initialPos);
+		playerComponent.SetPosition(transform.position);
 
 		return playerComponent;
 	}

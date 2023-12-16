@@ -98,8 +98,8 @@ namespace ServerCore
 			_recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnReceiveCompleted);
 			_sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
-			LastActivityTime = DateTime.Now;
-			RegisterReceive();
+            LastActivityTime = DateTime.Now;
+            RegisterReceive();
 		}
 
 		public void Send(List<ArraySegment<byte>> sendBuffList)
@@ -213,9 +213,9 @@ namespace ServerCore
 
 		private void OnReceiveCompleted(object sender, SocketAsyncEventArgs args)
 		{
-			LastActivityTime = DateTime.Now;
+            LastActivityTime = DateTime.Now;
 
-			if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
+            if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
 			{
 				try
 				{
