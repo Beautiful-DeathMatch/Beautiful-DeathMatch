@@ -7,17 +7,15 @@ Shader "Custom/DiscardBelowAlpha"
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" "RenderPipeline" = "universalPipeline" }
+        Tags { "RenderType"="Opaque" "RenderPipeline" = "UniversalPipeline" }
+        LOD 100
         Pass
         {
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
-
+            
             struct Attributes
             {
                 float4 pos : POSITION;
@@ -26,19 +24,25 @@ Shader "Custom/DiscardBelowAlpha"
 
             struct Varyings
             {
+                float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
             };
 
             Varyings vert(Attributes input)
             {
                 Varyings output;
+                output.pos = TransformObjectToHClip(input.pos.xyz);
                 output.uv = input.uv;
                 return output;
+                
             }
+            
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
 
-            half4 frag(Varyings i) : SV_Target
+            float4 frag(Varyings i) : SV_Target
             {
-                half4 col = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
+                float4 col = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
                 
                 // Check if alpha value is less than or equal to 0.1
                 if (col.a <= 0.1)
