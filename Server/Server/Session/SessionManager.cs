@@ -10,11 +10,9 @@ namespace Server
 	internal class SessionManager : Singleton<SessionManager>
 	{
 		private readonly ConcurrentDictionary<int, Session> sessions = new ConcurrentDictionary<int, Session>();
-
-		private const int SessionTimeOutSeconds = 10;
-		private const int SessionCheckIntervalSeconds = 2;
-
 		private Timer sessionCleanUpTimer = null;
+
+		private const int SessionCheckIntervalSeconds = 2;
 
 		protected override void OnAwakeInstance()
 		{
@@ -78,9 +76,7 @@ namespace Server
 			if (sessions.TryGetValue(sessionId, out var session) == false)
 				return false;
 
-			TimeSpan delta = DateTime.Now - session.LastActivityTime;
-
-			return delta.TotalSeconds <= SessionTimeOutSeconds;
+			return session.IsValid();
 		}
 	}
 }

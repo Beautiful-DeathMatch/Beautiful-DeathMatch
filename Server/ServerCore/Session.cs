@@ -53,6 +53,8 @@ namespace ServerCore
 	{
 		public readonly int sessionId;
 
+		private const int SessionTimeOutSeconds = 10;
+
 		public Session(int sessionId)
 		{
 			this.sessionId = sessionId;
@@ -70,11 +72,7 @@ namespace ServerCore
 		SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
 		SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
 
-		public DateTime LastActivityTime
-		{
-			get;
-			private set;
-		}
+		private DateTime lastActivityTime;
 
 		public abstract void OnConnected(EndPoint endPoint);
 		public abstract void OnConnectedRoom(Room room);
@@ -98,7 +96,7 @@ namespace ServerCore
 			_recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnReceiveCompleted);
 			_sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
-            LastActivityTime = DateTime.Now;
+            lastActivityTime = DateTime.Now;
             RegisterReceive();
 		}
 
@@ -136,6 +134,15 @@ namespace ServerCore
 			_socket.Shutdown(SocketShutdown.Both);
 			_socket.Close();
 			Clear();
+		}
+		
+		public bool IsValid()
+		{
+			if (_socket == null)
+				return false;
+
+			TimeSpan delta = DateTime.Now - lastActivityTime;
+		    return delta.TotalSeconds <= SessionTimeOutSeconds;
 		}
 
 		private void RegisterSend()
@@ -213,7 +220,7 @@ namespace ServerCore
 
 		private void OnReceiveCompleted(object sender, SocketAsyncEventArgs args)
 		{
-            LastActivityTime = DateTime.Now;
+            lastActivityTime = DateTime.Now;
 
             if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
 			{
