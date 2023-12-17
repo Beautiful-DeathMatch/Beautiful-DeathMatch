@@ -1,8 +1,10 @@
-Shader "Unlit/LambertOutline"
+Shader "Custom/LambertOutline"
 {
     Properties
     {
-        _BaseMap ("Texture", 2D) = "white" {}
+        _BaseMap ("_BaseMap", 2D) = "white" {}
+        [MainColor] _OutlineColor ("Outline Color", Color) = (1, 1, 1, 1)
+        _OutlineDistance("Outline Distance", Float) = 0.1
     }
     SubShader
     {
@@ -16,40 +18,55 @@ Shader "Unlit/LambertOutline"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-            struct appdata
+            struct Attributes
             {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
+                float4 positionOS   : POSITION;
+                float2 uv           : TEXCOORD0;
+                float3 normalOS     : NORMAL;
             };
 
-            struct v2f
+            struct Varyings
             {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
+                float4 positionHCS  : SV_POSITION;
+                float2 uv           : TEXCOORD0;
+                float3 normal       : TEXCOORD1; // Normal
+                float3 lightDir     : TEXCOORD2;
             };
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
 
             CBUFFER_START(UnityPerMaterial)
-                float4 _MainTex_ST;
+                float4 _BaseMap_ST;
             CBUFFER_END
             
-            v2f vert (appdata v)
+            Varyings vert (Attributes IN)
             {
-                v2f o;
-                o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                Varyings o;
+                o.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                o.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+                o.normal = TransformObjectToWorldNormal(IN.normalOS);
+                o.lightDir = normalize(_MainLightPosition.xyz);
                 return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float4 frag (Varyings i) : SV_Target
             {
+                i.normal = normalize(i.normal);
+                
                 float4 col = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
+                float NdotL = saturate(dot(i.normal, i.lightDir) * 0.5 + 0.5); // * 0.5 + 0.5 (Half Lambert)
+                float3 ambient = SampleSH(i.normal);
+                float3 lighting = NdotL * _MainLightColor.rgb + ambient;
+                
+                col.rgb *= lighting;
                 return col;
             }
             ENDHLSL
         }
+        
+        UsePass "Custom/Outline/OUTLINE"
     }
 }

@@ -78,8 +78,10 @@ Shader "Custom/Outline"
                 float4 positionHCS : SV_POSITION;
             };
 
-            half4 _OutlineColor;
-            half _OutlineDistance;
+            CBUFFER_START(UnityPerMaterial)
+                half4 _OutlineColor;
+                half _OutlineDistance;
+            CBUFFER_END
 
             Varyings vert(Attributes IN)
             {

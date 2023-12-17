@@ -1,4 +1,4 @@
-Shader "Custom/DiscardBelowAlpha"
+Shader "Custom/Tree"
 {
     Properties
     {
