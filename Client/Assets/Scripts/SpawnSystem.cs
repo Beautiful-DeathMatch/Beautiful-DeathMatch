@@ -62,7 +62,7 @@ public class SpawnSystem : SyncComponent
 				if (playerDictionary.ContainsKey(player.playerId))
 					continue;
 
-				var controller = CreateController(player.playerId, player.isSelf, new Vector3(player.posX, player.posY, player.posZ));
+				var controller = CreateController(player.playerId, player.isSelf, transform.position);
 				playerDictionary[player.playerId] = controller;
 			}
 		}

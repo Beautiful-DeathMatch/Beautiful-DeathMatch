@@ -31,8 +31,13 @@ public class PacketHandler
 		
 	}
 
-	public static void ON_RES_MOVE(PacketSession session, IPacket packet)
+	public static void ON_RES_TRANSFORM(PacketSession session, IPacket packet)
 	{
 
+	}
+
+	public static void ON_RES_ANIMATOR(PacketSession session, IPacket packet)
+	{
+		
 	}
 }

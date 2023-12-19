@@ -21,8 +21,10 @@ public class PacketManager : Singleton<PacketManager>
 		_handler.Add((ushort)PacketID.RES_BROADCAST_LEAVE_GAME, PacketHandler.ON_RES_BROADCAST_LEAVE_GAME);
 		_makeFunc.Add((ushort)PacketID.RES_PLAYER_LIST, MakePacket<RES_PLAYER_LIST>);
 		_handler.Add((ushort)PacketID.RES_PLAYER_LIST, PacketHandler.ON_RES_PLAYER_LIST);
-		_makeFunc.Add((ushort)PacketID.RES_MOVE, MakePacket<RES_MOVE>);
-		_handler.Add((ushort)PacketID.RES_MOVE, PacketHandler.ON_RES_MOVE);
+		_makeFunc.Add((ushort)PacketID.RES_TRANSFORM, MakePacket<RES_TRANSFORM>);
+		_handler.Add((ushort)PacketID.RES_TRANSFORM, PacketHandler.ON_RES_TRANSFORM);
+		_makeFunc.Add((ushort)PacketID.RES_ANIMATOR, MakePacket<RES_ANIMATOR>);
+		_handler.Add((ushort)PacketID.RES_ANIMATOR, PacketHandler.ON_RES_ANIMATOR);
 
 	}
 

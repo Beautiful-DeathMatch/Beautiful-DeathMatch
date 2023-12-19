@@ -139,7 +139,7 @@ namespace ServerCore
 		public bool IsValid()
 		{
 			if (_socket == null)
-				return false;
+				return true;
 
 			TimeSpan delta = DateTime.Now - lastActivityTime;
 		    return delta.TotalSeconds <= SessionTimeOutSeconds;
@@ -171,6 +171,8 @@ namespace ServerCore
 
 		private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
 		{
+			lastActivityTime = DateTime.Now;
+
 			lock (_lock)
 			{
 				if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)

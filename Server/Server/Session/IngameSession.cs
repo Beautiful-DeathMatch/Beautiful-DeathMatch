@@ -18,11 +18,7 @@ namespace Server
 
 		}
 
-		public float PosX { get; set; }
-		public float PosY { get; set; }
-		public float PosZ { get; set; }
-
-		public bool TryLeave()
+		public bool OnRequestLeaveGame()
 		{
 			if (sessionRoom == null)
 				return false;
@@ -33,16 +29,25 @@ namespace Server
 			return true;
 		}
 
-		public bool TryMove(REQ_MOVE movePacket)
+		public bool OnRequestTransform(REQ_TRANSFORM movePacket)
 		{
 			if (sessionRoom == null)
 				return false;
 
-			sessionRoom.Move(this, movePacket);
+			sessionRoom.Send(this, movePacket);
 			return true;
 		}
 
-		public bool TryBroadcastPlayerList()
+		public bool OnRequestAnimator(REQ_ANIMATOR animatorPacket)
+		{
+			if (sessionRoom == null)
+				return false;
+
+			sessionRoom.Send(this, animatorPacket);
+			return true;
+		}
+
+		public bool OnRequestPlayerList()
 		{
 			if (sessionRoom == null)
 				return false;

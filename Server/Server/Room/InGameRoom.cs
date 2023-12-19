@@ -21,9 +21,6 @@ namespace Server
 			// 신입생 입장을 모두에게 알린다
 			var enter = new RES_BROADCAST_ENTER_GAME();
             enter.playerId = session.sessionId;
-            enter.posX = 0;
-            enter.posY = 0;
-            enter.posZ = 0;
 
             Broadcast(enter.Write());
         }
@@ -56,36 +53,54 @@ namespace Server
 				players.players.Add(new RES_PLAYER_LIST.Player()
 				{
 					isSelf = s == session,
-					playerId = s.sessionId,
-					posX = s.PosX,
-					posY = s.PosY,
-					posZ = s.PosZ,
+					playerId = s.sessionId
 				});
 			}
 			session.Send(players.Write());
 		}
 
-        public void Move(IngameSession session, REQ_MOVE packet)
+		public void Send(IngameSession session, REQ_TRANSFORM packet)
 		{
 			jobQueue.Push(() =>
 			{
-				OnMove(session, packet);
+				SendTransform(session, packet);
 			});
 		}
 
-        private void OnMove(IngameSession session, REQ_MOVE packet)
-        {
-            // 좌표 바꿔주고
-            session.PosX = packet.posX;
-            session.PosY = packet.posY;
-            session.PosZ = packet.posZ;
+		public void Send(IngameSession session, REQ_ANIMATOR packet)
+		{
+			jobQueue.Push(() =>
+			{
+				SendAnimator(session, packet);
+			});
+		}
 
-            // 모두에게 알린다
-            var move = new RES_MOVE();
+		private void SendAnimator(IngameSession session, REQ_ANIMATOR packet)
+		{
+			// 모두에게 알린다
+			var move = new RES_ANIMATOR();
+
+			move.playerId = session.sessionId;
+			move.Grounded = packet.Grounded;
+			move.speed = packet.speed;
+			move.FreeFall = packet.FreeFall;
+			move.Jump = packet.Jump;
+			move.MotionSpeed = packet.MotionSpeed;
+
+			Broadcast(move.Write());
+		}
+
+        private void SendTransform(IngameSession session, REQ_TRANSFORM packet)
+        {
+            var move = new RES_TRANSFORM();
+
             move.playerId = session.sessionId;
-            move.posX = session.PosX;
-            move.posY = session.PosY;
-            move.posZ = session.PosZ;
+            move.posX = packet.posX;
+            move.posY = packet.posY;
+            move.posZ = packet.posZ;
+			move.rotX = packet.rotX;
+			move.rotY = packet.rotY;
+			move.rotZ = packet.rotZ;
 
             Broadcast(move.Write());
         }
