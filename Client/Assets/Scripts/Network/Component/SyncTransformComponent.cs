@@ -8,26 +8,18 @@ public class SyncTransformComponent : SyncComponent
 
     private Vector3 prevPos = Vector3.zero;
     private Vector3 prevRot = Vector3.zero;
-
-    private void Awake()
-    {
-	    TrySend();
-    }
     
-	private void Update()
+	protected override bool IsSendCondition()
 	{
-		if (IsEqualWithPrevFrame())
-			return;
-		
-		TrySend();
+		return IsEqualWithPrevFrame() == false;
 	}
-
+	
 	private bool IsEqualWithPrevFrame()
 	{
 		return prevPos == myTransform.position && prevRot == myTransform.rotation.eulerAngles;
 	}
 	
-	public void TrySend()
+	protected override void TrySend()
 	{
 		var myPos = myTransform.position;
 		var myRot = myTransform.rotation.eulerAngles;

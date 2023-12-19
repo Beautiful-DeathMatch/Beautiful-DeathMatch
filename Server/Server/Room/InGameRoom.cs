@@ -48,6 +48,7 @@ namespace Server
         private void OnBroadcastPlayerList(Session session)
         {
 			var players = new RES_PLAYER_LIST();
+
 			foreach (IngameSession s in roomSessions)
 			{
 				players.players.Add(new RES_PLAYER_LIST.Player()
@@ -56,7 +57,8 @@ namespace Server
 					playerId = s.sessionId
 				});
 			}
-			session.Send(players.Write());
+
+			Broadcast(players.Write());
 		}
 
 		public void Send(IngameSession session, REQ_TRANSFORM packet)

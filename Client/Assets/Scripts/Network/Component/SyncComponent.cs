@@ -22,5 +22,28 @@ public abstract class SyncComponent : MonoBehaviour, IPacketReceiver
 		SessionManager.Instance.UnRegisterPacketReceiver(this);
 	}
 
+	private void Awake()
+	{
+		TrySend();
+	}
+
+	private void Update()
+	{
+		if (IsSendCondition())
+		{
+			TrySend();
+		}
+	}
+
+	protected virtual bool IsSendCondition()
+	{
+		return true;
+	}
+
+	protected virtual void TrySend()
+	{
+		
+	}
+	
 	public abstract void OnReceive(IPacket packet);
 }

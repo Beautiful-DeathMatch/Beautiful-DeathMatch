@@ -27,9 +27,12 @@ public class PlayerComponent : SyncComponent
 	{
 		base.Clear();
 
-		foreach (var child in childSyncComponents)
+		if (childSyncComponents != null)
 		{
-			child.Clear();
+			foreach (var child in childSyncComponents)
+			{
+				child.Clear();
+			}
 		}
 	}
 
