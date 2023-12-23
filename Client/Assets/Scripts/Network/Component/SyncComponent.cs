@@ -19,6 +19,7 @@ public abstract class SyncComponent : MonoBehaviour, IPacketReceiver
 
 	public virtual void Clear()
 	{
+		this.playerId = 0;
 		SessionManager.Instance.UnRegisterPacketReceiver(this);
 	}
 

@@ -23,9 +23,9 @@ namespace Server
             enter.playerId = session.sessionId;
 
             Broadcast(enter.Write());
-        }
+		}
 
-        protected override void OnLeave(Session session)
+		protected override void OnLeave(Session session)
         {
             // 플레이어 제거하고
             roomSessions.Remove(session);
@@ -35,9 +35,9 @@ namespace Server
             leave.playerId = session.sessionId;
 
             Broadcast(leave.Write());
-        }
+		}
 
-        public void BroadcastPlayerList(Session session)
+		public void BroadcastPlayerList(Session session)
         {
             jobQueue.Push(() =>
             {
@@ -58,7 +58,7 @@ namespace Server
 				});
 			}
 
-			Broadcast(players.Write());
+			session.Send(players.Write());
 		}
 
 		public void Send(IngameSession session, REQ_TRANSFORM packet)

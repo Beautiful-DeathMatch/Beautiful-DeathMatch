@@ -51,7 +51,7 @@ namespace ServerCore
             jobQueue.Push(() =>
             {
                 OnEnter(session);
-            });
+			});
         }
 
         public void Leave(Session session)
@@ -59,7 +59,7 @@ namespace ServerCore
             jobQueue.Push(() =>
             {
                 OnLeave(session);
-            });
+			});
         }
 
         protected virtual void OnEnter(Session session)

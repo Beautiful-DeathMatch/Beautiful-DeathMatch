@@ -26,7 +26,7 @@ public class SpawnSystem : SyncComponent
 		Clear();
 	}
 
-	private PlayerComponent CreateController(int playerId, bool isSelf, Vector3 initialPos)
+	private PlayerComponent CreatePlayer(int playerId, bool isSelf, Vector3 initialPos)
 	{
 		var playerComponent = Instantiate<PlayerComponent>(playerPrefab, transform);
 		if (playerComponent == null)
@@ -46,7 +46,13 @@ public class SpawnSystem : SyncComponent
 
 	public override void OnReceive(IPacket packet)
 	{
-		if(packet is RES_PLAYER_LIST playerListPacket)
+		if (packet is RES_BROADCAST_ENTER_GAME enterPacket ||
+		    packet is RES_BROADCAST_LEAVE_GAME leavePacket)
+		{
+			REQ_PLAYER_LIST req = new REQ_PLAYER_LIST();
+			SessionManager.Instance.Send(req);
+		}
+		else if(packet is RES_PLAYER_LIST playerListPacket)
 		{
 			foreach (var id in GetLeftPlayerIds(playerListPacket.players))
 			{
@@ -62,7 +68,7 @@ public class SpawnSystem : SyncComponent
 				if (playerDictionary.ContainsKey(player.playerId))
 					continue;
 
-				var controller = CreateController(player.playerId, player.isSelf, transform.position);
+				var controller = CreatePlayer(player.playerId, player.isSelf, transform.position);
 				playerDictionary[player.playerId] = controller;
 			}
 		}
