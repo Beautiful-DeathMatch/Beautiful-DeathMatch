@@ -37,15 +37,15 @@ namespace Server
             Broadcast(leave.Write());
 		}
 
-		public void BroadcastPlayerList(Session session)
+		public void ResponsePlayerList(Session session)
         {
             jobQueue.Push(() =>
             {
-                OnBroadcastPlayerList(session);
+                OnResponsePlayerList(session);
 			});
         }
 
-        private void OnBroadcastPlayerList(Session session)
+        private void OnResponsePlayerList(Session session)
         {
 			var players = new RES_PLAYER_LIST();
 

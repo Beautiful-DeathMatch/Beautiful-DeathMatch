@@ -24,7 +24,6 @@ namespace Server
 				return false;
 
 			sessionRoom.Leave(this);
-
 			return true;
 		}
 
@@ -51,7 +50,7 @@ namespace Server
 			if (sessionRoom == null)
 				return false;
 
-			sessionRoom.BroadcastPlayerList(this);
+			sessionRoom.ResponsePlayerList(this);
 			return true;
 		}
 
