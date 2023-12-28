@@ -32,7 +32,7 @@ Transform:
   - {fileID: 1519612349302507591}
   - {fileID: 8668973980330338447}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8288618667882937985
 MonoBehaviour:
@@ -49,6 +49,7 @@ MonoBehaviour:
   playerCamera: {fileID: 928304269258043850}
   inputAsset: {fileID: 5637566273571236080}
   inputComponent: {fileID: 702594960255621039}
+  characterType: 0
   playerPrefab: {fileID: 1751881056893200556, guid: 4a48d9982aaf9244a955d6dab20560a1,
     type: 3}
 --- !u!1 &3177698156310182166

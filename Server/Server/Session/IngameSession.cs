@@ -18,6 +18,18 @@ namespace Server
 
 		}
 
+		public bool OnRequestEnterGame(REQ_ENTER_GAME enterGame)
+		{
+			if (sessionRoom == null)
+				return false;
+
+			if (enterGame == null)
+				return false;
+
+			sessionRoom.Enter(this, enterGame);
+			return true;
+		}
+
 		public bool OnRequestLeaveGame()
 		{
 			if (sessionRoom == null)
@@ -62,7 +74,13 @@ namespace Server
         public override void OnConnectedRoom(Room room)
         {
 			sessionRoom = room as InGameRoom;
-            sessionRoom?.Enter(this);
+			if (sessionRoom == null)
+			{
+				Console.WriteLine($"OnConnectedRoom Failed");
+				return;
+			}
+
+			Console.WriteLine($"OnConnectedRoom : {room.roomId}");
 		}
 
         public override void OnReceivePacket(ArraySegment<byte> buffer)

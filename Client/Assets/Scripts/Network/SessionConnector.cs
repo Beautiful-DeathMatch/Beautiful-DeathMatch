@@ -13,6 +13,7 @@ namespace ServerCore
 
 		private IPEndPoint currentEndPoint;
 		private Func<Session> _sessionFactory;
+		private Action<bool> onConnectedCallback;
 
 		private ProtocolType protocolType;
 
@@ -25,7 +26,7 @@ namespace ServerCore
 			this.maxReconnectCount = maxReconnectCount;
 		}
 
-		public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory)
+		public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory, Action<bool> onConnected = null)
 		{
             IsConnected = false;
 
@@ -35,7 +36,9 @@ namespace ServerCore
 			var socket = new Socket(currentEndPoint.AddressFamily, SocketType.Stream, protocolType);
             _sessionFactory = sessionFactory;
 
-            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+			onConnectedCallback = onConnected;
+
+			SocketAsyncEventArgs args = new SocketAsyncEventArgs();
             args.Completed += OnConnectCompleted;
             args.RemoteEndPoint = currentEndPoint;
             args.UserToken = socket;
@@ -62,6 +65,9 @@ namespace ServerCore
 				session.Start(args.ConnectSocket);
 				session.OnConnected(args.RemoteEndPoint);
 
+				onConnectedCallback?.Invoke(true);
+				onConnectedCallback = null;
+
 				IsConnected = true;
 			}
 			else
@@ -70,10 +76,15 @@ namespace ServerCore
 
 				if (reconnectCount < maxReconnectCount)
 				{
-					Connect(currentEndPoint, _sessionFactory);
+					Connect(currentEndPoint, _sessionFactory, onConnectedCallback);
 				}
 				else
 				{
+					onConnectedCallback?.Invoke(false);
+					onConnectedCallback = null;
+
+					reconnectCount = 0;
+
 					Debug.LogError($"OnConnectCompleted Fail: {args.SocketError}, 재시도 횟수를 모두 사용하여 연결 종료합니다.");
 				}
 			}

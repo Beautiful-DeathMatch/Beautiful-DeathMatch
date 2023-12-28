@@ -8,17 +8,19 @@ namespace Server
 {
     public class InGameRoom : Room
 	{
-
+		private Dictionary<int, int> playerCharacterDictionary = new Dictionary<int, int>();
+		
 		public InGameRoom(int roomId, int maxSessionCount) : base(roomId, maxSessionCount)
 		{
 		}
 
-        protected override void OnEnter(Session session)
+        protected void OnEnter(Session session, REQ_ENTER_GAME packet)
         {
-            // 플레이어 추가하고
-            roomSessions.Add(session);
+			if (roomSessions.Contains(session) == false)
+				roomSessions.Add(session);
 
-			// 신입생 입장을 모두에게 알린다
+			playerCharacterDictionary[session.sessionId] = packet.characterType;
+
 			var enter = new RES_BROADCAST_ENTER_GAME();
             enter.playerId = session.sessionId;
 
@@ -26,12 +28,14 @@ namespace Server
 		}
 
 		protected override void OnLeave(Session session)
-        {
-            // 플레이어 제거하고
-            roomSessions.Remove(session);
+		{
+			if (roomSessions.Contains(session))
+				roomSessions.Remove(session);
 
-            // 모두에게 알린다
-            var leave = new RES_BROADCAST_LEAVE_GAME();
+			if (playerCharacterDictionary.ContainsKey(session.sessionId))
+				playerCharacterDictionary.Remove(session.sessionId);
+
+			var leave = new RES_BROADCAST_LEAVE_GAME();
             leave.playerId = session.sessionId;
 
             Broadcast(leave.Write());
@@ -51,10 +55,14 @@ namespace Server
 
 			foreach (IngameSession s in roomSessions)
 			{
+				if (playerCharacterDictionary.TryGetValue(s.sessionId, out var characterType) == false)
+					continue;
+
 				players.players.Add(new RES_PLAYER_LIST.Player()
 				{
 					isSelf = s == session,
-					playerId = s.sessionId
+					playerId = s.sessionId,
+					characterType = characterType
 				});
 			}
 
@@ -74,6 +82,14 @@ namespace Server
 			jobQueue.Push(() =>
 			{
 				SendAnimator(session, packet);
+			});
+		}
+
+		public void Enter(IngameSession session, REQ_ENTER_GAME packet)
+		{
+			jobQueue.Push(() =>
+			{
+				OnEnter(session, packet);
 			});
 		}
 

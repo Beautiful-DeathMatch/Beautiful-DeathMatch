@@ -35,6 +35,7 @@ namespace Server
 				if (IsValidSession(session.sessionId))
 					continue;
 
+				Console.WriteLine($"Clean Up Session : {session.sessionId} : {DateTime.Now}");
 				session.Disconnect();
 			}
 		}

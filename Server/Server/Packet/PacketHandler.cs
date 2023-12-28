@@ -6,6 +6,16 @@ using System.Text;
 
 public class PacketHandler
 {
+	public static void ON_REQ_ENTER_GAME(PacketSession session, IPacket packet)
+	{
+		var enterPacket = packet as REQ_ENTER_GAME;
+
+		if (session is IngameSession inGameSession)
+		{
+			inGameSession.OnRequestEnterGame(enterPacket);
+		}
+	}
+
 	public static void ON_REQ_BROADCAST_ENTER_GAME(PacketSession session, IPacket packet)
 	{
 		
@@ -18,9 +28,9 @@ public class PacketHandler
 
     internal static void ON_REQ_PLAYER_LIST(PacketSession session, IPacket packet)
 	{
-		if (session is IngameSession ingameSession)
+		if (session is IngameSession inGameSession)
 		{
-			ingameSession.OnRequestPlayerList();
+			inGameSession.OnRequestPlayerList();
 		}
 	}
 	

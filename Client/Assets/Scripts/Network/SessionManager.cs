@@ -46,14 +46,13 @@ public class SessionManager : Singleton<SessionManager>
         packetReceivers.Remove(receiver);
 	}
 
-	// 여기 커넥트가 완전히 되었는 지를 판단해야 한다.
-    public bool TryConnect()
+    public bool TryConnect(Action<bool> onConnected = null)
     {
 		var endPoint = GetMyEndPoint(7777);
         if (endPoint == null)
             return false;
 
-		connector.Connect(endPoint, MakeSession);
+		connector.Connect(endPoint, MakeSession, onConnected);
         return true;
 	}
 

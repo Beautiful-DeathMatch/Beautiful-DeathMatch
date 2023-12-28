@@ -46,24 +46,12 @@ namespace ServerCore
             pendingList.Add(segment);
         }
 
-        public void Enter(Session session)
-        {
-            jobQueue.Push(() =>
-            {
-                OnEnter(session);
-			});
-        }
-
         public void Leave(Session session)
         {
             jobQueue.Push(() =>
             {
                 OnLeave(session);
 			});
-        }
-
-        protected virtual void OnEnter(Session session)
-        {
         }
 
         protected virtual void OnLeave(Session session)

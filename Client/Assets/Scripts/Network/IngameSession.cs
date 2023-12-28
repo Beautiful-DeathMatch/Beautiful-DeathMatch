@@ -13,13 +13,13 @@ public class IngameSession : PacketSession
 
     public override void OnConnected(EndPoint endPoint)
     {
-        // Console.WriteLine($"OnConnected : {endPoint}");
+        UnityEngine.Debug.Log($"OnConnected : {endPoint}");
     }
 
     public override void OnDisconnected(EndPoint endPoint)
     {
-        // Console.WriteLine($"OnDisconnected : {endPoint}");
-    }
+		UnityEngine.Debug.Log($"OnDisconnected : {endPoint}");
+	}
 
     public override void OnRecvPacket(ArraySegment<byte> buffer)
     {
@@ -31,6 +31,6 @@ public class IngameSession : PacketSession
 
     public override void OnSend(int numOfBytes)
     {
-        // Console.WriteLine($"Transferred bytes: {numOfBytes}");
+		UnityEngine.Debug.Log($"Transferred bytes: {numOfBytes}");
     }
 }

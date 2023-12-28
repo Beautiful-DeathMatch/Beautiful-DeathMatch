@@ -11,8 +11,13 @@ public class SyncAnimatorComponent : SyncComponent
     private static readonly int MotionSpeed = Animator.StringToHash("MotionSpeed");
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int FreeFall = Animator.StringToHash("FreeFall");
-    
-    protected override void TrySend()
+
+	protected override bool IsSendCondition()
+	{
+        return animator.runtimeAnimatorController != null;
+	}
+
+	protected override void TrySend()
     {
         var packet = new REQ_ANIMATOR();
         

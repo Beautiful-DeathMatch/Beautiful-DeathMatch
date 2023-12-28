@@ -3,6 +3,9 @@
 	<packet name="RES_BROADCAST_ENTER_GAME">
 		<int name="playerId"/>
 	</packet>
+	<packet name="REQ_ENTER_GAME">
+		<int name="characterType"/>
+	</packet>
 	<packet name="REQ_LEAVE_GAME">
 	</packet>
 	<packet name="REQ_PLAYER_LIST">
@@ -13,6 +16,7 @@
 	<packet name="RES_PLAYER_LIST">
 		<list name="player">
 			<bool name="isSelf"/>
+			<int name="characterType"/>
 			<int name="playerId"/>
 		</list>
 	</packet>

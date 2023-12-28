@@ -12,7 +12,9 @@ public class SpawnSystem : SyncComponent
 	[SerializeField] private StarterAssetsInputs inputAsset = null;
 	[SerializeField] private PlayerInput inputComponent = null;
 
+	[SerializeField] private CharacterType characterType = CharacterType.MAX;
 	[SerializeField] private PlayerComponent playerPrefab = null;
+
 	private Dictionary<int, PlayerComponent> playerDictionary = new Dictionary<int, PlayerComponent>();
 
 	private void Awake()
@@ -24,6 +26,19 @@ public class SpawnSystem : SyncComponent
 	private void OnDestroy()
 	{
 		Clear();
+	}
+
+	public void TryConnect()
+	{
+		SessionManager.Instance.TryConnect((bResult) =>
+		{
+			if (bResult)
+			{
+				var enterPacket = new REQ_ENTER_GAME();
+				enterPacket.characterType = (int)characterType;
+				SessionManager.Instance.Send(enterPacket);
+			}
+		});
 	}
 
 	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
@@ -70,7 +85,7 @@ public class SpawnSystem : SyncComponent
 				if (playerDictionary.ContainsKey(player.playerId))
 					continue;
 
-				var controller = CreatePlayer(player.playerId, player.isSelf, (CharacterType)2, transform.position);
+				var controller = CreatePlayer(player.playerId, player.isSelf, (CharacterType)player.characterType, transform.position);
 				playerDictionary[player.playerId] = controller;
 			}
 		}
