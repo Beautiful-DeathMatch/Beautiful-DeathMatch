@@ -53,7 +53,7 @@ namespace ServerCore
 	{
 		public readonly int sessionId;
 
-		private const int SessionTimeOutSeconds = 10;
+		private const int SessionTimeOutSeconds = 60;
 
 		public Session(int sessionId)
 		{

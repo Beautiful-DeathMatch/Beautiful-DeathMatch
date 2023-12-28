@@ -28,6 +28,13 @@ public class SpawnSystem : SyncComponent
 		Clear();
 	}
 
+	public override void Clear()
+	{
+		base.Clear();
+
+		SessionManager.Instance.Disconnect();
+	}
+
 	public void TryConnect()
 	{
 		SessionManager.Instance.TryConnect((bResult) =>
@@ -71,7 +78,9 @@ public class SpawnSystem : SyncComponent
 		}
 		else if(packet is RES_PLAYER_LIST playerListPacket)
 		{
-			foreach (var id in GetLeftPlayerIds(playerListPacket.players))
+			var leftPlayerIds = GetLeftPlayerIds(playerListPacket.players).ToList();
+			
+			foreach (var id in leftPlayerIds)
 			{
 				if (playerDictionary.TryGetValue(id, out var controller))
 				{

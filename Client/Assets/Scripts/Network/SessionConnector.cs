@@ -11,6 +11,8 @@ namespace ServerCore
 	{
 		public bool IsConnected { get; private set; } = false;
 
+		private Socket currentSocket;
+
 		private IPEndPoint currentEndPoint;
 		private Func<Session> _sessionFactory;
 		private Action<bool> onConnectedCallback;
@@ -46,13 +48,24 @@ namespace ServerCore
             RegisterConnect(args);
         }
 
-		void RegisterConnect(SocketAsyncEventArgs args)
+		public void Disconnect()
 		{
-			Socket socket = args.UserToken as Socket;
-			if (socket == null)
+			if (IsConnected == false)
 				return;
 
-			bool pending = socket.ConnectAsync(args);
+			if (currentSocket == null)
+				return;
+
+			currentSocket.Disconnect(false);
+		}
+
+		void RegisterConnect(SocketAsyncEventArgs args)
+		{
+			currentSocket = args.UserToken as Socket;
+			if (currentSocket == null)
+				return;
+
+			bool pending = currentSocket.ConnectAsync(args);
 			if (pending == false)
 				OnConnectCompleted(null, args);
 		}

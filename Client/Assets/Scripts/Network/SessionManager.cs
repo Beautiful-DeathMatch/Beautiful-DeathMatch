@@ -52,8 +52,16 @@ public class SessionManager : Singleton<SessionManager>
         if (endPoint == null)
             return false;
 
+		if (connector.IsConnected)
+			return false;
+
 		connector.Connect(endPoint, MakeSession, onConnected);
         return true;
+	}
+
+	public void Disconnect()
+	{
+		connector.Disconnect();
 	}
 
     public override void OnUpdateInstance()
