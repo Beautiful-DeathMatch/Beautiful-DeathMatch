@@ -26,7 +26,7 @@ public class SpawnSystem : SyncComponent
 		Clear();
 	}
 
-	private PlayerComponent CreatePlayer(int playerId, bool isSelf, Vector3 initialPos)
+	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
 	{
 		var playerComponent = Instantiate<PlayerComponent>(playerPrefab, transform);
 		if (playerComponent == null)
@@ -39,7 +39,9 @@ public class SpawnSystem : SyncComponent
 		}
 
 		playerComponent.Initialize(playerId);
-		playerComponent.SetPosition(transform.position);
+
+		playerComponent.SetCharacter(characterType);
+		playerComponent.SetPosition(initialPos);
 
 		return playerComponent;
 	}
@@ -68,7 +70,7 @@ public class SpawnSystem : SyncComponent
 				if (playerDictionary.ContainsKey(player.playerId))
 					continue;
 
-				var controller = CreatePlayer(player.playerId, player.isSelf, transform.position);
+				var controller = CreatePlayer(player.playerId, player.isSelf, (CharacterType)2, transform.position);
 				playerDictionary[player.playerId] = controller;
 			}
 		}

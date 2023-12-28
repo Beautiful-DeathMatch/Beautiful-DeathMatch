@@ -118,6 +118,13 @@ namespace StarterAssets
             }
         }
 
+        public void SetAnimatorController(RuntimeAnimatorController controller, Avatar avatar)
+		{
+			_animator = GetComponent<Animator>();
+			_animator.runtimeAnimatorController = controller;
+            _animator.avatar = avatar;
+		}
+
         public void SetInput(PlayerInput inputComponent, StarterAssetsInputs inputAsset)
         {
 			_playerInput = inputComponent;
@@ -136,7 +143,6 @@ namespace StarterAssets
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-			_animator = GetComponent<Animator>();
 			_controller = GetComponent<CharacterController>();
 
             // SetInput(GetComponent<PlayerInput>(), GetComponent<StarterAssetsInputs>());
