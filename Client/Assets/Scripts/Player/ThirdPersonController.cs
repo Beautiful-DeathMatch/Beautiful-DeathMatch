@@ -105,7 +105,6 @@ namespace StarterAssets
 
         private const float _threshold = 0.01f;
 
-        private bool HasAnimator => _animator != null;
 		private bool IsCurrentDeviceMouse
         {
             get
@@ -189,7 +188,7 @@ namespace StarterAssets
                 QueryTriggerInteraction.Ignore);
 
             // update animator if using character
-            if (HasAnimator)
+            if (_animator)
             {
                 _animator.SetBool(_animIDGrounded, Grounded);
             }
@@ -272,7 +271,7 @@ namespace StarterAssets
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
             // update animator if using character
-            if (HasAnimator)
+            if (_animator)
             {
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
@@ -303,7 +302,7 @@ namespace StarterAssets
                 _fallTimeoutDelta = FallTimeout;
 
                 // update animator if using character
-                if (HasAnimator)
+                if (_animator)
                 {
                     _animator.SetBool(_animIDJump, false);
                     _animator.SetBool(_animIDFreeFall, false);
@@ -322,7 +321,7 @@ namespace StarterAssets
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
                     // update animator if using character
-                    if (HasAnimator)
+                    if (_animator)
                     {
                         _animator.SetBool(_animIDJump, true);
                     }
@@ -347,7 +346,7 @@ namespace StarterAssets
                 else
                 {
                     // update animator if using character
-                    if (HasAnimator)
+                    if (_animator)
                     {
                         _animator.SetBool(_animIDFreeFall, true);
                     }
