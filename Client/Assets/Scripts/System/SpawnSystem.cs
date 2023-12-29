@@ -28,6 +28,14 @@ public class SpawnSystem : SyncComponent
 		Clear();
 	}
 
+	private void OnGUI()
+	{
+		if (GUI.Button(new Rect(0, 0, 300, 100), "네트워크 연결하기"))
+		{
+			TryConnect();
+		}
+	}
+
 	public override void Clear()
 	{
 		base.Clear();

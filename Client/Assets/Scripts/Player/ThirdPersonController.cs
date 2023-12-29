@@ -87,12 +87,12 @@ namespace StarterAssets
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
 
-        // animation IDs
-        private int _animIDSpeed;
-        private int _animIDGrounded;
-        private int _animIDJump;
-        private int _animIDFreeFall;
-        private int _animIDMotionSpeed;
+		// animation IDs
+	    int _animIDSpeed = Animator.StringToHash("Speed");
+        int _animIDGrounded = Animator.StringToHash("Grounded");
+        int _animIDJump = Animator.StringToHash("Jump");
+        int _animIDFreeFall = Animator.StringToHash("FreeFall");
+        int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
 
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
@@ -144,8 +144,6 @@ namespace StarterAssets
 
 			_controller = GetComponent<CharacterController>();
 
-			AssignAnimationIDs();
-
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
@@ -168,15 +166,6 @@ namespace StarterAssets
 				CameraRotation();
 			}
 		}
-
-        private void AssignAnimationIDs()
-        {
-            _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
-            _animIDJump = Animator.StringToHash("Jump");
-            _animIDFreeFall = Animator.StringToHash("FreeFall");
-            _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-        }
 
         private void GroundedCheck()
         {
