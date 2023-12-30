@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,10 +31,17 @@ public class SpawnSystem : SyncComponent
 
 	private void OnGUI()
 	{
-		if (GUI.Button(new Rect(0, 0, 300, 100), "네트워크 연결하기"))
+		if (GUI.Button(new Rect(0, 0, 300, 100), "네트워크 연결 및 캐릭터 스폰"))
 		{
 			TryConnect();
 		}
+
+		characterType = (CharacterType)GUI.Toolbar(new Rect(350, 30, 300, 30), (int)characterType, new string[(int)CharacterType.MAX]
+		{
+			CharacterType.CH_03.ToString(),
+			CharacterType.CH_29.ToString(),
+			CharacterType.CH_46.ToString()
+		});
 	}
 
 	public override void Clear()
