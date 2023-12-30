@@ -19,7 +19,13 @@ public class SessionManager : Singleton<SessionManager>
 
     public void Send(IPacket packet)
 	{
-        packetSession?.Send(packet.Write());
+		if (packetSession == null)
+		{
+			Debug.LogError($"{packet.GetType()} : 세션이 활성화되지 않은 상태에서 패킷 전송을 시도합니다.");
+			return;
+		}
+		
+        packetSession.Send(packet.Write());
 	}
 
 	public void Receive(IPacket packet)
