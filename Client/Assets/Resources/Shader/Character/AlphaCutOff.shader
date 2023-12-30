@@ -1,4 +1,4 @@
-Shader "Custom/Tree"
+Shader "Custom/AlphaCutOff"
 {
     Properties
     {
@@ -44,11 +44,8 @@ Shader "Custom/Tree"
             {
                 float4 col = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
                 
-                // Check if alpha value is less than or equal to 0.1
                 if (col.a <= 0.1)
-                {
                     discard;
-                }
                
                 return col;
             }

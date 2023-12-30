@@ -1,10 +1,8 @@
-Shader "Custom/LambertOutline"
+Shader "Custom/CartoonLambert"
 {
     Properties
     {
         _BaseMap ("_BaseMap", 2D) = "white" {}
-        [MainColor] _OutlineColor ("Outline Color", Color) = (1, 1, 1, 1)
-        _OutlineDistance("Outline Distance", Float) = 0.1
     }
     SubShader
     {
@@ -12,7 +10,9 @@ Shader "Custom/LambertOutline"
         LOD 100
 
         Pass
-        {
+        {        
+            Name "CartoonLambert"
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -58,6 +58,15 @@ Shader "Custom/LambertOutline"
                 
                 float4 col = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
                 float NdotL = saturate(dot(i.normal, i.lightDir) * 0.5 + 0.5); // * 0.5 + 0.5 (Half Lambert)
+                if (NdotL > 0.7)
+                {
+                   NdotL = 1;
+                }
+                else
+                {
+                    NdotL = 0.3;
+                }
+
                 float3 ambient = SampleSH(i.normal);
                 float3 lighting = NdotL * _MainLightColor.rgb + ambient;
                 
@@ -66,7 +75,5 @@ Shader "Custom/LambertOutline"
             }
             ENDHLSL
         }
-        
-        UsePass "Custom/Outline/OUTLINE"
     }
 }
