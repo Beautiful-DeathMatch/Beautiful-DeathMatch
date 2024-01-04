@@ -31,7 +31,7 @@ public class SpawnSystem : SyncComponent
 
 	private void OnGUI()
 	{
-		if (GUI.Button(new Rect(0, 0, 300, 100), "³×Æ®¿öÅ© ¿¬°á ¹× Ä³¸¯ÅÍ ½ºÆù"))
+		if (GUI.Button(new Rect(0, 0, 300, 100), "ë„¤íŠ¸ì›Œí¬ ì—°ê²° ë° ìºë¦­í„° ìŠ¤í°"))
 		{
 			TryConnect();
 		}
