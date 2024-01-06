@@ -93,9 +93,10 @@ namespace StarterAssets
         int _animIDJump = Animator.StringToHash("Jump");
         int _animIDFreeFall = Animator.StringToHash("FreeFall");
         int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+        int _animIDSwim = Animator.StringToHash("Swim");
 
 #if ENABLE_INPUT_SYSTEM
-		private PlayerInput _playerInput;
+        private PlayerInput _playerInput;
 #endif
 		private StarterAssetsInputs _input;
 
@@ -391,6 +392,24 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        // 수영
+        private void Swim()
+        {
+            // ... 물 레이어(태그) 충돌 조건 추가하기
+            if (!Grounded)
+            {
+                if (_animator)
+                {
+                    _animator.SetBool(_animIDSwim, true);
+                }
+            }
+            else
+            {
+                _animator.SetBool(_animIDSwim, false);
+            }
+
         }
     }
 }
