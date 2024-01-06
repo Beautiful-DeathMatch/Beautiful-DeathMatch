@@ -24,7 +24,7 @@
 # External Resources
 [Aa]ssets/Resources/Meshes/Plants/
 [Aa]ssets/Resources/Meshes/Trees/
-
+[Aa]ssets/Resources/Meshes/*.zip.meta
 # Visual Studio cache directory
 .vs/
 
