@@ -93,6 +93,9 @@ namespace StarterAssets
         int _animIDJump = Animator.StringToHash("Jump");
         int _animIDFreeFall = Animator.StringToHash("FreeFall");
         int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+        int _animIDItemOffset = Animator.StringToHash("ItemOffset");
+        int _animIDFire = Animator.StringToHash("Fire");
+        int _animIDStab = Animator.StringToHash("Stab");
         int _animIDSwim = Animator.StringToHash("Swim");
 
 #if ENABLE_INPUT_SYSTEM
@@ -157,8 +160,12 @@ namespace StarterAssets
 				JumpAndGravity();
 				GroundedCheck();
 				Move();
+                ItemStateOffset();
+                Attack();
 			}
         }
+
+        
 
         private void LateUpdate()
         {
@@ -181,6 +188,7 @@ namespace StarterAssets
             if (_animator)
             {
                 _animator.SetBool(_animIDGrounded, Grounded);
+                _animator.SetBool(_animIDJump, false);
             }
         }
 
@@ -394,22 +402,47 @@ namespace StarterAssets
             }
         }
 
-        // 수영
         private void Swim()
         {
             // ... 물 레이어(태그) 충돌 조건 추가하기
-            if (!Grounded)
+
+            if (_animator)
             {
-                if (_animator)
+                _animator.SetBool(_animIDSwim, true);
+            }
+        }
+
+        // 플레이어의 아이템 상태를 관리합니다. 즉, 손에 들고 있을 것의 번호
+        // 0: 기본, 1: 총, 2: 칼, 3:아이템
+        void ItemStateOffset()
+        {
+            if (_animator)
+            {
+                if (_input) // 키보드 0 입력시
                 {
-                    _animator.SetBool(_animIDSwim, true);
+                    _animator.SetInteger(_animIDItemOffset, 0);
+                }
+                else if (_input) // 키보드 1 입력시 ...
+                {
+                    _animator.SetInteger(_animIDItemOffset, 1);
+                }
+                else if (_input)
+                {
+                    _animator.SetInteger(_animIDItemOffset, 2);
+                }
+                else if (_input)
+                {
+                    _animator.SetInteger(_animIDItemOffset, 3);
                 }
             }
-            else
-            {
-                _animator.SetBool(_animIDSwim, false);
-            }
+        }
 
+        void Attack()
+        {
+            if (_animator)
+            {
+                _animator.SetBool(_animIDFire, true);
+            }
         }
     }
 }
