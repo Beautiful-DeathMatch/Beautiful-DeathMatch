@@ -52,7 +52,7 @@ public class SessionManager : Singleton<SessionManager>
         packetReceivers.Remove(receiver);
 	}
 
-    public bool TryConnect(Action<bool> onConnected = null)
+    public bool TryConnect()
     {
 		var endPoint = GetMyEndPoint(7777);
         if (endPoint == null)
@@ -61,7 +61,7 @@ public class SessionManager : Singleton<SessionManager>
 		if (connector.IsConnected)
 			return false;
 
-		connector.Connect(endPoint, MakeSession, onConnected);
+		connector.Connect(endPoint, MakeSession);
         return true;
 	}
 

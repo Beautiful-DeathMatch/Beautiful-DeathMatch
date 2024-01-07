@@ -41,6 +41,12 @@ namespace Server
             Broadcast(leave.Write());
 		}
 
+		protected override void OnReady(Session session)
+		{
+			var connected = new RES_CONNECTED();
+			session.Send(connected.Write());
+		}
+
 		public void ResponsePlayerList(Session session)
         {
             jobQueue.Push(() =>

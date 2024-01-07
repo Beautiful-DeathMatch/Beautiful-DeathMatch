@@ -15,7 +15,6 @@ namespace ServerCore
 
 		private IPEndPoint currentEndPoint;
 		private Func<Session> _sessionFactory;
-		private Action<bool> onConnectedCallback;
 
 		private ProtocolType protocolType;
 
@@ -28,7 +27,7 @@ namespace ServerCore
 			this.maxReconnectCount = maxReconnectCount;
 		}
 
-		public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory, Action<bool> onConnected = null)
+		public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory)
 		{
             IsConnected = false;
 
@@ -37,8 +36,6 @@ namespace ServerCore
 			// 휴대폰 설정
 			var socket = new Socket(currentEndPoint.AddressFamily, SocketType.Stream, protocolType);
             _sessionFactory = sessionFactory;
-
-			onConnectedCallback = onConnected;
 
 			SocketAsyncEventArgs args = new SocketAsyncEventArgs();
             args.Completed += OnConnectCompleted;
@@ -78,9 +75,6 @@ namespace ServerCore
 				session.Start(args.ConnectSocket);
 				session.OnConnected(args.RemoteEndPoint);
 
-				onConnectedCallback?.Invoke(true);
-				onConnectedCallback = null;
-
 				IsConnected = true;
 			}
 			else
@@ -89,13 +83,10 @@ namespace ServerCore
 
 				if (reconnectCount < maxReconnectCount)
 				{
-					Connect(currentEndPoint, _sessionFactory, onConnectedCallback);
+					Connect(currentEndPoint, _sessionFactory);
 				}
 				else
 				{
-					onConnectedCallback?.Invoke(false);
-					onConnectedCallback = null;
-
 					reconnectCount = 0;
 
 					Debug.LogError($"OnConnectCompleted Fail: {args.SocketError}, 재시도 횟수를 모두 사용하여 연결 종료합니다.");

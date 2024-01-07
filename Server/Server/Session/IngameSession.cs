@@ -80,6 +80,7 @@ namespace Server
 				return;
 			}
 
+			sessionRoom.Ready(this);
 			Console.WriteLine($"OnConnectedRoom : {room.roomId}");
 		}
 

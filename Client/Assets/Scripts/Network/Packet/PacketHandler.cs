@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class PacketHandler
 {
+	public static void ON_RES_CONNECTED(PacketSession session, IPacket packet)
+	{
+
+	}
+
 	public static void ON_RES_BROADCAST_ENTER_GAME(PacketSession session, IPacket packet)
 	{
 

@@ -53,15 +53,7 @@ public class SpawnSystem : SyncComponent
 
 	public void TryConnect()
 	{
-		SessionManager.Instance.TryConnect((bResult) =>
-		{
-			if (bResult)
-			{
-				var enterPacket = new REQ_ENTER_GAME();
-				enterPacket.characterType = (int)characterType;
-				SessionManager.Instance.Send(enterPacket);
-			}
-		});
+		SessionManager.Instance.TryConnect();
 	}
 
 	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
@@ -86,7 +78,13 @@ public class SpawnSystem : SyncComponent
 
 	public override void OnReceive(IPacket packet)
 	{
-		if (packet is RES_BROADCAST_ENTER_GAME enterPacket ||
+		if(packet is RES_CONNECTED connectedPacket)
+		{
+			var enterPacket = new REQ_ENTER_GAME();
+			enterPacket.characterType = (int)characterType;
+			SessionManager.Instance.Send(enterPacket);
+		}
+		else if (packet is RES_BROADCAST_ENTER_GAME enterPacket ||
 		    packet is RES_BROADCAST_LEAVE_GAME leavePacket)
 		{
 			REQ_PLAYER_LIST req = new REQ_PLAYER_LIST();

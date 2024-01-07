@@ -46,6 +46,19 @@ namespace ServerCore
             pendingList.Add(segment);
         }
 
+        public void Ready(Session session)
+        {
+			jobQueue.Push(() =>
+			{
+				OnReady(session);
+			});
+		}
+
+		protected virtual void OnReady(Session session)
+        {
+            
+        }
+
         public void Leave(Session session)
         {
             jobQueue.Push(() =>

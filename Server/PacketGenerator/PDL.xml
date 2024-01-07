@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PDL>
-	<packet name="RES_BROADCAST_ENTER_GAME">
-		<int name="playerId"/>
+	<packet name="RES_CONNECTED">
 	</packet>
 	<packet name="REQ_ENTER_GAME">
 		<int name="characterType"/>
 	</packet>
-	<packet name="REQ_LEAVE_GAME">
+	<packet name="RES_BROADCAST_ENTER_GAME">
+		<int name="playerId"/>
 	</packet>
-	<packet name="REQ_PLAYER_LIST">
+	<packet name="REQ_LEAVE_GAME">
 	</packet>
 	<packet name="RES_BROADCAST_LEAVE_GAME">
 		<int name="playerId"/>
+	</packet>
+	<packet name="REQ_PLAYER_LIST">
 	</packet>
 	<packet name="RES_PLAYER_LIST">
 		<list name="player">

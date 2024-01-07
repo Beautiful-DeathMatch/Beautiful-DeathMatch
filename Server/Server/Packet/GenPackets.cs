@@ -6,16 +6,17 @@ using ServerCore;
 
 public enum PacketID
 {
-	RES_BROADCAST_ENTER_GAME = 1,
+	RES_CONNECTED = 1,
 	REQ_ENTER_GAME = 2,
-	REQ_LEAVE_GAME = 3,
-	REQ_PLAYER_LIST = 4,
+	RES_BROADCAST_ENTER_GAME = 3,
+	REQ_LEAVE_GAME = 4,
 	RES_BROADCAST_LEAVE_GAME = 5,
-	RES_PLAYER_LIST = 6,
-	REQ_TRANSFORM = 7,
-	RES_TRANSFORM = 8,
-	REQ_ANIMATOR = 9,
-	RES_ANIMATOR = 10,
+	REQ_PLAYER_LIST = 6,
+	RES_PLAYER_LIST = 7,
+	REQ_TRANSFORM = 8,
+	RES_TRANSFORM = 9,
+	REQ_ANIMATOR = 10,
+	RES_ANIMATOR = 11,
 	
 }
 
@@ -27,19 +28,18 @@ public interface IPacket
 }
 
 
-public class RES_BROADCAST_ENTER_GAME : IPacket
+public class RES_CONNECTED : IPacket
 {
-	public int playerId;
+	
 
-	public ushort Protocol { get { return (ushort)PacketID.RES_BROADCAST_ENTER_GAME; } }
+	public ushort Protocol { get { return (ushort)PacketID.RES_CONNECTED; } }
 
 	public void Read(ArraySegment<byte> segment)
 	{
 		ushort count = 0;
 		count += sizeof(ushort);
 		count += sizeof(ushort);
-		this.playerId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
-		count += sizeof(int);
+		
 	}
 
 	public ArraySegment<byte> Write()
@@ -48,10 +48,9 @@ public class RES_BROADCAST_ENTER_GAME : IPacket
 		ushort count = 0;
 
 		count += sizeof(ushort);
-		Array.Copy(BitConverter.GetBytes((ushort)PacketID.RES_BROADCAST_ENTER_GAME), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.RES_CONNECTED), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		Array.Copy(BitConverter.GetBytes(this.playerId), 0, segment.Array, segment.Offset + count, sizeof(int));
-		count += sizeof(int);
+		
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
 
@@ -91,6 +90,38 @@ public class REQ_ENTER_GAME : IPacket
 	}
 }
 
+public class RES_BROADCAST_ENTER_GAME : IPacket
+{
+	public int playerId;
+
+	public ushort Protocol { get { return (ushort)PacketID.RES_BROADCAST_ENTER_GAME; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		this.playerId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.RES_BROADCAST_ENTER_GAME), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(this.playerId), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
 public class REQ_LEAVE_GAME : IPacket
 {
 	
@@ -112,36 +143,6 @@ public class REQ_LEAVE_GAME : IPacket
 
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.REQ_LEAVE_GAME), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-		count += sizeof(ushort);
-		
-
-		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
-
-		return SendBufferHelper.Close(count);
-	}
-}
-
-public class REQ_PLAYER_LIST : IPacket
-{
-	
-
-	public ushort Protocol { get { return (ushort)PacketID.REQ_PLAYER_LIST; } }
-
-	public void Read(ArraySegment<byte> segment)
-	{
-		ushort count = 0;
-		count += sizeof(ushort);
-		count += sizeof(ushort);
-		
-	}
-
-	public ArraySegment<byte> Write()
-	{
-		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
-		ushort count = 0;
-
-		count += sizeof(ushort);
-		Array.Copy(BitConverter.GetBytes((ushort)PacketID.REQ_PLAYER_LIST), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		
 
@@ -176,6 +177,36 @@ public class RES_BROADCAST_LEAVE_GAME : IPacket
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes(this.playerId), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+public class REQ_PLAYER_LIST : IPacket
+{
+	
+
+	public ushort Protocol { get { return (ushort)PacketID.REQ_PLAYER_LIST; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.REQ_PLAYER_LIST), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
 

@@ -15,6 +15,8 @@ public class PacketManager : Singleton<PacketManager>
 		
 	public void Register()
 	{
+		_makeFunc.Add((ushort)PacketID.RES_CONNECTED, MakePacket<RES_CONNECTED>);
+		_handler.Add((ushort)PacketID.RES_CONNECTED, PacketHandler.ON_RES_CONNECTED);
 		_makeFunc.Add((ushort)PacketID.RES_BROADCAST_ENTER_GAME, MakePacket<RES_BROADCAST_ENTER_GAME>);
 		_handler.Add((ushort)PacketID.RES_BROADCAST_ENTER_GAME, PacketHandler.ON_RES_BROADCAST_ENTER_GAME);
 		_makeFunc.Add((ushort)PacketID.RES_BROADCAST_LEAVE_GAME, MakePacket<RES_BROADCAST_LEAVE_GAME>);
