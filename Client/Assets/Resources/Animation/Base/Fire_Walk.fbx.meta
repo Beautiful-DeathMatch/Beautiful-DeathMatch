@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 303b4672ce599a4438e49510ea61c3f7
+guid: dbf2893b733f7d24a86e420d4413871b
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Gun_Idle.com
+      name: Fire_Walk.com
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 231
+      lastFrame: 22
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
