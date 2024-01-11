@@ -29,7 +29,7 @@ public abstract class MonoSystem : MonoSubSystem
 		OnFixedUpdate();
 	}
 
-	private void OnDestroy()
+	private void OnApplicationQuit()
 	{
 		OnDispose();
 	}

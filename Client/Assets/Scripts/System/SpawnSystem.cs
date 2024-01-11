@@ -7,8 +7,10 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SpawnSystem : SyncComponent
+public class SpawnSystem : MonoSystem, IPacketReceiver
 {
+	[SerializeField] private SessionSystem sessionSystem = null;
+
 	[SerializeField] private Cinemachine.CinemachineVirtualCamera playerCamera = null;
 	[SerializeField] private StarterAssetsInputs inputAsset = null;
 	[SerializeField] private PlayerInput inputComponent = null;
@@ -18,22 +20,22 @@ public class SpawnSystem : SyncComponent
 
 	private Dictionary<int, PlayerComponent> playerDictionary = new Dictionary<int, PlayerComponent>();
 
-	private void Awake()
+	protected override void OnAwake()
 	{
 		playerDictionary.Clear();
-		Initialize();
+		sessionSystem.RegisterPacketReceiver(this);
 	}
 
-	private void OnDestroy()
+	protected override void OnDispose()
 	{
-		Clear();
+		sessionSystem.UnRegisterPacketReceiver(this);
 	}
 
 	private void OnGUI()
 	{
 		if (GUI.Button(new Rect(0, 0, 300, 100), "네트워크 연결 및 캐릭터 스폰"))
 		{
-			TryConnect();
+			sessionSystem.TryConnect();
 		}
 
 		characterType = (CharacterType)GUI.Toolbar(new Rect(350, 30, 300, 30), (int)characterType, new string[(int)CharacterType.MAX]
@@ -42,23 +44,6 @@ public class SpawnSystem : SyncComponent
 			CharacterType.CH_29.ToString(),
 			CharacterType.CH_46.ToString()
 		});
-	}
-
-	public override void Clear()
-	{
-		base.Clear();
-
-		SessionManager.Instance.Disconnect();
-	}
-
-	public void TryConnect()
-	{
-		SessionManager.Instance.TryConnect();
-	}
-
-	private void Update()
-	{
-		SessionManager.Instance.OnUpdateInstance();
 	}
 
 	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
@@ -81,19 +66,19 @@ public class SpawnSystem : SyncComponent
 		return playerComponent;
 	}
 
-	public override void OnReceive(IPacket packet)
+	public void OnReceive(IPacket packet)
 	{
 		if(packet is RES_CONNECTED connectedPacket)
 		{
 			var enterPacket = new REQ_ENTER_GAME();
 			enterPacket.characterType = (int)characterType;
-			SessionManager.Instance.Send(enterPacket);
+			sessionSystem.Send(enterPacket);
 		}
 		else if (packet is RES_BROADCAST_ENTER_GAME enterPacket ||
 		    packet is RES_BROADCAST_LEAVE_GAME leavePacket)
 		{
 			REQ_PLAYER_LIST req = new REQ_PLAYER_LIST();
-			SessionManager.Instance.Send(req);
+			sessionSystem.Send(req);
 		}
 		else if(packet is RES_PLAYER_LIST playerListPacket)
 		{

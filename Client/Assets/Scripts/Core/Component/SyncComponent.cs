@@ -7,27 +7,30 @@ public interface IPacketReceiver
 	public void OnReceive(IPacket packet);
 }
 
-public abstract class SyncComponent : MonoBehaviour, IPacketReceiver
+public abstract class SyncComponent : MonoComponent<SyncSystem>, IPacketReceiver
 {
 	public int playerId { get; private set; }
+
+	private SyncSystem syncSystem = null;
 
 	public virtual void Initialize(int playerId = -1)
 	{
 		this.playerId = playerId;
-		SessionManager.Instance.RegisterPacketReceiver(this);
+
+		syncSystem = FindSystem();
+		if (syncSystem == null)
+			return;
+
+		syncSystem.Register(this);
 	}
 
 	public virtual void Clear()
 	{
 		this.playerId = 0;
-		SessionManager.Instance.UnRegisterPacketReceiver(this);
-	}
 
-	private void Start()
-	{
-		if (IsSendCondition())
+		if (syncSystem != null)
 		{
-			TrySend();
+			syncSystem.UnRegister(this);
 		}
 	}
 
@@ -46,8 +49,13 @@ public abstract class SyncComponent : MonoBehaviour, IPacketReceiver
 
 	protected virtual void TrySend()
 	{
-		
+
 	}
-	
+
+	protected void Send(IPacket packet)
+	{
+		syncSystem.Send(packet);
+	}
+
 	public abstract void OnReceive(IPacket packet);
 }

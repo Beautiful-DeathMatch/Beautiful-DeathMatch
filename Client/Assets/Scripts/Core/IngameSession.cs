@@ -25,7 +25,7 @@ public class IngameSession : PacketSession
     {
         PacketManager.Instance.OnRecvPacket(this, buffer, (s, p) =>
         {
-            SessionManager.Instance.Receive(p);
+			PacketSessionHandler.Push(p);
         });
     }
 

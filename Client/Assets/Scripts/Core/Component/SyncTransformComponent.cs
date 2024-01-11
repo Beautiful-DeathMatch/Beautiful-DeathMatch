@@ -32,7 +32,7 @@ public class SyncTransformComponent : SyncComponent
 		packet.rotY = myRot.y;
 		packet.rotZ = myRot.z;
 
-		SessionManager.Instance.Send(packet);
+		Send(packet);
 		
 		prevPos = myPos;
 		prevRot = myRot;

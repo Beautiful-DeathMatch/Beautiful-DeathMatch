@@ -26,8 +26,8 @@ public class SyncAnimatorComponent : SyncComponent
         packet.Jump = animator.GetBool(Jump) ? 1 : 0;
         packet.MotionSpeed = animator.GetFloat(MotionSpeed);
         packet.speed = animator.GetFloat(Speed);
-        
-        SessionManager.Instance.Send(packet);
+
+		Send(packet);
     }
     
     public override void OnReceive(IPacket packet)
