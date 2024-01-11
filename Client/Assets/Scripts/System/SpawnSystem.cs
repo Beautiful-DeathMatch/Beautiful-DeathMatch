@@ -56,6 +56,11 @@ public class SpawnSystem : SyncComponent
 		SessionManager.Instance.TryConnect();
 	}
 
+	private void Update()
+	{
+		SessionManager.Instance.OnUpdateInstance();
+	}
+
 	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
 	{
 		var playerComponent = Instantiate<PlayerComponent>(playerPrefab, transform);
