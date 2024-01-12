@@ -33,7 +33,7 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
     // 이 컴포넌트를 시스템 리스트에 등록
     void Register()
     {
-        FindSystem().ListUpWeapon(this);
+        FindSystem().ListUp(this);
     }
 
 
@@ -42,7 +42,7 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
         int index = FindSystem().FindListIndexByID(_ID);
         if (index == -1)
         {
-            Debug.Log("경고! 해당 무기 Component가 List에 등록되어있지 않습니다.");
+            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다.");
             return -1;
         }
         else return index;
@@ -95,7 +95,7 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
         FindSystem().Delete(this);
     }
 
-    // 시스템에 의한 삭제: 현재 컴포넌트가 달려 있는 무기 Object 삭제
+    // 시스템에 의한 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
     public void DeleteBySystem()
     {
         Destroy(this.gameObject);

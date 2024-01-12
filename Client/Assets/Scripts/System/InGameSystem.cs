@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InGameSystem : MonoBehaviour
+public class InGameSystem : MonoSystem
 {
-    // Start is called before the first frame update
-    void Start()
+
+    StatusSubSystem statusSubSystem;
+
+    private void Awake() 
     {
-        
+        statusSubSystem = FindObjectOfType<StatusSubSystem>();
     }
 
-    // Update is called once per frame
-    void Update()
+    // 게임 준비
+    void GameReady()
     {
-        
+        statusSubSystem.GameReady();
     }
+
+    // 게임 시작
+    void GameStart()
+    {
+        statusSubSystem.GameStart();
+    }
+
+    //
+
 }
