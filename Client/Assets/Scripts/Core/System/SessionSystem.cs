@@ -1,4 +1,4 @@
-using ServerCore;
+ï»¿using ServerCore;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ public class SessionSystem : MonoSystem
 	{
 		if (packetSession == null)
 		{
-			Debug.LogError($"{packet.GetType()} : ¼¼¼ÇÀÌ È°¼ºÈ­µÇÁö ¾ÊÀº »óÅÂ¿¡¼­ ÆĞÅ¶ Àü¼ÛÀ» ½ÃµµÇÕ´Ï´Ù.");
+			Debug.LogError($"{packet.GetType()} : ì„¸ì…˜ì´ í™œì„±í™”ë˜ì§€ ì•Šì€ ìƒíƒœì—ì„œ íŒ¨í‚· ì „ì†¡ì„ ì‹œë„í•©ë‹ˆë‹¤.");
 			return;
 		}
 

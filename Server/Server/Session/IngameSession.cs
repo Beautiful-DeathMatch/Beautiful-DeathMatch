@@ -81,7 +81,7 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			InGameSessionFactory.Remove(this);
+			InGameSessionManager.Instance.UnRegisterSession(this);
 
 			sessionRoom?.Leave(this);
 			sessionRoom = null;

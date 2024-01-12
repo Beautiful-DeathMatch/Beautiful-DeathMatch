@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,12 +10,12 @@ public abstract class MonoComponent<TSystem> : MonoBehaviour where TSystem : Mon
         var systems = FindObjectsOfType<TSystem>();
         if (systems == null)
         {
-            Debug.LogError($"{typeof(TSystem)}°¡ ÇöÀç ¾À¿¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+            Debug.LogError($"{typeof(TSystem)}ê°€ í˜„ì¬ ì”¬ì— ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
             return null;
         }
 		else if (systems.Length > 1)
 		{
-			Debug.LogError($"{typeof(TSystem)}°¡ ÇöÀç ¾À¿¡ µÎ °³ ÀÌ»ó Á¸ÀçÇÕ´Ï´Ù.");
+			Debug.LogError($"{typeof(TSystem)}ê°€ í˜„ì¬ ì”¬ì— ë‘ ê°œ ì´ìƒ ì¡´ì¬í•©ë‹ˆë‹¤.");
 			return null;
 		}
 
