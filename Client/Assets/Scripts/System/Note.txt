@@ -1,0 +1,73 @@
+ECS
+https://zprooo915.tistory.com/75
+https://unialgames.tistory.com/entry/EntityComponentSystem
+https://blog.naver.com/kiseop91/221855589754
+
+Abstract
+https://inpa.tistory.com/entry/JAVA-%E2%98%95-%EC%B6%94%EC%83%81-%ED%81%B4%EB%9E%98%EC%8A%A4Abstract-%EC%9A%A9%EB%8F%84-%EC%99%84%EB%B2%BD-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0
+
+virtual
+https://coding-factory.tistory.com/699
+
+delegate
+https://blog.naver.com/istake/221793933579
+
+
+=== LIST ==== // ECS GCS
+Status System
+캐릭터의 현재 상태를 관리하는 시스템
+체력, 피격, 사망여부,
+Weapon System 소유 무기 상태 (종류, 장탄수, 쿨타임)
+Mission System 미션 진행 상태 (종류, 진행 여부)
+Interaction System 컨트롤 상호작용 관련 시스템 (오브젝트 상호작용)
+=== LIST ==== //
+InGame System // 게임시작, 게임승리, 게임패배 
+
+Status SubSystem - Component
+캐릭터 Instance 
+class 캐릭터 Instance : {Instance ID, 소유자 ID, hp, Phase} // Phase: 생존/사망/부활대기/미션완료/헬기탑승
+캐릭터 피격 함수
+피격(int 피격수치) hp 깎고 0이면 사망 처리
+
+
+Weapon SubSystem
+무기 DB
+class 무기 : {무기 ID, 타입, 설명, 기본 최대 장탄수}
+무기 Instance (서버 동기화)
+class 무기 Instance: {Instance ID, 소유자 ID, 무기 ID, 최대 장탄수, 현재 장탄수, 남은 탄약수}
+무기 변경
+Change(Instance ID, 소유자 ID, 무기 ID, 최대 장탄수, 현재 장탄수, 남은 탄약수)
+무기 정보 로드 from json DB
+DBLoad()
+무기 획득
+Acquire(Instance ID, 소유자 ID)
+무기 삭제
+Delete(Instance ID)
+무기 버리기 (기획 확인 필요)
+Throw(Instance ID)
+탄약 소모
+WeaponShot()
+탄약 장전
+WeaponLoad()
+
+Mission SubSystem
+미션 DB
+class 미션 : {미션 ID, 타입, 설명}
+미션 Instance (서버 동기화)
+class 미션 Instance: {Instance ID, 소유자 ID, 미션 ID, 진행도}
+미션 변경
+Change(Instance ID, 소유자 ID, 미션 ID, 진행도) 
+미션 획득
+Acquire(Instance ID, 소유자 ID, 미션 ID)
+미션 삭제
+Delete(Instance ID)
+미션 진행도 조정
+Progress(Instance ID, 진행도 변경 수치)
+미션 완료
+Clear(Instance ID)
+Interaction System (미션, 헬기호출, 헬기 탑승 등)
+class 인터랙션 Instance: {Instance ID, 타입}
+
+    
+    
+
