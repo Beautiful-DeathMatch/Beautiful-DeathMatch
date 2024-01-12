@@ -1,9 +1,7 @@
 {
-    "name": "Core",
+    "name": "Network",
     "rootNamespace": "",
-    "references": [
-        "GUID:1d2a6550cb4339844901605d679374c2"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

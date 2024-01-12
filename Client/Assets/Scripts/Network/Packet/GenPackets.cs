@@ -61,6 +61,8 @@ public class RES_CONNECTED : IPacket
 public class REQ_ENTER_GAME : IPacket
 {
 	public int characterType;
+	public int roomId;
+	public int roomMemberCount;
 
 	public ushort Protocol { get { return (ushort)PacketID.REQ_ENTER_GAME; } }
 
@@ -70,6 +72,10 @@ public class REQ_ENTER_GAME : IPacket
 		count += sizeof(ushort);
 		count += sizeof(ushort);
 		this.characterType = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		this.roomId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		this.roomMemberCount = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
 	}
 
@@ -82,6 +88,10 @@ public class REQ_ENTER_GAME : IPacket
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.REQ_ENTER_GAME), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes(this.characterType), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(this.roomId), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(this.roomMemberCount), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));

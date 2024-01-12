@@ -10,7 +10,7 @@ public class PacketHandler
 	{
 		var enterPacket = packet as REQ_ENTER_GAME;
 
-		if (session is IngameSession inGameSession)
+		if (session is InGameSession inGameSession)
 		{
 			inGameSession.OnRequestEnterGame(enterPacket);
 		}
@@ -28,7 +28,7 @@ public class PacketHandler
 
     internal static void ON_REQ_PLAYER_LIST(PacketSession session, IPacket packet)
 	{
-		if (session is IngameSession inGameSession)
+		if (session is InGameSession inGameSession)
 		{
 			inGameSession.OnRequestPlayerList();
 		}
@@ -36,7 +36,7 @@ public class PacketHandler
 	
 	internal static void ON_REQ_LEAVE_GAME(PacketSession session, IPacket packet)
 	{
-		if (session is IngameSession inGameSession)
+		if (session is InGameSession inGameSession)
 		{
 			inGameSession.OnRequestLeaveGame();
 		}
@@ -46,7 +46,7 @@ public class PacketHandler
 	{
 		var movePacket = packet as REQ_TRANSFORM;
 
-		if (session is IngameSession inGameSession)
+		if (session is InGameSession inGameSession)
 		{
 			inGameSession.OnRequestTransform(movePacket);
 		}
@@ -56,7 +56,7 @@ public class PacketHandler
 	{
 		var movePacket = packet as REQ_ANIMATOR;
 
-		if (session is IngameSession inGameSession)
+		if (session is InGameSession inGameSession)
 		{
 			inGameSession.OnRequestAnimator(movePacket);
 		}

@@ -9,21 +9,23 @@ using System.Net;
 
 namespace Server
 {
-    public class IngameSession : PacketSession
+    public class InGameSession : PacketSession
 	{
 		private InGameRoom sessionRoom;
+		private Func<int, int, InGameRoom> roomFactory;
 
-		public IngameSession(int sessionId) : base(sessionId)
+		public InGameSession(int sessionId, Func<int, int, InGameRoom> roomFactory) : base(sessionId)
 		{
-
+			this.roomFactory = roomFactory;
 		}
 
 		public bool OnRequestEnterGame(REQ_ENTER_GAME enterGame)
 		{
-			if (sessionRoom == null)
+			if (enterGame == null)
 				return false;
 
-			if (enterGame == null)
+			sessionRoom = roomFactory?.Invoke(enterGame.roomId, enterGame.roomMemberCount);
+			if (sessionRoom == null)
 				return false;
 
 			sessionRoom.Enter(this, enterGame);
@@ -69,19 +71,7 @@ namespace Server
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
-		}
-
-        public override void OnConnectedRoom(Room room)
-        {
-			sessionRoom = room as InGameRoom;
-			if (sessionRoom == null)
-			{
-				Console.WriteLine($"OnConnectedRoom Failed");
-				return;
-			}
-
-			sessionRoom.Ready(this);
-			Console.WriteLine($"OnConnectedRoom : {room.roomId}");
+			Send(new RES_CONNECTED().Write());
 		}
 
         public override void OnReceivePacket(ArraySegment<byte> buffer)
@@ -91,7 +81,7 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			SessionFactory.Instance.Remove(this);
+			InGameSessionFactory.Remove(this);
 
 			sessionRoom?.Leave(this);
 			sessionRoom = null;

@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Server
 {
-	internal class SessionManager : Singleton<SessionManager>
+	internal class InGameSessionManager : Singleton<InGameSessionManager>
 	{
 		private readonly ConcurrentDictionary<int, Session> sessions = new ConcurrentDictionary<int, Session>();
 		private Timer sessionCleanUpTimer = null;

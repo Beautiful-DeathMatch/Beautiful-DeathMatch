@@ -4,9 +4,9 @@ using System.Text;
 using System.Net;
 using ServerCore;
 
-public class IngameSession : PacketSession
+public class InGameSession : PacketSession
 {
-    public IngameSession(int sessionId) : base(sessionId)
+    public InGameSession(int sessionId) : base(sessionId)
     {
 
     }

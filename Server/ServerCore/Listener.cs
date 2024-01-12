@@ -10,8 +10,7 @@ namespace ServerCore
 	{
 		private Socket listenSocket;
 
-		private Func<Session> _sessionFactory;
-		private Func<Room> _roomFactory;
+		private Func<EndPoint, Session> _sessionFactory;
 
 		private ProtocolType protocolType = ProtocolType.Tcp;
         private int acceptCount = 0;
@@ -25,12 +24,11 @@ namespace ServerCore
 			this.backLogCount = backLogCount;
 		}
 
-		public void Start(IPEndPoint endPoint, Func<Session> sessionFactory, Func<Room> roomFactory)
+		public void Start(IPEndPoint endPoint, Func<EndPoint, Session> sessionFactory)
 		{
 			listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, protocolType);
 
 			_sessionFactory = sessionFactory;
-			_roomFactory = roomFactory;
 
 			listenSocket.Bind(endPoint);
 			listenSocket.Listen(backLogCount);
@@ -65,10 +63,9 @@ namespace ServerCore
 		{
 			if (args.SocketError == SocketError.Success)
 			{
-				Session session = _sessionFactory.Invoke();
+				Session session = _sessionFactory.Invoke(args.AcceptSocket.RemoteEndPoint);
 				session.Start(args.AcceptSocket);
 				session.OnConnected(args.AcceptSocket.RemoteEndPoint);
-				session.OnConnectedRoom(_roomFactory.Invoke());
 			}
 			else
 			{

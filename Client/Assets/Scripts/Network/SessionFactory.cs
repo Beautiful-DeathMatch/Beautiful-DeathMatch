@@ -5,15 +5,14 @@ using ServerCore;
 
 public enum SessionType
 {
-    InGame = 0,
-
+    Login = 0,
+    Room = 1,
+    InGame = 2,
 }
 
 public class SessionFactory : Singleton<SessionFactory>
 {
-    int currentSessionId = 0; // 해시값을 추출하는 함수가 필요하다.
-
-    Dictionary<int, Session> sessions = new Dictionary<int, Session>();
+    Dictionary<SessionType, Session> sessions = new Dictionary<SessionType, Session>();
     object lockObj = new object();
 
     public Session Make(SessionType type)
@@ -24,7 +23,7 @@ public class SessionFactory : Singleton<SessionFactory>
             if (session == null)
                 return null;
 
-            sessions[session.sessionId] = session;
+            sessions[type] = session;
             Debug.Log($"Connected : {session.sessionId}");
 
             return session;
@@ -36,17 +35,17 @@ public class SessionFactory : Singleton<SessionFactory>
         switch (type)
         {
             case SessionType.InGame:
-                return new IngameSession(++currentSessionId);
+                return new InGameSession((int)type);
         }
 
         return null;
     }
 
-    public void Remove(Session session)
+    public void Remove(SessionType type)
     {
         lock (lockObj)
         {
-            sessions.Remove(session.sessionId);
+            sessions.Remove(type);
         }
     }
 }

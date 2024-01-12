@@ -16,17 +16,13 @@ namespace Server
 		private static int myPortNumber = 7777;
 
 		private static Listener mylistener = new Listener(ProtocolType.Tcp, 10, 100);
-		private static List<Room> myRooms = new List<Room>();
 
 		private static JobTimer jobTimer = new JobTimer();
 		private static int flushWaitTime = 250;
 
 		private static void FlushMyRoom()
 		{
-			foreach(var room in myRooms)
-			{
-				room.Flush();
-			}
+			InGameRoomManager.Instance.Flush();
 
 			jobTimer.Push(FlushMyRoom, flushWaitTime);
 		}
@@ -37,7 +33,7 @@ namespace Server
 			if (myIPEndPoint == null)
 				return;
 
-			mylistener.Start(myIPEndPoint, MakeSession, MakeRoom);
+			mylistener.Start(myIPEndPoint, MakeSession);
 			jobTimer.Start(FlushMyRoom);
 
 			while (true)
@@ -46,25 +42,14 @@ namespace Server
 			}
 		}
 
-		private static Session MakeSession()
+		private static Session MakeSession(EndPoint clientEndPoint)
 		{
-			return SessionFactory.Instance.Make(SessionType.InGame);
+			return InGameSessionFactory.Make(clientEndPoint.GetHashCode(), MakeRoom);
 		}
 
-		private static Room MakeRoom()
+		private static InGameRoom MakeRoom(int roomId, int maxRoomMemberCount)
 		{
-			foreach(var room in myRooms)
-			{
-				if (room.IsFull == false)
-				{
-					return room;
-				}
-			}
-
-			var newRoom = RoomFactory.Instance.Make(RoomType.InGame);
-			myRooms.Add(newRoom);
-
-			return newRoom;
+			return InGameRoomManager.Instance.Make(roomId, maxRoomMemberCount);
 		}
 
 		private static IPEndPoint GetMyEndPoint(int portNumber)

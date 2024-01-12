@@ -59,7 +59,7 @@ namespace Server
         {
 			var players = new RES_PLAYER_LIST();
 
-			foreach (IngameSession s in roomSessions)
+			foreach (InGameSession s in roomSessions)
 			{
 				if (playerCharacterDictionary.TryGetValue(s.sessionId, out var characterType) == false)
 					continue;
@@ -75,7 +75,7 @@ namespace Server
 			session.Send(players.Write());
 		}
 
-		public void Send(IngameSession session, REQ_TRANSFORM packet)
+		public void Send(InGameSession session, REQ_TRANSFORM packet)
 		{
 			jobQueue.Push(() =>
 			{
@@ -83,7 +83,7 @@ namespace Server
 			});
 		}
 
-		public void Send(IngameSession session, REQ_ANIMATOR packet)
+		public void Send(InGameSession session, REQ_ANIMATOR packet)
 		{
 			jobQueue.Push(() =>
 			{
@@ -91,7 +91,7 @@ namespace Server
 			});
 		}
 
-		public void Enter(IngameSession session, REQ_ENTER_GAME packet)
+		public void Enter(InGameSession session, REQ_ENTER_GAME packet)
 		{
 			jobQueue.Push(() =>
 			{
@@ -99,7 +99,7 @@ namespace Server
 			});
 		}
 
-		private void SendAnimator(IngameSession session, REQ_ANIMATOR packet)
+		private void SendAnimator(InGameSession session, REQ_ANIMATOR packet)
 		{
 			// 모두에게 알린다
 			var move = new RES_ANIMATOR();
@@ -114,7 +114,7 @@ namespace Server
 			Broadcast(move.Write());
 		}
 
-        private void SendTransform(IngameSession session, REQ_TRANSFORM packet)
+        private void SendTransform(InGameSession session, REQ_TRANSFORM packet)
         {
             var move = new RES_TRANSFORM();
 
