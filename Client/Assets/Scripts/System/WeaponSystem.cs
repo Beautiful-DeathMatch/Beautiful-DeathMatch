@@ -6,6 +6,7 @@ using UnityEngine;
 public class WeaponSystem : MonoSystem
 {
 
+    // 무기 List
     List<WeaponComponent> weapons = new List<WeaponComponent>();
 
     // 마지막으로 생성된 무기의 고유 ID
@@ -85,7 +86,7 @@ public class WeaponSystem : MonoSystem
         return null;
     }
 
-    // 무기 고유 ID 획득
+    // Component 고유 ID 생성 및 반환
     int CreateID()
     {
         weaponIDUnique++;
@@ -93,7 +94,7 @@ public class WeaponSystem : MonoSystem
     }
 
     // 무기 컴포넌트에 고유 ID 부여 및 리스트업
-    public void ListUpWeapon(WeaponComponent weapon){
+    public void ListUp(WeaponComponent weapon){
         weapon.SetID(CreateID());
         weapons.Add(weapon);
     }
