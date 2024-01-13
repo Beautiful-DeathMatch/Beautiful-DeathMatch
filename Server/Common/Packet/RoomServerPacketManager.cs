@@ -2,7 +2,7 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class PacketManager : Singleton<PacketManager>
+public class RoomPacketManager : Singleton<RoomPacketManager>
 {
 	protected override void OnAwakeInstance()
     {
@@ -15,16 +15,8 @@ public class PacketManager : Singleton<PacketManager>
 		
 	public void Register()
 	{
-		_makeFunc.Add((ushort)PacketID.REQ_ENTER_GAME, MakePacket<REQ_ENTER_GAME>);
-		_handler.Add((ushort)PacketID.REQ_ENTER_GAME, PacketHandler.ON_REQ_ENTER_GAME);
-		_makeFunc.Add((ushort)PacketID.REQ_LEAVE_GAME, MakePacket<REQ_LEAVE_GAME>);
-		_handler.Add((ushort)PacketID.REQ_LEAVE_GAME, PacketHandler.ON_REQ_LEAVE_GAME);
-		_makeFunc.Add((ushort)PacketID.REQ_PLAYER_LIST, MakePacket<REQ_PLAYER_LIST>);
-		_handler.Add((ushort)PacketID.REQ_PLAYER_LIST, PacketHandler.ON_REQ_PLAYER_LIST);
-		_makeFunc.Add((ushort)PacketID.REQ_TRANSFORM, MakePacket<REQ_TRANSFORM>);
-		_handler.Add((ushort)PacketID.REQ_TRANSFORM, PacketHandler.ON_REQ_TRANSFORM);
-		_makeFunc.Add((ushort)PacketID.REQ_ANIMATOR, MakePacket<REQ_ANIMATOR>);
-		_handler.Add((ushort)PacketID.REQ_ANIMATOR, PacketHandler.ON_REQ_ANIMATOR);
+		_makeFunc.Add((ushort)RoomPacketID.REQ_CREATE_ROOM, MakePacket<REQ_CREATE_ROOM>);
+		_handler.Add((ushort)RoomPacketID.REQ_CREATE_ROOM, PacketHandler.ON_REQ_CREATE_ROOM);
 
 	}
 

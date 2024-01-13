@@ -2,7 +2,7 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class PacketManager : Singleton<PacketManager>
+public class RoomPacketManager : Singleton<RoomPacketManager>
 {
 	protected override void OnAwakeInstance()
     {
@@ -31,10 +31,9 @@ public class PacketManager : Singleton<PacketManager>
 		if (_makeFunc.TryGetValue(id, out func))
 		{
 			IPacket packet = func.Invoke(session, buffer);
-			if (onRecvCallback != null)
-				onRecvCallback.Invoke(session, packet);
-			else
-				HandlePacket(session, packet);
+			HandlePacket(session, packet);
+
+			onRecvCallback?.Invoke(session, packet);					
 		}
 	}
 
@@ -47,8 +46,9 @@ public class PacketManager : Singleton<PacketManager>
 
 	public void HandlePacket(PacketSession session, IPacket packet)
 	{
-		Action<PacketSession, IPacket> action = null;
-		if (_handler.TryGetValue(packet.Protocol, out action))
+		if (_handler.TryGetValue(packet.Protocol, out var action))
+		{
 			action.Invoke(session, packet);
+		}
 	}
 }

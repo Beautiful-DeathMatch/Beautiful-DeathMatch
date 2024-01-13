@@ -15,38 +15,58 @@ namespace PacketGenerator
 
 		static void Main(string[] args)
 		{
-			string pdlPath = "../INGAME_PDL.xml";
+			string pdlPath = string.Empty;
 
-			XmlReaderSettings settings = new XmlReaderSettings()
+            if (args.Length < 1)
+			{
+				pdlPath = "../INGAME_PDL.xml";
+            }
+			else
+			{
+                pdlPath = args[0];
+            }
+
+            XmlReaderSettings settings = new XmlReaderSettings()
 			{
 				IgnoreComments = true,
 				IgnoreWhitespace = true
 			};
 
-			if (args.Length >= 1)
-				pdlPath = args[0];
+            string prefix = GetFilePrefix(pdlPath);
 
-			using (XmlReader r = XmlReader.Create(pdlPath, settings))
+            using (XmlReader r = XmlReader.Create(pdlPath, settings))
 			{
 				r.MoveToContent();
 
 				while (r.Read())
 				{
 					if (r.Depth == 1 && r.NodeType == XmlNodeType.Element)
-						ParsePacket(r);
-					//Console.WriteLine(r.Name + " " + r["name"]);
+					{
+                        ParsePacket(r, prefix);
+                    }
 				}
 
-				string fileText = string.Format(PacketFormat.fileFormat, packetEnums, genPackets);
-				File.WriteAllText("GenPackets.cs", fileText);
-				string clientManagerText = string.Format(PacketFormat.managerFormat, clientRegister);
-				File.WriteAllText("ClientPacketManager.cs", clientManagerText);
-				string serverManagerText = string.Format(PacketFormat.managerFormat,serverRegister);
-				File.WriteAllText("ServerPacketManager.cs", serverManagerText);
+                string fileText = string.Format(PacketFormat.fileFormat, prefix, packetEnums, genPackets);
+				File.WriteAllText($"{prefix}GenPackets.cs", fileText);
+				string clientManagerText = string.Format(PacketFormat.managerFormat, prefix, clientRegister);
+				File.WriteAllText($"{prefix}ClientPacketManager.cs", clientManagerText);
+				string serverManagerText = string.Format(PacketFormat.managerFormat, prefix, serverRegister);
+				File.WriteAllText($"{prefix}ServerPacketManager.cs", serverManagerText);
 			}
 		}
 
-		public static void ParsePacket(XmlReader r)
+		private static string GetFilePrefix(string pdlPath)
+		{
+			if (pdlPath.Contains("INGAME"))
+				return "InGame";
+			else if (pdlPath.Contains("ROOM"))
+				return "Room";
+
+			return string.Empty;
+			
+		}
+
+		public static void ParsePacket(XmlReader r, string prefix)
 		{
 			if (r.NodeType == XmlNodeType.EndElement)
 				return;
@@ -65,13 +85,13 @@ namespace PacketGenerator
 			}
 
 			Tuple<string, string, string> t = ParseMembers(r);
-			genPackets += string.Format(PacketFormat.packetFormat, packetName, t.Item1, t.Item2, t.Item3);
-			packetEnums += string.Format(PacketFormat.packetEnumFormat, packetName, ++packetId) + Environment.NewLine + "\t";
+			genPackets += string.Format(PacketFormat.packetFormat, packetName, t.Item1, t.Item2, t.Item3, prefix);
+			packetEnums += string.Format(PacketFormat.packetEnumFormat,packetName, ++packetId) + Environment.NewLine + "\t";
 			
 			if (packetName.StartsWith("RES_"))
-				clientRegister += string.Format(PacketFormat.managerRegisterFormat, packetName) + Environment.NewLine;
+				clientRegister += string.Format(PacketFormat.managerRegisterFormat, prefix, packetName) + Environment.NewLine;
 			else if(packetName.StartsWith("REQ_"))
-				serverRegister += string.Format(PacketFormat.managerRegisterFormat, packetName) + Environment.NewLine;
+				serverRegister += string.Format(PacketFormat.managerRegisterFormat, prefix, packetName) + Environment.NewLine;
 		}
 
 		// {1} 멤버 변수들

@@ -15,16 +15,8 @@ public class PacketManager : Singleton<PacketManager>
 		
 	public void Register()
 	{
-		_makeFunc.Add((ushort)PacketID.REQ_ENTER_GAME, MakePacket<REQ_ENTER_GAME>);
-		_handler.Add((ushort)PacketID.REQ_ENTER_GAME, PacketHandler.ON_REQ_ENTER_GAME);
-		_makeFunc.Add((ushort)PacketID.REQ_LEAVE_GAME, MakePacket<REQ_LEAVE_GAME>);
-		_handler.Add((ushort)PacketID.REQ_LEAVE_GAME, PacketHandler.ON_REQ_LEAVE_GAME);
-		_makeFunc.Add((ushort)PacketID.REQ_PLAYER_LIST, MakePacket<REQ_PLAYER_LIST>);
-		_handler.Add((ushort)PacketID.REQ_PLAYER_LIST, PacketHandler.ON_REQ_PLAYER_LIST);
-		_makeFunc.Add((ushort)PacketID.REQ_TRANSFORM, MakePacket<REQ_TRANSFORM>);
-		_handler.Add((ushort)PacketID.REQ_TRANSFORM, PacketHandler.ON_REQ_TRANSFORM);
-		_makeFunc.Add((ushort)PacketID.REQ_ANIMATOR, MakePacket<REQ_ANIMATOR>);
-		_handler.Add((ushort)PacketID.REQ_ANIMATOR, PacketHandler.ON_REQ_ANIMATOR);
+		_makeFunc.Add((ushort)PacketID.REQ_CREATE_ROOM, MakePacket<REQ_CREATE_ROOM>);
+		_handler.Add((ushort)PacketID.REQ_CREATE_ROOM, PacketHandler.ON_REQ_CREATE_ROOM);
 
 	}
 
@@ -41,9 +33,10 @@ public class PacketManager : Singleton<PacketManager>
 		if (_makeFunc.TryGetValue(id, out func))
 		{
 			IPacket packet = func.Invoke(session, buffer);
-			HandlePacket(session, packet);
-
-			onRecvCallback?.Invoke(session, packet);					
+			if (onRecvCallback != null)
+				onRecvCallback.Invoke(session, packet);
+			else
+				HandlePacket(session, packet);
 		}
 	}
 
@@ -56,9 +49,8 @@ public class PacketManager : Singleton<PacketManager>
 
 	public void HandlePacket(PacketSession session, IPacket packet)
 	{
-		if (_handler.TryGetValue(packet.Protocol, out var action))
-		{
+		Action<PacketSession, IPacket> action = null;
+		if (_handler.TryGetValue(packet.Protocol, out action))
 			action.Invoke(session, packet);
-		}
 	}
 }

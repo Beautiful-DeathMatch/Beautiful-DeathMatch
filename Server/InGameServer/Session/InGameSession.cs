@@ -76,7 +76,7 @@ namespace InGameServer
 
         public override void OnReceivePacket(ArraySegment<byte> buffer)
 		{
-			PacketManager.Instance.OnRecvPacket(this, buffer);
+			InGamePacketManager.Instance.OnRecvPacket(this, buffer);
 		}
 
 		public override void OnDisconnected(EndPoint endPoint)

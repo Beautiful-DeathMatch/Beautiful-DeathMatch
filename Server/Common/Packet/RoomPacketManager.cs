@@ -2,7 +2,7 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class PacketManager : Singleton<PacketManager>
+public class RoomPacketManager : Singleton<RoomPacketManager>
 {
 	protected override void OnAwakeInstance()
     {
@@ -15,18 +15,8 @@ public class PacketManager : Singleton<PacketManager>
 		
 	public void Register()
 	{
-		_makeFunc.Add((ushort)PacketID.RES_CONNECTED, MakePacket<RES_CONNECTED>);
-		_handler.Add((ushort)PacketID.RES_CONNECTED, PacketHandler.ON_RES_CONNECTED);
-		_makeFunc.Add((ushort)PacketID.RES_BROADCAST_ENTER_GAME, MakePacket<RES_BROADCAST_ENTER_GAME>);
-		_handler.Add((ushort)PacketID.RES_BROADCAST_ENTER_GAME, PacketHandler.ON_RES_BROADCAST_ENTER_GAME);
-		_makeFunc.Add((ushort)PacketID.RES_BROADCAST_LEAVE_GAME, MakePacket<RES_BROADCAST_LEAVE_GAME>);
-		_handler.Add((ushort)PacketID.RES_BROADCAST_LEAVE_GAME, PacketHandler.ON_RES_BROADCAST_LEAVE_GAME);
-		_makeFunc.Add((ushort)PacketID.RES_PLAYER_LIST, MakePacket<RES_PLAYER_LIST>);
-		_handler.Add((ushort)PacketID.RES_PLAYER_LIST, PacketHandler.ON_RES_PLAYER_LIST);
-		_makeFunc.Add((ushort)PacketID.RES_TRANSFORM, MakePacket<RES_TRANSFORM>);
-		_handler.Add((ushort)PacketID.RES_TRANSFORM, PacketHandler.ON_RES_TRANSFORM);
-		_makeFunc.Add((ushort)PacketID.RES_ANIMATOR, MakePacket<RES_ANIMATOR>);
-		_handler.Add((ushort)PacketID.RES_ANIMATOR, PacketHandler.ON_RES_ANIMATOR);
+		_makeFunc.Add((ushort)RoomPacketID.REQ_CREATE_ROOM, MakePacket<REQ_CREATE_ROOM>);
+		_handler.Add((ushort)RoomPacketID.REQ_CREATE_ROOM, PacketHandler.ON_REQ_CREATE_ROOM);
 
 	}
 

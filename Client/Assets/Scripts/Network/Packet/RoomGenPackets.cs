@@ -4,17 +4,10 @@ using System.Text;
 using System.Net;
 using ServerCore;
 
-public enum PacketID
+public enum RoomPacketID
 {
 	REQ_CREATE_ROOM = 1,
 	
-}
-
-public interface IPacket
-{
-	ushort Protocol { get; }
-	void Read(ArraySegment<byte> segment);
-	ArraySegment<byte> Write();
 }
 
 
@@ -24,7 +17,7 @@ public class REQ_CREATE_ROOM : IPacket
 	public string roodName;
 	public int roomMaxMemberCount;
 
-	public ushort Protocol { get { return (ushort)PacketID.REQ_CREATE_ROOM; } }
+	public ushort Protocol { get { return (ushort)RoomPacketID.REQ_CREATE_ROOM; } }
 
 	public void Read(ArraySegment<byte> segment)
 	{
@@ -47,7 +40,7 @@ public class REQ_CREATE_ROOM : IPacket
 		ushort count = 0;
 
 		count += sizeof(ushort);
-		Array.Copy(BitConverter.GetBytes((ushort)PacketID.REQ_CREATE_ROOM), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes((ushort)RoomPacketID.REQ_CREATE_ROOM), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes(this.roomId), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);

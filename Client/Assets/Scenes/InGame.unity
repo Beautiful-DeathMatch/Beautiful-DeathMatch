@@ -38148,6 +38148,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 4312476384669874778, guid: 2cdef5bdb09588a4fbbb646c173d8b25,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4312476384669874778, guid: 2cdef5bdb09588a4fbbb646c173d8b25,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4312476384669874778, guid: 2cdef5bdb09588a4fbbb646c173d8b25,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4947437823993958893, guid: 2cdef5bdb09588a4fbbb646c173d8b25,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4947437823993958893, guid: 2cdef5bdb09588a4fbbb646c173d8b25,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4947437823993958893, guid: 2cdef5bdb09588a4fbbb646c173d8b25,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5035745283649224674, guid: 2cdef5bdb09588a4fbbb646c173d8b25,
         type: 3}
       propertyPath: m_RootOrder

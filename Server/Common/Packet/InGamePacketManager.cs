@@ -2,7 +2,7 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class PacketManager : Singleton<PacketManager>
+public class InGamePacketManager : Singleton<InGamePacketManager>
 {
 	protected override void OnAwakeInstance()
     {
@@ -15,6 +15,16 @@ public class PacketManager : Singleton<PacketManager>
 		
 	public void Register()
 	{
+		_makeFunc.Add((ushort)InGamePacketID.REQ_ENTER_GAME, MakePacket<REQ_ENTER_GAME>);
+		_handler.Add((ushort)InGamePacketID.REQ_ENTER_GAME, PacketHandler.ON_REQ_ENTER_GAME);
+		_makeFunc.Add((ushort)InGamePacketID.REQ_LEAVE_GAME, MakePacket<REQ_LEAVE_GAME>);
+		_handler.Add((ushort)InGamePacketID.REQ_LEAVE_GAME, PacketHandler.ON_REQ_LEAVE_GAME);
+		_makeFunc.Add((ushort)InGamePacketID.REQ_PLAYER_LIST, MakePacket<REQ_PLAYER_LIST>);
+		_handler.Add((ushort)InGamePacketID.REQ_PLAYER_LIST, PacketHandler.ON_REQ_PLAYER_LIST);
+		_makeFunc.Add((ushort)InGamePacketID.REQ_TRANSFORM, MakePacket<REQ_TRANSFORM>);
+		_handler.Add((ushort)InGamePacketID.REQ_TRANSFORM, PacketHandler.ON_REQ_TRANSFORM);
+		_makeFunc.Add((ushort)InGamePacketID.REQ_ANIMATOR, MakePacket<REQ_ANIMATOR>);
+		_handler.Add((ushort)InGamePacketID.REQ_ANIMATOR, PacketHandler.ON_REQ_ANIMATOR);
 
 	}
 
@@ -31,10 +41,9 @@ public class PacketManager : Singleton<PacketManager>
 		if (_makeFunc.TryGetValue(id, out func))
 		{
 			IPacket packet = func.Invoke(session, buffer);
-			if (onRecvCallback != null)
-				onRecvCallback.Invoke(session, packet);
-			else
-				HandlePacket(session, packet);
+			HandlePacket(session, packet);
+
+			onRecvCallback?.Invoke(session, packet);					
 		}
 	}
 
@@ -47,8 +56,9 @@ public class PacketManager : Singleton<PacketManager>
 
 	public void HandlePacket(PacketSession session, IPacket packet)
 	{
-		Action<PacketSession, IPacket> action = null;
-		if (_handler.TryGetValue(packet.Protocol, out action))
+		if (_handler.TryGetValue(packet.Protocol, out var action))
+		{
 			action.Invoke(session, packet);
+		}
 	}
 }

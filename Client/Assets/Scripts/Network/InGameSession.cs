@@ -23,7 +23,7 @@ public class InGameSession : PacketSession
 
     public override void OnRecvPacket(ArraySegment<byte> buffer)
     {
-        PacketManager.Instance.OnRecvPacket(this, buffer, (s, p) =>
+        InGamePacketManager.Instance.OnRecvPacket(this, buffer, (s, p) =>
         {
 			PacketSessionHandler.Push(p);
         });

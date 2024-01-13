@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +12,7 @@ namespace PacketGenerator
 using System;
 using System.Collections.Generic;
 
-public class PacketManager : Singleton<PacketManager>
+public class {0}PacketManager : Singleton<{0}PacketManager>
 {{
 	protected override void OnAwakeInstance()
     {{
@@ -25,7 +25,7 @@ public class PacketManager : Singleton<PacketManager>
 		
 	public void Register()
 	{{
-{0}
+{1}
 	}}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onRecvCallback = null)
@@ -65,11 +65,12 @@ public class PacketManager : Singleton<PacketManager>
 
 		// {0} 패킷 이름
 		public static string managerRegisterFormat =
-@"		_makeFunc.Add((ushort)PacketID.{0}, MakePacket<{0}>);
-		_handler.Add((ushort)PacketID.{0}, PacketHandler.ON_{0});";
+@"		_makeFunc.Add((ushort){0}PacketID.{1}, MakePacket<{1}>);
+		_handler.Add((ushort){0}PacketID.{1}, PacketHandler.ON_{1});";
 
-		// {0} 패킷 이름/번호 목록
-		// {1} 패킷 목록
+		// {0} PacketID 종류
+		// {1} 패킷 이름/번호 목록
+		// {2} 패킷 목록
 		public static string fileFormat =
 @"using System;
 using System.Collections.Generic;
@@ -77,19 +78,12 @@ using System.Text;
 using System.Net;
 using ServerCore;
 
-public enum PacketID
+public enum {0}PacketID
 {{
-	{0}
+	{1}
 }}
 
-public interface IPacket
-{{
-	ushort Protocol {{ get; }}
-	void Read(ArraySegment<byte> segment);
-	ArraySegment<byte> Write();
-}}
-
-{1}
+{2}
 ";
 
 		// {0} 패킷 이름
@@ -108,7 +102,7 @@ public class {0} : IPacket
 {{
 	{1}
 
-	public ushort Protocol {{ get {{ return (ushort)PacketID.{0}; }} }}
+	public ushort Protocol {{ get {{ return (ushort){4}PacketID.{0}; }} }}
 
 	public void Read(ArraySegment<byte> segment)
 	{{
@@ -124,7 +118,7 @@ public class {0} : IPacket
 		ushort count = 0;
 
 		count += sizeof(ushort);
-		Array.Copy(BitConverter.GetBytes((ushort)PacketID.{0}), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes((ushort){4}PacketID.{0}), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		{3}
 

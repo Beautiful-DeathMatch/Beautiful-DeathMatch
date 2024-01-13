@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace RoomServer
 {
-    internal class OutGameRoom : Room
+    public class OutGameRoom : Room
     {
-        internal OutGameRoom(int roomId, int maxSessionCount) : base(roomId, maxSessionCount)
+        public OutGameRoom(int roomId, int maxSessionCount) : base(roomId, maxSessionCount)
         {
         }
     }
