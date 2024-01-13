@@ -6,11 +6,11 @@ using System.Text;
 
 namespace InGameServer
 {
-    public class InGameRoom : Room
+    internal class InGameRoom : Room
 	{
 		private Dictionary<int, int> playerCharacterDictionary = new Dictionary<int, int>();
-		
-		public InGameRoom(int roomId, int maxSessionCount) : base(roomId, maxSessionCount)
+
+        internal InGameRoom(int roomId, int maxSessionCount) : base(roomId, maxSessionCount)
 		{
 		}
 

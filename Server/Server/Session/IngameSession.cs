@@ -9,12 +9,12 @@ using System.Net;
 
 namespace InGameServer
 {
-    public class InGameSession : PacketSession
+    internal class InGameSession : PacketSession
 	{
 		private InGameRoom sessionRoom;
 		private Func<int, int, InGameRoom> roomFactory;
 
-		public InGameSession(int sessionId, Func<int, int, InGameRoom> roomFactory) : base(sessionId)
+        internal InGameSession(int sessionId, Func<int, int, InGameRoom> roomFactory) : base(sessionId)
 		{
 			this.roomFactory = roomFactory;
 		}

@@ -9,12 +9,12 @@ using System.Net;
 
 namespace RoomServer
 {
-    public class OutGameSession : PacketSession
+    internal class OutGameSession : PacketSession
 	{
 		private OutGameRoom sessionRoom;
 		private Func<int, int, Room> roomFactory;
 
-		public OutGameSession(int sessionId, Func<int, int, Room> roomFactory) : base(sessionId)
+        internal OutGameSession(int sessionId, Func<int, int, Room> roomFactory) : base(sessionId)
 		{
 			this.roomFactory = roomFactory;
 		}
