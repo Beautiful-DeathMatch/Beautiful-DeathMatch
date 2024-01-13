@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using ServerCore;
 
-namespace InGameServer
+namespace RoomServer
 {
-
-	public class InGameSessionFactory
+	public class OutGameSessionFactory
 	{
-		public static Session Make(int clientHashCode, Func<int, int, InGameRoom> roomFactory)
+		public static Session Make(int clientHashCode, Func<int, int, OutGameRoom> roomFactory)
 		{
-			var session = new InGameSession(clientHashCode, roomFactory);
+			var session = new OutGameSession(clientHashCode, roomFactory);
 			if (session == null)
 				return null;
 

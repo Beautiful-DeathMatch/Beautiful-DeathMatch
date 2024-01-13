@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ServerCore;
 
-namespace Server
+namespace ServerCore
 {
 	struct JobTimerElement : IComparable<JobTimerElement>
 	{

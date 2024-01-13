@@ -1,22 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using ServerCore;
 
-namespace Server
+namespace ServerCore
 {
-	public class InGameRoomManager : Singleton<InGameRoomManager>
+	public class RoomManager : Singleton<RoomManager>
 	{
-		private Dictionary<int, InGameRoom> roomDictionary = new Dictionary<int, InGameRoom>();
+		private Dictionary<int, Room> roomDictionary = new Dictionary<int, Room>();
 		private object lockObj = new object();
 
-		public InGameRoom Make(int roomId, int maxRoomMemberCount)
+		public Room Make(int roomId, int maxRoomMemberCount, Func<int, int, Room> roomFactory)
 		{
 			lock (lockObj)
 			{
                 if (roomDictionary.TryGetValue(roomId, out var room) == false)
                 {
-					room = new InGameRoom(roomId, maxRoomMemberCount);
+					room = roomFactory?.Invoke(roomId, maxRoomMemberCount);
 					roomDictionary.Add(roomId, room);
 				}
 

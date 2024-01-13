@@ -1,13 +1,13 @@
-﻿using ServerCore;
+using ServerCore;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace Server
+namespace ServerCore
 {
-	internal class InGameSessionManager : Singleton<InGameSessionManager>
+	public class SessionManager : Singleton<SessionManager>
 	{
 		private readonly ConcurrentDictionary<int, Session> sessions = new ConcurrentDictionary<int, Session>();
 		private Timer sessionCleanUpTimer = null;

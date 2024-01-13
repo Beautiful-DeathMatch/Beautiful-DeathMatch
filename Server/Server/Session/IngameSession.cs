@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ServerCore;
 using System.Net;
 
-namespace Server
+namespace InGameServer
 {
     public class InGameSession : PacketSession
 	{
@@ -81,7 +81,7 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			InGameSessionManager.Instance.UnRegisterSession(this);
+			SessionManager.Instance.UnRegisterSession(this);
 
 			sessionRoom?.Leave(this);
 			sessionRoom = null;

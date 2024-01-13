@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Xml;
 
@@ -15,7 +15,7 @@ namespace PacketGenerator
 
 		static void Main(string[] args)
 		{
-			string pdlPath = "../PDL.xml";
+			string pdlPath = "../INGAME_PDL.xml";
 
 			XmlReaderSettings settings = new XmlReaderSettings()
 			{
