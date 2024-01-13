@@ -4,9 +4,11 @@ using UnityEngine;
 
 public abstract class MonoSubSystem : MonoBehaviour
 {
-	public virtual bool IsValid()
+    private bool isDisposed = false;
+
+    public virtual bool IsValid()
 	{
-		return true;
+		return isDisposed == false;
 	}
 
 	protected virtual void OnAwake()
@@ -34,8 +36,8 @@ public abstract class MonoSubSystem : MonoBehaviour
 
 	}
 
-	protected virtual void OnDispose()
+	protected virtual bool OnDispose()
 	{
-
-	}
+		return isDisposed == false;
+    }
 }

@@ -12,7 +12,7 @@ namespace InGameServer
 {
     internal class Program
 	{
-        private static Executer executer = new Executer(MakeSession);
+        private static Executer executer = new Executer(MakeSession, 7777);
 
 		private static Session MakeSession(EndPoint clientEndPoint)
 		{

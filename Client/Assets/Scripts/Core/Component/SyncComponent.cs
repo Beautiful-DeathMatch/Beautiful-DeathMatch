@@ -11,26 +11,23 @@ public abstract class SyncComponent : MonoComponent<SyncSystem>, IPacketReceiver
 {
 	public int playerId { get; private set; }
 
-	private SyncSystem syncSystem = null;
-
 	public virtual void Initialize(int playerId = -1)
 	{
 		this.playerId = playerId;
 
-		syncSystem = FindSystem();
-		if (syncSystem == null)
+		if (System == null)
 			return;
 
-		syncSystem.Register(this);
+        System.Register(this);
 	}
 
 	public virtual void Clear()
 	{
 		this.playerId = 0;
 
-		if (syncSystem != null)
+		if (System != null)
 		{
-			syncSystem.UnRegister(this);
+            System.UnRegister(this);
 		}
 	}
 
@@ -54,8 +51,11 @@ public abstract class SyncComponent : MonoComponent<SyncSystem>, IPacketReceiver
 
 	protected void Send(IPacket packet)
 	{
-		syncSystem.Send(packet);
-	}
+		if (System)
+		{
+            System.Send(packet);
+        }
+    }
 
 	public abstract void OnReceive(IPacket packet);
 }

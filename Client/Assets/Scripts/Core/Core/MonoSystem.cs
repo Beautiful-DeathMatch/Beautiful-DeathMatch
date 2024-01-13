@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,12 +8,12 @@ public abstract class MonoSystem : MonoSubSystem
 	private void Awake()
 	{
 		OnAwake();
-	}
+    }
 
 	private void Start()
 	{
 		OnStart();
-	}
+    }
 
 	private void Update()
 	{
@@ -32,5 +33,18 @@ public abstract class MonoSystem : MonoSubSystem
 	private void OnApplicationQuit()
 	{
 		OnDispose();
+	}
+
+    private void OnDestroy()
+    {
+        OnDispose();
+    }
+
+    protected override bool OnDispose()
+    {
+		if (base.OnDispose() == false)
+			return false;
+
+		return true;
 	}
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InGameServer", "Server\InGameServer.csproj", "{ECE354A8-1AEB-4ABA-A3C1-013A029AF560}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InGameServer", "InGameServer\InGameServer.csproj", "{ECE354A8-1AEB-4ABA-A3C1-013A029AF560}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCore", "ServerCore\ServerCore.csproj", "{225DE72F-27CC-45B4-B0F0-F8F08A7328A2}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketGenerator", "PacketGe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{8B491CF6-3083-47E7-B38D-2FC74C64238F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomServer", "RoomServer\RoomServer.csproj", "{B2487716-7BCC-476A-A0AF-055CE7F5115D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomServer", "RoomServer\RoomServer.csproj", "{B2487716-7BCC-476A-A0AF-055CE7F5115D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

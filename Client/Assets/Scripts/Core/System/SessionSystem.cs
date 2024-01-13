@@ -1,6 +1,7 @@
-﻿using ServerCore;
+using ServerCore;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -9,13 +10,34 @@ using UnityEngine;
 public class SessionSystem : MonoSystem
 {
 	private PacketSession packetSession = null;
-
-	private SessionConnector connector = new SessionConnector(ProtocolType.Tcp, 5);
+	private SessionConnector connector = null;
 
 	private List<IPacketReceiver> packetReceivers = new();
 	private Queue<IPacketReceiver> pendingPacketReceiverQueue = new();
 
-	public void Send(IPacket packet)
+	[SerializeField] private SessionType sessionType;
+	[SerializeField] private ProtocolType protocolType = ProtocolType.Tcp;
+
+	[SerializeField] private int reconnectCount = 5;
+
+	[Header("네트워크 상태에 따라 체크되는 변수들")]
+	[SerializeField] private bool isConnected = false;
+
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        connector = new SessionConnector(ProtocolType.Tcp, reconnectCount);
+    }
+
+    protected override void OnLateUpdate()
+    {
+        base.OnLateUpdate();
+
+		isConnected = connector?.IsConnected ?? false;
+    }
+
+    public void Send(IPacket packet)
 	{
 		if (packetSession == null)
 		{
@@ -47,8 +69,11 @@ public class SessionSystem : MonoSystem
 
 	public bool TryConnect()
 	{
-		var endPoint = GetMyEndPoint(7777);
+		var endPoint = GetMyEndPoint(GetPortNumber(sessionType));
 		if (endPoint == null)
+			return false;
+
+		if (connector == null)
 			return false;
 
 		if (connector.IsConnected)
@@ -107,7 +132,7 @@ public class SessionSystem : MonoSystem
 	{
 		if (packetSession == null)
 		{
-			var session = SessionFactory.Instance.Make(SessionType.InGame);
+			var session = SessionFactory.Instance.Make(sessionType);
 			if (session is PacketSession pSession)
 			{
 				packetSession = pSession;
@@ -118,12 +143,29 @@ public class SessionSystem : MonoSystem
 		return packetSession;
 	}
 
-	private static IPEndPoint GetMyEndPoint(int portNumber)
+	private IPEndPoint GetMyEndPoint(int portNumber)
 	{
 		string host = Dns.GetHostName();
 		IPHostEntry ipHost = Dns.GetHostEntry(host);
 		IPAddress ipAddress = ipHost.AddressList.FirstOrDefault();
 
 		return new IPEndPoint(ipAddress, portNumber);
+	}
+
+	private int GetPortNumber(SessionType type)
+	{
+		switch(type)
+		{
+			case SessionType.Login:
+				return 7776;
+
+			case SessionType.InGame:
+				return 7777;
+
+			case SessionType.Room:
+				return 7778;
+		}
+
+		return 7777;
 	}
 }

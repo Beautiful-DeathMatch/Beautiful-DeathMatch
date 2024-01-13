@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PDL>
+	<packet name="REQ_CREATE_ROOM">
+    <int name="roomId"/>
+    <string name ="roodName"/>
+    <int name ="roomMaxMemberCount"/>
+	</packet>
+</PDL>

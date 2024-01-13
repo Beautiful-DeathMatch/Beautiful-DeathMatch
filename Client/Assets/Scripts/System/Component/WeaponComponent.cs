@@ -33,13 +33,13 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
     // 이 컴포넌트를 시스템 리스트에 등록
     void Register()
     {
-        FindSystem().ListUp(this);
+        System.ListUp(this);
     }
 
 
     // 유효성 검사
     int Check(){
-        int index = FindSystem().FindListIndexByID(_ID);
+        int index = System.FindListIndexByID(_ID);
         if (index == -1)
         {
             Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다.");
@@ -92,7 +92,7 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
     // 무기 삭제 -> 시스템에 삭제 요청
     public void Delete()
     {
-        FindSystem().Delete(this);
+        System.Delete(this);
     }
 
     // 시스템에 의한 삭제: 현재 컴포넌트가 달려 있는 Object 삭제

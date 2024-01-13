@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public enum ENUM_SCENE_TYPE
 {
     Title = 0,
-    RoomBoard = 1,
+    Room = 1,
     InGame = 2
 }
 

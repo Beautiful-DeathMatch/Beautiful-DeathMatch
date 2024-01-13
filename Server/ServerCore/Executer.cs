@@ -10,7 +10,7 @@ namespace ServerCore
     public class Executer
     {
         private IPEndPoint myIPEndPoint = null;
-        private int myPortNumber = 7777;
+        private int myPortNumber;
 
         private Listener mylistener = new Listener(ProtocolType.Tcp, 10, 100);
 
@@ -19,9 +19,10 @@ namespace ServerCore
 
         private Func<EndPoint, Session> sessionFactory = null;
 
-        public Executer(Func<EndPoint, Session> sessionFactory)
+        public Executer(Func<EndPoint, Session> sessionFactory, int portNumber)
         {
             this.sessionFactory = sessionFactory;
+            this.myPortNumber = portNumber;
         }
 
         private void FlushMyRoom()

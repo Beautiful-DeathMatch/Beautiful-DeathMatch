@@ -26,9 +26,13 @@ public class SpawnSystem : MonoSystem, IPacketReceiver
 		sessionSystem.RegisterPacketReceiver(this);
 	}
 
-	protected override void OnDispose()
+	protected override bool OnDispose()
 	{
+		if (base.OnDispose() == false)
+			return false;
+
 		sessionSystem.UnRegisterPacketReceiver(this);
+		return true;
 	}
 
 	private void OnGUI()

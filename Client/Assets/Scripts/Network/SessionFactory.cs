@@ -24,7 +24,6 @@ public class SessionFactory : Singleton<SessionFactory>
                 return null;
 
             sessions[type] = session;
-            Debug.Log($"Connected : {session.sessionId}");
 
             return session;
         }

@@ -40,12 +40,12 @@ public class StatusComponent : MonoComponent<StatusSubSystem>
     // 이 컴포넌트를 시스템 리스트에 등록
     void Register()
     {
-        FindSystem().ListUp(this);
+        System.ListUp(this);
     }
 
     // 유효성 검사
     int Check(){
-        int index = FindSystem().FindListIndexByID(_ID);
+        int index = System.FindListIndexByID(_ID);
         if (index == -1)
         {
             Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다.");

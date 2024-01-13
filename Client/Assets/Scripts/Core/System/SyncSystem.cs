@@ -24,18 +24,20 @@ public class SyncSystem : MonoSystem, IPacketReceiver
 		syncComponents.Remove(component);
 	}
 
-	protected override void OnAwake()
+    protected override void OnAwake()
 	{
 		base.OnAwake();
 
 		sessionSystem.RegisterPacketReceiver(this);
 	}
 
-	protected override void OnDispose()
+	protected override bool OnDispose()
 	{
-		base.OnDispose();
+		if (base.OnDispose() == false)
+			return false;
 
 		sessionSystem.UnRegisterPacketReceiver(this);
+		return true;
 	}
 
 	public void Send(IPacket packet)
