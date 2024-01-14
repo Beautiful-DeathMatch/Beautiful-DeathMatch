@@ -17,8 +17,6 @@ namespace PacketGenerator
 
 		static ushort currentPacketId = 0;
 		
-		static string DefaultPDLPath = "../INGAME_PDL.xml";
-
 		static void Main(string[] args)
 		{
 			var pdlPaths = new List<string>(args);
