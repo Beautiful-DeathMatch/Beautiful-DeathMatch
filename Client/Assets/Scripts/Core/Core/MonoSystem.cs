@@ -5,9 +5,16 @@ using UnityEngine;
 
 public abstract class MonoSystem : MonoSubSystem
 {
+	[SerializeField] private bool dontDestroySystemOnLoad = false;
+
 	private void Awake()
 	{
 		OnAwake();
+
+		if (dontDestroySystemOnLoad)
+		{
+			DontDestroyOnLoad(this);
+		}
     }
 
 	private void Start()

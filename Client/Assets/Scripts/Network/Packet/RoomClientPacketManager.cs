@@ -4,21 +4,25 @@ using System.Collections.Generic;
 
 public partial class RoomPacketManager : Singleton<RoomPacketManager>
 {
+	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
+	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
+
+	public event Action<PacketSession, IPacket> _eventHandler = null;
+
 	protected override void OnAwakeInstance()
     {
         base.OnAwakeInstance();
         RegisterHandler();
     }
 
-	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
-	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
-		
 	public void RegisterHandler()
 	{
+		_makeFunc.Add((ushort)RoomPacketID.RES_CREATE_ROOM, MakePacket<RES_CREATE_ROOM>);
+		_handler.Add((ushort)RoomPacketID.RES_CREATE_ROOM, ON_RES_CREATE_ROOM);
 
 	}
 
-	public void OnReceivePacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onReceiveCallback = null)
+	public void OnReceivePacket(PacketSession session, ArraySegment<byte> buffer)
 	{
 		ushort count = 0;
 
@@ -32,8 +36,6 @@ public partial class RoomPacketManager : Singleton<RoomPacketManager>
 		{
 			IPacket packet = func.Invoke(session, buffer);
 			HandlePacket(session, packet);
-
-			onReceiveCallback?.Invoke(session, packet);					
 		}
 	}
 
@@ -50,5 +52,7 @@ public partial class RoomPacketManager : Singleton<RoomPacketManager>
 		{
 			action.Invoke(session, packet);
 		}
+
+		_eventHandler?.Invoke(session, packet);
 	}
 }

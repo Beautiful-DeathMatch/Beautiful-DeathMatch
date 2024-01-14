@@ -23,11 +23,6 @@ namespace PacketGenerator
 		{
 			var pdlPaths = new List<string>(args);
 			
-			if (pdlPaths.Any() == false)
-			{
-				pdlPaths.Add(DefaultPDLPath);
-			}
-
 			foreach(var pdlPath in pdlPaths)
 			{
 				XmlReaderSettings settings = new XmlReaderSettings()
@@ -105,7 +100,7 @@ namespace PacketGenerator
 				string HandlerFormat = string.Format(PacketFormat.HandlerFormat, prefix, packetName) + Environment.NewLine;
 				clientHandlerScripts.Append(HandlerFormat);
 			}
-			else if(packetName.StartsWith("REQ_"))
+			else if (packetName.StartsWith("REQ_"))
 			{
 				string HandlerFormat = string.Format(PacketFormat.HandlerFormat, prefix, packetName) + Environment.NewLine;
 				serverHandlerScripts.Append(HandlerFormat);

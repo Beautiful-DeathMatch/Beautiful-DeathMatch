@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -13,11 +13,11 @@ namespace ServerCore
 
         protected PacketSession(int sessionId) : base(sessionId)
         {
+
         }
 
-
         // [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ]
-        public sealed override int OnRecv(ArraySegment<byte> buffer)
+        public sealed override int OnReceive(ArraySegment<byte> buffer)
 		{
 			int processLen = 0;
 			int packetCount = 0;
@@ -34,7 +34,7 @@ namespace ServerCore
 					break;
 
 				// 여기까지 왔으면 패킷 조립 가능
-				OnRecvPacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
+				OnReceivePacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
 				packetCount++;
 
 				processLen += dataSize;
@@ -47,7 +47,7 @@ namespace ServerCore
 			return processLen;
 		}
 
-		public abstract void OnRecvPacket(ArraySegment<byte> buffer);
+		public abstract void OnReceivePacket(ArraySegment<byte> buffer);
 	}
 
 	public abstract class Session
@@ -71,7 +71,7 @@ namespace ServerCore
 		SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
 
 		public abstract void OnConnected(EndPoint endPoint);
-		public abstract int  OnRecv(ArraySegment<byte> buffer);
+		public abstract int  OnReceive(ArraySegment<byte> buffer);
 		public abstract void OnSend(int numOfBytes);
 		public abstract void OnDisconnected(EndPoint endPoint);
 
@@ -219,7 +219,7 @@ namespace ServerCore
 					}
 
 					// 컨텐츠 쪽으로 데이터를 넘겨주고 얼마나 처리했는지 받는다
-					int processLen = OnRecv(_recvBuffer.ReadSegment);
+					int processLen = OnReceive(_recvBuffer.ReadSegment);
 					if (processLen < 0 || _recvBuffer.DataSize < processLen)
 					{
 						Disconnect();

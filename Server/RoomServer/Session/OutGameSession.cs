@@ -26,7 +26,7 @@ namespace RoomServer
 
         public override void OnReceivePacket(ArraySegment<byte> buffer)
 		{
-			// PacketManager.Instance.OnRecvPacket(this, buffer);
+			RoomPacketManager.Instance.OnReceivePacket(this, buffer);
 		}
 
 		public override void OnDisconnected(EndPoint endPoint)

@@ -15,21 +15,23 @@ using System.Collections.Generic;
 
 public partial class {1}PacketManager : Singleton<{1}PacketManager>
 {{
+	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
+	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
+
+	public event Action<PacketSession, IPacket> _eventHandler = null;
+
 	protected override void OnAwakeInstance()
     {{
         base.OnAwakeInstance();
         RegisterHandler();
     }}
 
-	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
-	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
-		
 	public void RegisterHandler()
 	{{
 {0}
 	}}
 
-	public void OnReceivePacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onReceiveCallback = null)
+	public void OnReceivePacket(PacketSession session, ArraySegment<byte> buffer)
 	{{
 		ushort count = 0;
 
@@ -43,8 +45,6 @@ public partial class {1}PacketManager : Singleton<{1}PacketManager>
 		{{
 			IPacket packet = func.Invoke(session, buffer);
 			HandlePacket(session, packet);
-
-			onReceiveCallback?.Invoke(session, packet);					
 		}}
 	}}
 
@@ -61,13 +61,15 @@ public partial class {1}PacketManager : Singleton<{1}PacketManager>
 		{{
 			action.Invoke(session, packet);
 		}}
+
+		_eventHandler?.Invoke(session, packet);
 	}}
 }}";
 
 		// {0} 패킷 이름
 		public static string HandlerFormat =
 @"		_makeFunc.Add((ushort){0}PacketID.{1}, MakePacket<{1}>);
-		_handler.Add((ushort){0}PacketID.{1}, PacketHandler.ON_{1});";
+		_handler.Add((ushort){0}PacketID.{1}, ON_{1});";
 
 		// {0} 패킷 이름/번호 목록
 		// {1} 패킷 목록

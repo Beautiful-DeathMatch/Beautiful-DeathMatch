@@ -9,13 +9,19 @@ using UnityEngine;
 
 public class SessionSystem : MonoSystem
 {
+	// 세션 타입 대응 필요
 	private PacketSession packetSession = null;
+
 	private SessionConnector connector = null;
+	private PacketQueue packetQueue = new PacketQueue();
 
 	private List<IPacketReceiver> packetReceivers = new();
 	private Queue<IPacketReceiver> pendingPacketReceiverQueue = new();
 
+
 	[SerializeField] private SessionType sessionType;
+	
+	// 이 타입 시리얼라이즈 잘 안됨 왜 이러지
 	[SerializeField] private ProtocolType protocolType = ProtocolType.Tcp;
 
 	[SerializeField] private int reconnectCount = 5;
@@ -28,16 +34,66 @@ public class SessionSystem : MonoSystem
         base.OnAwake();
 
         connector = new SessionConnector(ProtocolType.Tcp, reconnectCount);
-    }
+		InGamePacketManager.Instance._eventHandler += OnReceivePacket;
+	}
 
-    protected override void OnLateUpdate()
+	protected override bool OnDispose()
+	{
+		if (base.OnDispose() == false)
+			return false;
+
+		InGamePacketManager.Instance._eventHandler -= OnReceivePacket;
+		return true;
+	}
+
+	protected override void OnLateUpdate()
     {
         base.OnLateUpdate();
 
 		isConnected = connector?.IsConnected ?? false;
     }
 
-    public void Send(IPacket packet)
+	protected override void OnUpdate()
+	{
+		base.OnUpdate();
+
+		if (IsConnectedSession() == false)
+			return;
+
+		FlushSession();
+	}
+
+	private bool IsConnectedSession()
+	{
+		if (connector == null)
+			return false;
+
+		if (connector.IsConnected == false)
+			return false;
+
+		return true;
+	}
+
+	private void FlushSession()
+	{
+		while (pendingPacketReceiverQueue.TryDequeue(out var pendingReceiver))
+		{
+			if (packetReceivers.Contains(pendingReceiver))
+				continue;
+
+			packetReceivers.Add(pendingReceiver);
+		}
+
+		foreach (var packet in packetQueue.PopAll())
+		{
+			foreach (var receiver in packetReceivers)
+			{
+				receiver.OnReceive(packet);
+			}
+		}
+	}
+
+	public void Send(IPacket packet)
 	{
 		if (packetSession == null)
 		{
@@ -88,44 +144,9 @@ public class SessionSystem : MonoSystem
 		connector.Disconnect();
 	}
 
-	protected override void OnUpdate()
+	private void OnReceivePacket(PacketSession session, IPacket packet)
 	{
-		if (IsConnectedSession() == false)
-			return;
-
-		FlushSession();
-	}
-
-	private void FlushSession()
-	{
-		while (pendingPacketReceiverQueue.TryDequeue(out var pendingReceiver))
-		{
-			if (packetReceivers.Contains(pendingReceiver))
-				continue;
-
-			packetReceivers.Add(pendingReceiver);
-		}
-
-		foreach (IPacket packet in PacketSessionHandler.Flush())
-		{
-			Debug.Log(packet.GetType().ToString());
-
-			foreach (var receiver in packetReceivers)
-			{
-				receiver.OnReceive(packet);
-			}
-		}
-	}
-
-	private bool IsConnectedSession()
-	{
-		if (connector == null)
-			return false;
-
-		if (connector.IsConnected == false)
-			return false;
-
-		return true;
+		packetQueue.Push(packet);
 	}
 
 	private PacketSession MakeSession()

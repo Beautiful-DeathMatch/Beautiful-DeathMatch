@@ -21,12 +21,9 @@ public class InGameSession : PacketSession
 		UnityEngine.Debug.Log($"OnDisconnected : {endPoint}");
 	}
 
-    public override void OnRecvPacket(ArraySegment<byte> buffer)
+    public override void OnReceivePacket(ArraySegment<byte> buffer)
     {
-        InGamePacketManager.Instance.OnReceivePacket(this, buffer, (s, p) =>
-        {
-			PacketSessionHandler.Push(p);
-        });
+        InGamePacketManager.Instance.OnReceivePacket(this, buffer);
     }
 
     public override void OnSend(int numOfBytes)
