@@ -6,29 +6,30 @@ namespace PacketGenerator
 {
 	class PacketFormat
 	{
-		// {0} 패킷 등록
-		public static string managerFormat =
+		// {0} 패킷 핸들러 등록
+		// {1} 패킷 매니저 종류
+		public static string ManagerScriptFormat =
 @"using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class {0}PacketManager : Singleton<{0}PacketManager>
+public partial class {1}PacketManager : Singleton<{1}PacketManager>
 {{
 	protected override void OnAwakeInstance()
     {{
         base.OnAwakeInstance();
-        Register();
+        RegisterHandler();
     }}
 
 	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
 	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
 		
-	public void Register()
+	public void RegisterHandler()
 	{{
-{1}
+{0}
 	}}
 
-	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onRecvCallback = null)
+	public void OnReceivePacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onReceiveCallback = null)
 	{{
 		ushort count = 0;
 
@@ -43,7 +44,7 @@ public class {0}PacketManager : Singleton<{0}PacketManager>
 			IPacket packet = func.Invoke(session, buffer);
 			HandlePacket(session, packet);
 
-			onRecvCallback?.Invoke(session, packet);					
+			onReceiveCallback?.Invoke(session, packet);					
 		}}
 	}}
 
@@ -64,26 +65,26 @@ public class {0}PacketManager : Singleton<{0}PacketManager>
 }}";
 
 		// {0} 패킷 이름
-		public static string managerRegisterFormat =
+		public static string HandlerFormat =
 @"		_makeFunc.Add((ushort){0}PacketID.{1}, MakePacket<{1}>);
 		_handler.Add((ushort){0}PacketID.{1}, PacketHandler.ON_{1});";
 
-		// {0} PacketID 종류
-		// {1} 패킷 이름/번호 목록
-		// {2} 패킷 목록
-		public static string fileFormat =
+		// {0} 패킷 이름/번호 목록
+		// {1} 패킷 목록
+		// {2} 패킷 종류
+		public static string ScriptFormat =
 @"using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using ServerCore;
 
-public enum {0}PacketID
+public enum {2}PacketID
 {{
-	{1}
+	{0}
 }}
 
-{2}
+{1}
 ";
 
 		// {0} 패킷 이름
@@ -96,7 +97,7 @@ public enum {0}PacketID
 		// {1} 멤버 변수들
 		// {2} 멤버 변수 Read
 		// {3} 멤버 변수 Write
-		public static string packetFormat =
+		public static string PacketProtocolFormat =
 @"
 public class {0} : IPacket
 {{
@@ -130,7 +131,7 @@ public class {0} : IPacket
 ";
 		// {0} 변수 형식
 		// {1} 변수 이름
-		public static string memberFormat =
+		public static string MemberFormat =
 @"public {0} {1};";
 
 		// {0} 리스트 이름 [대문자]
@@ -138,7 +139,7 @@ public class {0} : IPacket
 		// {2} 멤버 변수들
 		// {3} 멤버 변수 Read
 		// {4} 멤버 변수 Write
-		public static string memberListFormat =
+		public static string FieldFormat =
 @"public class {0}
 {{
 	{2}
@@ -160,18 +161,18 @@ public List<{0}> {1}s = new List<{0}>();";
 		// {0} 변수 이름
 		// {1} To~ 변수 형식
 		// {2} 변수 형식
-		public static string readFormat =
+		public static string ReadFunctionFormat =
 @"this.{0} = BitConverter.{1}(segment.Array, segment.Offset + count);
 count += sizeof({2});";
 
 		// {0} 변수 이름
 		// {1} 변수 형식
-		public static string readByteFormat =
+		public static string ReadByteFormat =
 @"this.{0} = ({1})segment.Array[segment.Offset + count];
 count += sizeof({1});";
 
 		// {0} 변수 이름
-		public static string readStringFormat =
+		public static string ReadStringFormat =
 @"ushort {0}Len = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
 count += sizeof(ushort);
 this.{0} = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, {0}Len);
@@ -179,7 +180,7 @@ count += {0}Len;";
 
 		// {0} 리스트 이름 [대문자]
 		// {1} 리스트 이름 [소문자]
-		public static string readListFormat =
+		public static string ReadListFormat =
 @"this.{1}s.Clear();
 ushort {1}Len = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
 count += sizeof(ushort);
@@ -192,18 +193,18 @@ for (int i = 0; i < {1}Len; i++)
 
 		// {0} 변수 이름
 		// {1} 변수 형식
-		public static string writeFormat =
+		public static string WriteFunctionFormat =
 @"Array.Copy(BitConverter.GetBytes(this.{0}), 0, segment.Array, segment.Offset + count, sizeof({1}));
 count += sizeof({1});";
 
 		// {0} 변수 이름
 		// {1} 변수 형식
-		public static string writeByteFormat =
+		public static string WriteByteFormat =
 @"segment.Array[segment.Offset + count] = (byte)this.{0};
 count += sizeof({1});";
 
 		// {0} 변수 이름
-		public static string writeStringFormat =
+		public static string WriteStringFormat =
 @"ushort {0}Len = (ushort)Encoding.Unicode.GetBytes(this.{0}, 0, this.{0}.Length, segment.Array, segment.Offset + count + sizeof(ushort));
 Array.Copy(BitConverter.GetBytes({0}Len), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 count += sizeof(ushort);
@@ -211,7 +212,7 @@ count += {0}Len;";
 
 		// {0} 리스트 이름 [대문자]
 		// {1} 리스트 이름 [소문자]
-		public static string writeListFormat =
+		public static string WriteListFormat =
 @"Array.Copy(BitConverter.GetBytes((ushort)this.{1}s.Count), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 count += sizeof(ushort);
 foreach ({0} {1} in this.{1}s)

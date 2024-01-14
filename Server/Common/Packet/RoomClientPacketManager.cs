@@ -2,23 +2,23 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class RoomPacketManager : Singleton<RoomPacketManager>
+public partial class RoomPacketManager : Singleton<RoomPacketManager>
 {
 	protected override void OnAwakeInstance()
     {
         base.OnAwakeInstance();
-        Register();
+        RegisterHandler();
     }
 
 	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
 	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
 		
-	public void Register()
+	public void RegisterHandler()
 	{
 
 	}
 
-	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onRecvCallback = null)
+	public void OnReceivePacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onReceiveCallback = null)
 	{
 		ushort count = 0;
 
@@ -33,7 +33,7 @@ public class RoomPacketManager : Singleton<RoomPacketManager>
 			IPacket packet = func.Invoke(session, buffer);
 			HandlePacket(session, packet);
 
-			onRecvCallback?.Invoke(session, packet);					
+			onReceiveCallback?.Invoke(session, packet);					
 		}
 	}
 

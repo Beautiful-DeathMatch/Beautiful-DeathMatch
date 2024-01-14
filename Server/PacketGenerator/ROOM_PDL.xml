@@ -2,7 +2,7 @@
 <PDL>
 	<packet name="REQ_CREATE_ROOM">
     <int name="roomId"/>
-    <string name ="roodName"/>
+    <string name ="roomName"/>
     <int name ="roomMaxMemberCount"/>
 	</packet>
 </PDL>

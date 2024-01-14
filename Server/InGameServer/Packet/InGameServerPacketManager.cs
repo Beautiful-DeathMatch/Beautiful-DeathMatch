@@ -2,18 +2,18 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 
-public class InGamePacketManager : Singleton<InGamePacketManager>
+public partial class InGamePacketManager : Singleton<InGamePacketManager>
 {
 	protected override void OnAwakeInstance()
     {
         base.OnAwakeInstance();
-        Register();
+        RegisterHandler();
     }
 
 	Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> _makeFunc = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
 	Dictionary<ushort, Action<PacketSession, IPacket>> _handler = new Dictionary<ushort, Action<PacketSession, IPacket>>();
 		
-	public void Register()
+	public void RegisterHandler()
 	{
 		_makeFunc.Add((ushort)InGamePacketID.REQ_ENTER_GAME, MakePacket<REQ_ENTER_GAME>);
 		_handler.Add((ushort)InGamePacketID.REQ_ENTER_GAME, PacketHandler.ON_REQ_ENTER_GAME);
@@ -28,7 +28,7 @@ public class InGamePacketManager : Singleton<InGamePacketManager>
 
 	}
 
-	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onRecvCallback = null)
+	public void OnReceivePacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onReceiveCallback = null)
 	{
 		ushort count = 0;
 
@@ -43,7 +43,7 @@ public class InGamePacketManager : Singleton<InGamePacketManager>
 			IPacket packet = func.Invoke(session, buffer);
 			HandlePacket(session, packet);
 
-			onRecvCallback?.Invoke(session, packet);					
+			onReceiveCallback?.Invoke(session, packet);					
 		}
 	}
 

@@ -6,7 +6,7 @@ using ServerCore;
 
 public enum RoomPacketID
 {
-	REQ_CREATE_ROOM = 1,
+	REQ_CREATE_ROOM = 12,
 	
 }
 
@@ -14,7 +14,7 @@ public enum RoomPacketID
 public class REQ_CREATE_ROOM : IPacket
 {
 	public int roomId;
-	public string roodName;
+	public string roomName;
 	public int roomMaxMemberCount;
 
 	public ushort Protocol { get { return (ushort)RoomPacketID.REQ_CREATE_ROOM; } }
@@ -26,10 +26,10 @@ public class REQ_CREATE_ROOM : IPacket
 		count += sizeof(ushort);
 		this.roomId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
-		ushort roodNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		ushort roomNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
 		count += sizeof(ushort);
-		this.roodName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, roodNameLen);
-		count += roodNameLen;
+		this.roomName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, roomNameLen);
+		count += roomNameLen;
 		this.roomMaxMemberCount = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
 	}
@@ -44,10 +44,10 @@ public class REQ_CREATE_ROOM : IPacket
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes(this.roomId), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
-		ushort roodNameLen = (ushort)Encoding.Unicode.GetBytes(this.roodName, 0, this.roodName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-		Array.Copy(BitConverter.GetBytes(roodNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		ushort roomNameLen = (ushort)Encoding.Unicode.GetBytes(this.roomName, 0, this.roomName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(roomNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		count += roodNameLen;
+		count += roomNameLen;
 		Array.Copy(BitConverter.GetBytes(this.roomMaxMemberCount), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
 
