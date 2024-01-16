@@ -7,17 +7,11 @@ using UnityEngine.InputSystem; // For Debug
 using System.Text;
 using Microsoft.Unity.VisualStudio.Editor; // For Debug
 
-public class WeaponComponent : MonoComponent<WeaponSystem>
+public class WeaponComponent : MonoComponent<WeaponSubSystem>
 {
-    // class 무기 Instance: {Instance ID, 소유자 ID, 무기 ID, 최대 장탄수, 현재 장탄수, 장전 안한 남은 탄약수}
+    // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
-
-    static string _ownerID = "ownerID";
-    static string _weaponType = "weaponType";
-    static string _maxMagazine = "maxMagazine";
-    static string _currentMagazine = "currentMagazine";
-    static string _remainedMagazine = "remainedMagazine";
 
     // =================== 내부 호출용도 =================== //
 
@@ -48,29 +42,29 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
     {
         return ID;
     }
+    
+    // =================== System 에 의한 호출 함수 =================== //
 
+    // 시스템에 의한 ID 설정
+    public void SetID(int id)
+    {
+        ID = id;
+    }
+
+    // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
+    public void DeleteObject()
+    {
+        Destroy(this.gameObject);
+    }
 
     // =================== System 조회 함수 =================== //
 
-    public int LoadOwnerID()
+    public WeaponData LoadData()
     {
-        return System.WeaponData(ID, _ownerID);        
-    }
-    public int LoadWeaponType()
-    {
-        return System.WeaponData(ID, _weaponType);        
-    }
-    public int LoadMaxMagazine()
-    {
-        return System.WeaponData(ID, _maxMagazine);        
-    }
-    public int LoadCurrentMagazine()
-    {
-        return System.WeaponData(ID, _currentMagazine);
-    }
-    public int LoadRemainedMagazine()
-    {
-        return System.WeaponData(ID, _remainedMagazine);        
+        if(Check() >0)
+            return System.LoadData(ID);  
+        else
+            return null;      
     }
 
     // =================== System 요청 함수 =================== //
@@ -97,20 +91,6 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
     public void Delete()
     {
         System.TryDelete(ID);
-    }
-
-    // =================== 기타 함수 =================== //
-
-    // 시스템에 의한 ID 설정
-    public void SetID(int id)
-    {
-        ID = id;
-    }
-
-    // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
-    public void DeleteObject()
-    {
-        Destroy(this.gameObject);
     }
 
     // =================== Update 함수 (유효하지 않은 오브젝트 삭제 용) =================== //
@@ -141,12 +121,17 @@ public class WeaponComponent : MonoComponent<WeaponSystem>
 
     private void OnGUI() {
 
+        if(Check() == -1)
+        {
+            DeleteObject();
+        }
+
         builder_.Clear();
-        builder_.AppendFormat("[{0}", LoadOwnerID());
-        builder_.AppendFormat("{0}] ", LoadWeaponType());
-        builder_.AppendFormat("{0} ", LoadCurrentMagazine());
-        builder_.AppendFormat("/ {0} ", LoadMaxMagazine());
-        builder_.AppendFormat("/ {0} ", LoadRemainedMagazine());
+        builder_.AppendFormat("[{0}", LoadData().ownerID);
+        builder_.AppendFormat("{0}] ", LoadData().weaponType);
+        builder_.AppendFormat("{0} ", LoadData().currentMagazine);
+        builder_.AppendFormat("/ {0} ", LoadData().maxMagazine);
+        builder_.AppendFormat("/ {0} ", LoadData().remainedMagazine);
 
         style_.normal.textColor = new Color(0, 0, 0, 1);
         GUI.Label(

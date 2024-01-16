@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatusComponent : MonoComponent<StatusSubSystem>
+public class MissionComponent : MonoComponent<MissionSubSystem>
 {
     // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
 
     // =================== 내부 호출용도 =================== //
+
+    // 무기 정보 로드 from json DB
+    // DBLoad()
 
 
     // 유효성 검사
@@ -43,16 +46,15 @@ public class StatusComponent : MonoComponent<StatusSubSystem>
         ID = id;
     }
 
-    // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제 -> Status 는 캐릭터 Object에 직접 할당되므로 삭제 금지
+    // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
     public void DeleteObject()
     {
-        //Destroy(this.gameObject);
-        Debug.Log("Status Object 삭제 요청 : 삭제 불가");
+        Destroy(this.gameObject);
     }
 
     // =================== System 조회 함수 =================== //
 
-    public StatusData LoadData()
+    public MissionData LoadData()
     {
         if(Check() >0)
             return System.LoadData(ID);  
@@ -62,48 +64,21 @@ public class StatusComponent : MonoComponent<StatusSubSystem>
 
     // =================== System 요청 함수 =================== //
 
-    // Status 는 캐릭터에 달려 나오므로 System애 최초 등록이 필요함
-    public void Register()
-    {
-        System.TryRegister(this, 1);
-    }
-
-    // Status 소유자 변경
-    public void Acquire(int ownerID)
+    public void Acquire(int ID, int ownerID)
     {
         System.TryAcquire(ID, ownerID);
     }
 
-    // 피격
-    public void Hit(int amount)
+    // 미션 진행도 변경
+    public void Progress(int ID, int amount)
     {
-        System.TryHit(ID, amount);
+        System.TryProgress(ID, amount);
     }
 
-    // 힐
-    public void Heal(int amount)
+    // 미션 완료
+    public void Complete(int ID)
     {
-        System.TryHeal(ID, amount);
-    }    
-
-    // 죽음
-    public void Dead(int ID)
-    {
-        System.TryDead(ID);
-    }
-
-    
-    // =================== Awake 함수 (최초 생성 시 시스템 등록 용) =================== //
-    void Awake()
-    {
-        Register();
-    }
-
-    // =================== Update 함수 (유효성 체크 용) =================== //
-
-    void Update()
-    {
-        Check();
+        System.Complete(ID);
     }
 
 }

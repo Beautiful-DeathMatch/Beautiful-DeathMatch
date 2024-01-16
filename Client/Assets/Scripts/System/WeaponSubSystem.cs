@@ -1,25 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Net;
 using UnityEngine;
 using UnityEngine.InputSystem; // For Debug
 
-public class WeaponSystem : MonoSystem
+public class WeaponData
+{
+    public WeaponData(int _ownerID, int _weaponType, int _maxMagazine, int _currentMagazine, int _remainedMagazine)
+    {
+        ownerID = _ownerID;
+        weaponType = _weaponType;
+        maxMagazine = _maxMagazine;
+        currentMagazine = _currentMagazine;
+        remainedMagazine = _remainedMagazine;
+    }
+    public WeaponData(WeaponData WD)
+    {
+        ownerID = WD.ownerID;
+        weaponType = WD.weaponType;
+        maxMagazine = WD.maxMagazine;
+        currentMagazine = WD.currentMagazine;
+        remainedMagazine = WD.remainedMagazine;
+    }
+    public int ownerID = 0;             // 소유자 ID
+    public int weaponType = 0;          // 무기 타입 (칼/총 등)
+    public int maxMagazine = 0;         // 최대 장전 가능 탄창
+    public int currentMagazine = 0;     // 현재 장전된 탄환 수
+    public int remainedMagazine = 0;    // 장전 안한 남은 탄환 수
+}
+
+public class WeaponSubSystem : MonoSubSystem
 {
 
     // 무기 List
     // List<WeaponComponent> weapons = new List<WeaponComponent>();
-    Dictionary<int, Dictionary<string, int>> weapons = new Dictionary<int, Dictionary<string, int>>();
-
-    string _ownerID = "ownerID";
-    string _weaponType = "weaponType";
-    string _maxMagazine = "maxMagazine";
-    string _currentMagazine = "currentMagazine";
-    string _remainedMagazine = "remainedMagazine";
+    Dictionary<int, WeaponData> weapons = new Dictionary<int, WeaponData>();
 
 
     // 마지막으로 생성된 무기의 고유 ID, 1 부터 시작
-    static int weaponIDUnique = 0;
+    [SerializeField] // For Debug
+    int weaponIDUnique = 0;
 
     // Weapon이 달릴 오브젝트 프리팹
     [SerializeField]
@@ -39,13 +60,7 @@ public class WeaponSystem : MonoSystem
     public void Create(int ownerID, int weaponType, int maxMagazine, int currentMagazine, int remainedMagazine)
     {
         int newID = CreateID();
-        weapons.Add(newID, new Dictionary<string, int>(){
-        {_ownerID, ownerID},
-        {_weaponType, weaponType},
-        {_maxMagazine, maxMagazine},
-        {_currentMagazine, currentMagazine},
-        {_remainedMagazine, remainedMagazine}
-        });
+        weapons.Add(newID, new WeaponData(ownerID, weaponType, maxMagazine, currentMagazine, remainedMagazine));
         // WeaponComponent 생성하여 유저에게 할당하는 코드 필요
         Instantiate(weaponPrefeb, /*ownerID 유저 Object.*/transform).SetID(newID);
 
@@ -75,14 +90,17 @@ public class WeaponSystem : MonoSystem
     }
 
     // Data 확인
-    public int WeaponData(int ID, string dataName)
+    public WeaponData LoadData(int ID)
     {
         if (weapons.ContainsKey(ID))
-            return weapons[ID][dataName];
+        {
+            // return weapons[ID];
+            return new WeaponData(weapons[ID]); // 보안을 위해?
+        }
         else
         {
             Debug.Log("Data 조회 실패!");
-            return -1;
+            return null;
         }
     }
 
@@ -91,7 +109,7 @@ public class WeaponSystem : MonoSystem
     // 무기 소유자 변경
     public void Acquire(int ID, int ownerID)
     {
-        weapons[ID][_ownerID] = ownerID;
+        weapons[ID].ownerID = ownerID;
     }
     public void TryAcquire(int ID, int ownerID)
     {
@@ -101,9 +119,9 @@ public class WeaponSystem : MonoSystem
     // 탄약 소모
     public void Shot(int ID)
     {
-        int currentMagazine = weapons[ID][_currentMagazine];
-        if (currentMagazine > 0)
-            weapons[ID][_currentMagazine] -= 1;
+        WeaponData weapon = weapons[ID];
+        if (weapon.currentMagazine > 0)
+            weapon.currentMagazine -= 1;
     }
     public void TryShot(int ID)
     {
@@ -113,24 +131,19 @@ public class WeaponSystem : MonoSystem
     // 탄약 재장전
     public void Reload(int ID)
     {
-        int currentMagazine = weapons[ID][_currentMagazine],
-            maxMagazine = weapons[ID][_maxMagazine],
-            remainedMagazine = weapons[ID][_remainedMagazine];
-        int consumedMegazine = maxMagazine - currentMagazine;
+        WeaponData weapon = weapons[ID];
+        int consumedMegazine = weapon.maxMagazine - weapon.currentMagazine;
 
-        if (consumedMegazine <= remainedMagazine)
+        if (consumedMegazine <= weapon.remainedMagazine)
         {
-            currentMagazine += consumedMegazine;
-            remainedMagazine -= consumedMegazine;
+            weapon.currentMagazine += consumedMegazine;
+            weapon.remainedMagazine -= consumedMegazine;
         }
         else
         {
-            currentMagazine += remainedMagazine;
-            remainedMagazine -= remainedMagazine;
+            weapon.currentMagazine += weapon.remainedMagazine;
+            weapon.remainedMagazine -= weapon.remainedMagazine;
         }
-        weapons[ID][_currentMagazine] = currentMagazine;
-        weapons[ID][_maxMagazine] = maxMagazine;
-        weapons[ID][_remainedMagazine] = remainedMagazine;
     }
     public void TryReload(int ID)
     {
