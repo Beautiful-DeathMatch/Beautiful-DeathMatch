@@ -70,4 +70,44 @@ public class PlayerComponent : SyncComponent
 	{
 		
 	}
+
+	// =============JH============= //
+
+	// 해당 Player 가 가지고 있는 Weapon Component, Mission Component 리스트
+	// 다른 Component, System, UI 에서 참조할 수 있음
+	[SerializeField]
+	public List<WeaponComponent> weapons { get; private set; } = new();
+	[SerializeField]
+	public List<MissionComponent> missions { get; private set; } = new();
+
+	public void WeaponAdd(WeaponComponent weaponComponent)
+	{
+		weapons.Add(weaponComponent);
+	}
+
+	public void WeaponDelete(WeaponComponent weaponComponent)
+	{
+		weapons.Remove(weaponComponent);
+	}
+
+	public void MissionAdd(MissionComponent missionComponent)
+	{
+		missions.Add(missionComponent);
+	}
+
+	public void MissionDelete(MissionComponent missionComponent)
+	{
+		missions.Remove(missionComponent);
+	}
+
+	public bool IsMissionTypeInProgress(int missionType)
+	{
+		foreach(MissionComponent mission in  missions)
+		{
+			if (mission.LoadData().missionType == missionType)
+				return mission.IsMissionInProgress();
+		}
+		return false;
+	}
+
 }
