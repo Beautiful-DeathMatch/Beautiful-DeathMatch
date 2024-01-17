@@ -100,21 +100,21 @@ public class MissionComponent : MonoComponent<MissionSubSystem>
 
     // =================== System 요청 함수 =================== //
 
-    public void Acquire(int ID, int ownerID)
+    public void Acquire(int ownerID)
     {
         System.TryAcquire(ID, ownerID);
     }
 
     // 미션 진행도 변경
-    public void Progress(int ID, int amount)
+    public void Progress(int amount)
     {
         System.TryProgress(ID, amount);
     }
 
     // 미션 완료
-    public void Complete(int ID)
+    public void Complete()
     {
-        System.Complete(ID);
+        System.TryComplete(ID);
     }
 
 }

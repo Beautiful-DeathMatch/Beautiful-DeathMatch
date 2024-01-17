@@ -54,8 +54,8 @@ public class MissionSubSystem : MonoSubSystem
     {
         int newID = CreateID();
         missions.Add(newID, new MissionData(ownerID, missionType, progression, maxProgression));
-        // MissionComponent 생성하여 유저에게 할당하는 코드 필요
-        Transform ownerTransform = /*ownerID 유저 Object().*/transform;
+        // MissionComponent 생성하여 유저에게 할당
+        Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
         MissionComponent mission = Instantiate(missionPrefeb, ownerTransform);
         mission.SetID(newID);
         mission.AddToPlayerComponent(ownerTransform);

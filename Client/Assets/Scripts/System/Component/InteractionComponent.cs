@@ -16,6 +16,11 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
     // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
+    // InteractionComponent 는 맵에 기본 배치될 경우 초기 데이터 값을 가지고 있음
+    [SerializeField]
+    InteractionData.INTERACTION_TYPE interactionType;
+    [SerializeField]
+    int subType;
 
     // =================== 내부 호출용도 =================== //
 
@@ -67,12 +72,12 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
             return null;      
     }
 
-    public InteractionData.INTERACTION_TYPE WhatInteractionType()
+    public InteractionData.INTERACTION_TYPE GetInteractionType()
     {
         InteractionData interaction = LoadData();
         return interaction.interactionType;
     }
-    public int WhatSubType()
+    public int GetSubType()
     {
         InteractionData interaction = LoadData();
         return interaction.subType;
@@ -80,12 +85,23 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
 
     // =================== System 요청 함수 =================== //
 
-
+    // Interaction은 최초 배치되어 있을 수 있으므로 System에 최초 등록이 필요함
+    public void Register()
+    {
+        System.TryRegister(this, interactionType, subType);
+    }
 
     // 무기 삭제 -> 시스템에 삭제 요청
     public void Delete()
     {
         System.TryDelete(ID);
+    }
+    
+    // =================== Start 함수 (Register 용) =================== //
+
+    private void Start() 
+    {
+        // Register();
     }
 
     // =================== Update 함수 (유효하지 않은 오브젝트 삭제 용) =================== //
@@ -96,6 +112,8 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
         {
             DeleteObject();
         }
+        else if (Check() == 0)
+            Register(); 
 
         // =================== DEBUG =================== //
 

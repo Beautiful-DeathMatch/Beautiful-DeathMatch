@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Net;
 using UnityEngine;
-using UnityEngine.InputSystem; // For Debug
 
 public class WeaponData
 {
@@ -61,9 +60,12 @@ public class WeaponSubSystem : MonoSubSystem
     {
         int newID = CreateID();
         weapons.Add(newID, new WeaponData(ownerID, weaponType, maxMagazine, currentMagazine, remainedMagazine));
-        // WeaponComponent 생성하여 유저에게 할당하는 코드 필요
-        Instantiate(weaponPrefeb, /*ownerID 유저 Object.*/transform).SetID(newID);
-
+        // WeaponComponent 생성하여 유저에게 할당
+        Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
+        WeaponComponent weapon = Instantiate(weaponPrefeb, ownerTransform);
+        weapon.SetID(newID);
+        weapon.AddToPlayerComponent(ownerTransform);
+        
     }
     public void TryCreate(int ownerID, int weaponType, int maxMagazine, int currentMagazine, int remainedMagazine)
     {
@@ -150,22 +152,4 @@ public class WeaponSubSystem : MonoSubSystem
         Reload(ID);
     }
 
-
-    // ==============DEBUG============= //
-
-    GUIStyle style_ = new GUIStyle();
-
-    private void OnGUI() {
-        style_.normal.textColor = new Color(0, 0, 0, 1);
-        GUI.Label(
-            new Rect(Screen.width * 0.85f, Screen.height * 0.9f, Screen.width * 0.98f, Screen.height * 0.98f)
-            , "Z:Add X:Delete R:Reload " +weapons.Count.ToString(), style_);
-    }
-
-    private void Update() 
-    {
-        if(Input.GetKeyDown(KeyCode.Z)){
-            TryCreate(1, 1, 5, 5, 15);
-        }
-    }
 }

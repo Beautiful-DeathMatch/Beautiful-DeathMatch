@@ -20,6 +20,7 @@ public class InteractionData
 
     public enum INTERACTION_TYPE // 인터랙션 타입 Enum
     {
+        NONE,           
         MISSION,        // 미션
         BOX,            // 보물상자
         CALL,           // 헬리콥터 호출기
@@ -52,18 +53,18 @@ public class InteractionSubSystem : MonoSubSystem
         return interactionIDUnique;
     }
 
-    // interaction 생성
-    public void Create(InteractionData.INTERACTION_TYPE interactionType, int subType)
+    // interaction 생성 (기존 오브젝트 등록)
+    public void Create(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
     {
         int newID = CreateID();
         interactions.Add(newID, new InteractionData(interactionType, subType));
-        //Instantiate(interactionPrefeb, /*ownerID 유저 Object.*/transform).SetID(newID);
-
+        interacionComponent.SetID(newID);
     }
-    public void TryCreate(InteractionData.INTERACTION_TYPE interactionType, int subType)
+    public void TryCreate(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
     {
-        Create(interactionType, subType);
+        Create(interacionComponent, interactionType, subType);
     }
+
 
     // interaction 제거
     public void Delete(int ID)
@@ -75,6 +76,15 @@ public class InteractionSubSystem : MonoSubSystem
         Delete(ID);
     }
 
+    // Component가 자기 자신의 등록을 요청했을 경우
+    public void Register(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
+    {
+        TryCreate(interacionComponent, interactionType, subType);
+    }
+    public void TryRegister(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
+    {
+        Register(interacionComponent, interactionType, subType);
+    }
 
     // =================== 외부에서의 Data 확인용 =================== //
 

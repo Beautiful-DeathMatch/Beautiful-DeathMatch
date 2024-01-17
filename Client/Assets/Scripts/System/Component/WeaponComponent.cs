@@ -1,9 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem; // For Debug
 using System.Text;
 using Microsoft.Unity.VisualStudio.Editor; // For Debug
 
@@ -12,6 +12,9 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
     // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
+    // 해당 Component의 PlayerComponent
+    [SerializeField]
+    PlayerComponent playerComponent = null;
 
     // =================== 내부 호출용도 =================== //
 
@@ -51,12 +54,31 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
         ID = id;
     }
 
+    // owner인 Player Component 에 자기 자신 추가
+    public void AddToPlayerComponent(Transform transform)
+    {
+        playerComponent = transform.GetComponent<PlayerComponent>();
+        playerComponent.WeaponAdd(this);
+    }
+
     // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
     public void DeleteObject()
     {
+        DeleteFromPlayerComponent();
         Destroy(this.gameObject);
     }
 
+    void DeleteFromPlayerComponent() // owner인 Player Component 에 자기 자신 삭제
+    {
+        try
+        {
+            playerComponent.WeaponDelete(this);
+        }
+        catch(Exception e)
+        {
+            Debug.Log("Player Component의 리스트에서 삭제 실패 : "+ e);
+        }
+    }
     // =================== System 조회 함수 =================== //
 
     public WeaponData LoadData()
@@ -97,46 +119,13 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
 
     void Update()
     {
-        if(Check() == -1)
+        if (Check() == -1)
         {
             DeleteObject();
         }
 
         // =================== DEBUG =================== //
-
-        if(Input.GetMouseButtonDown(0)){
-            Shot();
-        }
-        if(Input.GetKeyDown(KeyCode.R)){
-            Reload();
-        }
-        if(Input.GetKeyDown(KeyCode.X)){
-            Delete();
-        }
-
-    }
-
-    StringBuilder builder_ = new StringBuilder();
-    GUIStyle style_ = new GUIStyle();
-
-    private void OnGUI() {
-
-        if(Check() == -1)
-        {
-            DeleteObject();
-        }
-
-        builder_.Clear();
-        builder_.AppendFormat("[{0}", LoadData().ownerID);
-        builder_.AppendFormat("{0}] ", LoadData().weaponType);
-        builder_.AppendFormat("{0} ", LoadData().currentMagazine);
-        builder_.AppendFormat("/ {0} ", LoadData().maxMagazine);
-        builder_.AppendFormat("/ {0} ", LoadData().remainedMagazine);
-
-        style_.normal.textColor = new Color(0, 0, 0, 1);
-        GUI.Label(
-            new Rect(Screen.width * 0.9f, Screen.height * 0.8f, Screen.width * 0.98f, Screen.height * 0.88f)
-            , builder_.ToString(), style_);
+        
     }
 
 }
