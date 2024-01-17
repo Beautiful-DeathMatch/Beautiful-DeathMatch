@@ -50,6 +50,16 @@ public class SpawnSystem : MonoSystem, IPacketReceiver
 		});
 	}
 
+	public PlayerComponent GetPlayerComponent(int playerId)
+	{
+		if (playerDictionary.TryGetValue(playerId, out var player))
+		{
+			return player;
+		}
+
+		return null;
+	}
+
 	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
 	{
 		var playerComponent = Instantiate<PlayerComponent>(playerPrefab, transform);
