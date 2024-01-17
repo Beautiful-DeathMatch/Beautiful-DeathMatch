@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -94,8 +94,7 @@ namespace StarterAssets
         int _animIDFreeFall = Animator.StringToHash("FreeFall");
         int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         int _animIDItemOffset = Animator.StringToHash("ItemOffset");
-        int _animIDFire = Animator.StringToHash("Fire");
-        int _animIDStab = Animator.StringToHash("Stab");
+        int _animIDAttack = Animator.StringToHash("Attack");
         int _animIDSwim = Animator.StringToHash("Swim");
 
 #if ENABLE_INPUT_SYSTEM
@@ -439,10 +438,16 @@ namespace StarterAssets
 
         void Attack()
         {
-            if (_animator)
+            /*
+            Debug.Log(_input.attack);
+            if (_input.attack == true)
             {
-                _animator.SetBool(_animIDFire, true);
+                if (_animator)
+                {
+                    _animator.SetBool(_animIDAttack, true);
+                }
             }
+            */
         }
     }
 }
