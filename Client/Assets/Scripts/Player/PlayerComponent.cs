@@ -87,7 +87,8 @@ public class PlayerComponent : SyncComponent
 	public InteractionData currentInteraction;
 
 	public RaycastHit hit;
-	float MaxDistance = 5f;
+	float MaxDistance = 8f;
+	LayerMask layerMask; // 레이 무시용 레이어 마스크
 
 	// 각 리스트 항목 추가 및 삭제 (외부 접근용)
 	public void WeaponAdd(WeaponComponent weaponComponent)
@@ -155,6 +156,10 @@ public class PlayerComponent : SyncComponent
 		return weapons[currentWeaponIndex];
 	}
 
+	void Start()
+	{
+		layerMask = ~LayerMask.GetMask("Player");
+	}
 
 	// 디버깅용 Input Update 문, 실제로는 내가 조종하는 플레이어일 경우에만 가능한 행동들
 	void Update() 
@@ -174,11 +179,12 @@ public class PlayerComponent : SyncComponent
 				weapons[currentWeaponIndex].Reload();
         }
 
-		Debug.DrawRay(cameraHead.position, cameraHead.forward * MaxDistance, Color.blue, 0.3f);
+		Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * MaxDistance, Color.blue, 0.3f);
 		
 		currentInteraction = null;
-		if(Physics.Raycast(cameraHead.position, cameraHead.forward, out hit, MaxDistance)) // 충돌 감지 시
+		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, MaxDistance, layerMask)) // 충돌 감지 시
 		{
+			Debug.Log(hit.transform);
 			if (hit.transform.GetComponent<InteractionComponent>() != null) // InteractionComponent 감지 시
 			{
 				currentInteraction = hit.transform.GetComponent<InteractionComponent>().LoadData();
