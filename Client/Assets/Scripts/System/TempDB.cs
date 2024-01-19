@@ -19,6 +19,17 @@ public class WeaponDBData
     public string nameKey;              // 무기 이름 스트링키
 }
 
+public class ItemDBData
+{
+    public ItemDBData(int _initialMagazine, string _nameKey)
+    {
+        initialMagazine = _initialMagazine;
+        nameKey = _nameKey;
+    }
+    public int initialMagazine = 1;     // 초기 갯수
+    public string nameKey;              // 아이템 이름 스트링키
+}
+
 public class TempDB : MonoBehaviour
 {
 
@@ -26,6 +37,11 @@ public class TempDB : MonoBehaviour
     {
         {1, new WeaponDBData(WeaponData.WEAPON_TYPE.KNIFE, 1, 50, "sys.temp.weapon1")},
         {2, new WeaponDBData(WeaponData.WEAPON_TYPE.GUN, 5, 100, "sys.temp.weapon2")}
+    };
+    public static Dictionary<int, ItemDBData> tempItemDB = new Dictionary<int, ItemDBData>()
+    {
+        {1, new ItemDBData(1, "sys.temp.item1")},
+        {2, new ItemDBData(3, "sys.temp.item2")}
     };
     public static Dictionary<int, string> tempMissionDB = new Dictionary<int, string>()
     {
@@ -37,6 +53,9 @@ public class TempDB : MonoBehaviour
     {
         {"sys.temp.weapon1","칼"},
         {"sys.temp.weapon2","권총"},
+
+        {"sys.temp.item1","방탄복"},
+        {"sys.temp.item2","연막탄"},
 
         {"sys.temp.mission1","미션 1 이름입니다."},
         {"sys.temp.mission2","미션 2 이름입니다."},
@@ -50,9 +69,19 @@ public class TempDB : MonoBehaviour
         return tempWeaponDB[index];
     }
 
+    public ItemDBData GetItemDB(int index)
+    {
+        return tempItemDB[index];
+    }
+
     public string GetWeaponNameByIndex(int index)
     {
         return GetStringByKey(tempWeaponDB[index].nameKey);
+    }
+
+    public string GetItemNameByIndex(int index)
+    {
+        return GetStringByKey(tempItemDB[index].nameKey);
     }
 
     public string GetMissionNameByType(int type)

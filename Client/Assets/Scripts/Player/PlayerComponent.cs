@@ -81,14 +81,17 @@ public class PlayerComponent : SyncComponent
 	[SerializeField]
 	public List<WeaponComponent> weapons { get; private set; } = new();
 	[SerializeField]
+	public List<ItemComponent> items { get; private set; } = new();
+	[SerializeField]
 	public List<MissionComponent> missions { get; private set; } = new();
 	[SerializeField] // For Debug
-	public int currentWeaponIndex /*{ get; private set; } */= 0;
+	public int currentActiveIndex /*{ get; private set; } */= 0;
 	[SerializeField] // For Debug
 	public InteractionData currentInteraction;
 
-	public RaycastHit hit;
+	// Ray 관련
 	Transform cam;
+	public RaycastHit hit;
 	float interactionMaxDistance = 8f;
 	float gunMaxDistance = 100f;
 	float knifeMaxDistance = 10f;
@@ -104,6 +107,20 @@ public class PlayerComponent : SyncComponent
 	public void WeaponDelete(WeaponComponent weaponComponent)
 	{
 		weapons.Remove(weaponComponent);
+		if (currentActiveIndex+1 > weapons.Count) // Remove 대상을 들고 있을 경우
+			currentActiveIndex--;
+	}
+
+	public void ItemAdd(ItemComponent itemComponent)
+	{
+		items.Add(itemComponent);
+	}
+
+	public void ItemDelete(ItemComponent itemComponent)
+	{
+		items.Remove(itemComponent);
+		if (currentActiveIndex-2 +1 > items.Count) // Remove 대상을 들고 있을 경우
+			currentActiveIndex--;
 	}
 
 	public void MissionAdd(MissionComponent missionComponent)
@@ -152,13 +169,23 @@ public class PlayerComponent : SyncComponent
 	}
 
 	// 들고 있는 무기를 변경
-	public void WeaponChange(int weaponIndex)
+	public void ActiveChange(int index)
 	{
-		currentWeaponIndex = weaponIndex;
+		if(index<2) 			// weapon
+			currentActiveIndex = index;
+		else if(index>=2) 		// item
+			if(items.Count>=index-1)		//ex) 4번키(2번템) -> currentActiveIndex=3 -> items.Count >= 2 이어야 가능
+				currentActiveIndex = index;
 	}
+
 	public WeaponComponent GetCurrentWeapon()
 	{
-		return weapons[currentWeaponIndex];
+		return weapons[currentActiveIndex];
+	}
+
+	public ItemComponent GetCurrentItem()
+	{
+		return items[currentActiveIndex-2];
 	}
 
 	public void InteractionCheck()
@@ -181,9 +208,10 @@ public class PlayerComponent : SyncComponent
 		}
 	}
 
+	// 공격 시 상호작용 (상대의 Hit 처리)
 	public void ShotCheck()
 	{
-		if (weapons[currentWeaponIndex].LoadData().weaponType == WeaponData.WEAPON_TYPE.GUN)
+		if (weapons[currentActiveIndex].LoadData().weaponType == WeaponData.WEAPON_TYPE.GUN)
 		{
 			Debug.DrawRay(cam.position, cam.forward * gunMaxDistance, Color.red, 1f);
 			if (Physics.Raycast(cam.position, cam.forward, out hit, gunMaxDistance, shotLayerMask)) // 충돌 감지 시
@@ -191,11 +219,11 @@ public class PlayerComponent : SyncComponent
 				Debug.Log("Shot : " + hit.transform);
 				if (hit.transform.GetComponent<StatusComponent>() != null)
 				{
-					hit.transform.GetComponent<StatusComponent>().Hit(weapons[currentWeaponIndex].LoadData().damage);
+					hit.transform.GetComponent<StatusComponent>().Hit(weapons[currentActiveIndex].LoadData().damage);
 				}
 			}
 		}
-		else if (weapons[currentWeaponIndex].LoadData().weaponType == WeaponData.WEAPON_TYPE.KNIFE)
+		else if (weapons[currentActiveIndex].LoadData().weaponType == WeaponData.WEAPON_TYPE.KNIFE)
 		{
 			Debug.DrawRay(cam.position, cam.forward * knifeMaxDistance, Color.red, 1f);
 			if (Physics.Raycast(cam.position, cam.forward, out hit, knifeMaxDistance, shotLayerMask)) // 충돌 감지 시
@@ -203,7 +231,7 @@ public class PlayerComponent : SyncComponent
 				Debug.Log("Shot : " + hit.transform);
 				if (hit.transform.GetComponent<StatusComponent>() != null)
 				{
-					hit.transform.GetComponent<StatusComponent>().Hit(weapons[currentWeaponIndex].LoadData().damage);
+					hit.transform.GetComponent<StatusComponent>().Hit(weapons[currentActiveIndex].LoadData().damage);
 				}
 			}
 		}
@@ -220,24 +248,41 @@ public class PlayerComponent : SyncComponent
 	void Update() 
 	{
 		if(Input.GetKeyDown(KeyCode.Alpha1)){
-			WeaponChange(0);
+			ActiveChange(0);
         }
-		if(Input.GetKeyDown(KeyCode.Alpha2)){
-			WeaponChange(1);
+		else if(Input.GetKeyDown(KeyCode.Alpha2)){
+			ActiveChange(1);
         }
+		else if(Input.GetKeyDown(KeyCode.Alpha3)){
+			ActiveChange(2);
+        }
+		else if(Input.GetKeyDown(KeyCode.Alpha4)){
+			ActiveChange(3);
+        }
+		else if(Input.GetKeyDown(KeyCode.Alpha5)){
+			ActiveChange(4);
+        }
+
 		if(Input.GetMouseButtonDown(0)){
-			if (weapons.Count > 0)
+			if (currentActiveIndex < 2 && weapons.Count > 0)
 			{
-				if (weapons[currentWeaponIndex].LoadData().currentMagazine > 0)
+				if (weapons[currentActiveIndex].LoadData().currentMagazine > 0)
 				{
-					weapons[currentWeaponIndex].Shot();
+					weapons[currentActiveIndex].Shot();
 					ShotCheck();
+				}
+			}
+			else if (currentActiveIndex >= 2 && items.Count > 0)
+			{
+				if (items[currentActiveIndex-2].LoadData().currentMagazine > 0)
+				{
+					items[currentActiveIndex-2].Shot();
 				}
 			}
         }
 		if(Input.GetKeyDown(KeyCode.R)){
 			if(weapons.Count>0)
-				weapons[currentWeaponIndex].Reload();
+				weapons[currentActiveIndex].Reload();
         }
 
 

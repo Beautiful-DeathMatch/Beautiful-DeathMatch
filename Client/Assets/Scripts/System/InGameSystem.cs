@@ -10,6 +10,7 @@ public class InGameSystem : MonoSystem
     WeaponSubSystem weaponSubSystem;
     StatusSubSystem statusSubSystem;
     MissionSubSystem missionSubSystem;
+    ItemSubSystem itemSubSystem;
     public List<int> playerIdList= new();
     public bool isDebugOn { get; private set; } = false;
 
@@ -20,6 +21,7 @@ public class InGameSystem : MonoSystem
         statusSubSystem = FindObjectOfType<StatusSubSystem>();
         weaponSubSystem = FindObjectOfType<WeaponSubSystem>();
         missionSubSystem = FindObjectOfType<MissionSubSystem>();
+        itemSubSystem = FindObjectOfType<ItemSubSystem>();
         tempDB = FindObjectOfType<TempDB>();
     }
 
@@ -46,6 +48,9 @@ public class InGameSystem : MonoSystem
 
             missionSubSystem.TryCreate(playerId, 1, 0, 1);
             missionSubSystem.TryCreate(playerId, 2, 0, 5);
+
+            itemSubSystem.TryCreate(playerId, 1);
+            itemSubSystem.TryCreate(playerId, 2);
         }
         FindObjectOfType<UISystem>().canvas.SetActive(true);
         FindObjectOfType<StarterAssetsInputs>().cursorLocked = true;

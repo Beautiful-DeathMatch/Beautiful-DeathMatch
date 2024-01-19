@@ -8,9 +8,10 @@ using UnityEngine;
 public class UISystem : MonoBehaviour
 {
     public GameObject canvas;
-    public TextMeshProUGUI weapon;
-    public TextMeshProUGUI weaponContent;
+    public TextMeshProUGUI current;
+    public TextMeshProUGUI currentContent;
     public TextMeshProUGUI weaponList;
+    public TextMeshProUGUI itemList;
     public TextMeshProUGUI mission;
     public TextMeshProUGUI interaction;
     [SerializeField]
@@ -19,17 +20,27 @@ public class UISystem : MonoBehaviour
     public TempDB tempDB;
     StringBuilder stringBuilder = new StringBuilder();
 
-    void PrintWeaponText()
+    void PrintCurrentActiveText()
     {
         stringBuilder.Clear();
-        WeaponData weaponData = playerComponent.weapons[playerComponent.currentWeaponIndex].LoadData();
-        weapon.text = tempDB.GetWeaponNameByIndex(weaponData.weaponIndex); // 무기 이름 출력
-        stringBuilder.AppendFormat("[{0}", weaponData.ownerID);
-        stringBuilder.AppendFormat("{0}] ", weaponData.weaponType);
-        stringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
-        stringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
-        stringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
-        weaponContent.text = stringBuilder.ToString(); // 무기 정보 출력
+        if (playerComponent.currentActiveIndex < 2)
+        {
+            WeaponData weaponData = playerComponent.weapons[playerComponent.currentActiveIndex].LoadData();
+            current.text = tempDB.GetWeaponNameByIndex(weaponData.weaponIndex); // 무기 이름 출력
+            stringBuilder.AppendFormat("[{0}", weaponData.ownerID);
+            stringBuilder.AppendFormat("{0}] ", weaponData.weaponType);
+            stringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
+            stringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
+            stringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
+        }
+        else
+        {
+            ItemData itemData = playerComponent.items[playerComponent.currentActiveIndex-2].LoadData();
+            current.text = tempDB.GetItemNameByIndex(itemData.itemIndex); // 아이템 이름 출력
+            stringBuilder.AppendFormat("[{0}]", itemData.ownerID);
+            stringBuilder.AppendFormat("{0} ", itemData.currentMagazine);
+        }
+        currentContent.text = stringBuilder.ToString(); // 무기 정보 출력
     }
 
     void PrintWeaponListText()
@@ -44,11 +55,28 @@ public class UISystem : MonoBehaviour
             stringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
             stringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
             stringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
-            if (playerComponent.weapons[playerComponent.currentWeaponIndex] == weaponComponent)
+            if (playerComponent.currentActiveIndex < 2 && playerComponent.weapons[playerComponent.currentActiveIndex] == weaponComponent)
                 stringBuilder.Append(" (선택 중)");
             stringBuilder.Append("\n");   
         }
             weaponList.text = stringBuilder.ToString(); // 무기 정보 출력
+    }
+
+    void PrintItemListText()
+    {
+        stringBuilder.Clear();
+        for (int i = 0; i < playerComponent.items.Count; i++)
+        {
+            ItemComponent itemComponent = playerComponent.items[i];
+            ItemData itemData = itemComponent.LoadData();
+            stringBuilder.AppendFormat("{0} : ", i+3);
+            stringBuilder.AppendFormat("{0} ", tempDB.GetItemNameByIndex(itemData.itemIndex));
+            stringBuilder.AppendFormat("{0} ", itemData.currentMagazine);
+            if (playerComponent.currentActiveIndex >= 2 && playerComponent.items[playerComponent.currentActiveIndex-2] == itemComponent)
+                stringBuilder.Append(" (선택 중)");
+            stringBuilder.Append("\n");   
+        }
+            itemList.text = stringBuilder.ToString(); // 아이템 정보 출력
     }
 
     void PrintMissionText()
@@ -91,8 +119,9 @@ public class UISystem : MonoBehaviour
                 playerComponent = playerCamera.Follow.parent.GetComponent<PlayerComponent>();
             else
             {
+                PrintCurrentActiveText();
                 PrintWeaponListText();
-                PrintWeaponText();
+                PrintItemListText();
                 PrintMissionText();
                 PrintInteractionText();
             }
