@@ -6,10 +6,12 @@ using UnityEngine;
 
 public class WeaponData
 {
-    public WeaponData(int _ownerID, int _weaponType, int _maxMagazine, int _currentMagazine, int _remainedMagazine)
+    public WeaponData(int _ownerID, int _weaponIndex, WEAPON_TYPE _weaponType, int _damage, int _maxMagazine, int _currentMagazine, int _remainedMagazine)
     {
         ownerID = _ownerID;
+        weaponIndex = _weaponIndex;
         weaponType = _weaponType;
+        damage = _damage;
         maxMagazine = _maxMagazine;
         currentMagazine = _currentMagazine;
         remainedMagazine = _remainedMagazine;
@@ -17,16 +19,27 @@ public class WeaponData
     public WeaponData(WeaponData WD)
     {
         ownerID = WD.ownerID;
+        weaponIndex = WD.weaponIndex;
         weaponType = WD.weaponType;
+        damage = WD.damage;
         maxMagazine = WD.maxMagazine;
         currentMagazine = WD.currentMagazine;
         remainedMagazine = WD.remainedMagazine;
     }
-    public int ownerID = 0;             // 소유자 ID
-    public int weaponType = 0;          // 무기 타입 (칼/총 등)
-    public int maxMagazine = 0;         // 최대 장전 가능 탄창
-    public int currentMagazine = 0;     // 현재 장전된 탄환 수
-    public int remainedMagazine = 0;    // 장전 안한 남은 탄환 수
+    public int ownerID = 0;                                 // 소유자 ID
+    public int weaponIndex = 0;                             // 무기 Index
+    public WEAPON_TYPE weaponType = WEAPON_TYPE.NONE;       // 무기 타입 (칼/총 등)
+    public int damage = 0;                                  // 기본 공격력
+    public int maxMagazine = 0;                             // 최대 장전 가능 탄창
+    public int currentMagazine = 0;                         // 현재 장전된 탄환 수
+    public int remainedMagazine = 0;                        // 장전 안한 남은 탄환 수
+
+    public enum WEAPON_TYPE // 인터랙션 타입 Enum
+    {
+        NONE,           
+        KNIFE,      // 칼
+        GUN         // 총
+    }
 }
 
 public class WeaponSubSystem : MonoSubSystem
@@ -44,6 +57,10 @@ public class WeaponSubSystem : MonoSubSystem
     // Weapon이 달릴 오브젝트 프리팹
     [SerializeField]
     WeaponComponent weaponPrefeb;
+
+    [SerializeField]
+    TempDB tempDB;
+
     
 
     // =================== 생성/삭제 =================== //
@@ -56,10 +73,11 @@ public class WeaponSubSystem : MonoSubSystem
     }
 
     // weapon 생성
-    public void Create(int ownerID, int weaponType, int maxMagazine, int currentMagazine, int remainedMagazine)
+    public void Create(int ownerID, int weaponIndex, int currentMagazine, int remainedMagazine)
     {
         int newID = CreateID();
-        weapons.Add(newID, new WeaponData(ownerID, weaponType, maxMagazine, currentMagazine, remainedMagazine));
+        WeaponDBData weaponDB = tempDB.GetWeaponDB(weaponIndex); // DB Load
+        weapons.Add(newID, new WeaponData(ownerID, weaponIndex, weaponDB.weaponType, weaponDB.damage, weaponDB.maxMagazine, currentMagazine, remainedMagazine));
         // WeaponComponent 생성하여 유저에게 할당
         Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
         WeaponComponent weapon = Instantiate(weaponPrefeb, ownerTransform);
@@ -67,9 +85,9 @@ public class WeaponSubSystem : MonoSubSystem
         weapon.AddToPlayerComponent(ownerTransform);
         
     }
-    public void TryCreate(int ownerID, int weaponType, int maxMagazine, int currentMagazine, int remainedMagazine)
+    public void TryCreate(int ownerID, int weaponIndex, int currentMagazine, int remainedMagazine)
     {
-        Create(ownerID, weaponType, maxMagazine, currentMagazine, remainedMagazine);
+        Create(ownerID, weaponIndex, currentMagazine, remainedMagazine);
     }
 
     // weapon 제거
@@ -122,7 +140,7 @@ public class WeaponSubSystem : MonoSubSystem
     public void Shot(int ID)
     {
         WeaponData weapon = weapons[ID];
-        if (weapon.currentMagazine > 0)
+        if (weapon.weaponType != WeaponData.WEAPON_TYPE.KNIFE && weapon.currentMagazine > 0)
             weapon.currentMagazine -= 1;
     }
     public void TryShot(int ID)

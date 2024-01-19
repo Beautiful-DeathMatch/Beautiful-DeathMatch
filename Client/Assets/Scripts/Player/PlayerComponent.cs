@@ -2,6 +2,7 @@ using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -87,8 +88,12 @@ public class PlayerComponent : SyncComponent
 	public InteractionData currentInteraction;
 
 	public RaycastHit hit;
-	float MaxDistance = 8f;
-	LayerMask layerMask; // 레이 무시용 레이어 마스크
+	Transform cam;
+	float interactionMaxDistance = 8f;
+	float gunMaxDistance = 100f;
+	float knifeMaxDistance = 10f;
+	LayerMask interactionLayerMask; // 인터랙션 레이 무시용 레이어 마스크
+	LayerMask shotLayerMask; // 공격 레이 무시용 레이어 마스크
 
 	// 각 리스트 항목 추가 및 삭제 (외부 접근용)
 	public void WeaponAdd(WeaponComponent weaponComponent)
@@ -156,33 +161,10 @@ public class PlayerComponent : SyncComponent
 		return weapons[currentWeaponIndex];
 	}
 
-	void Start()
+	public void InteractionCheck()
 	{
-		layerMask = ~LayerMask.GetMask("Player");
-	}
-
-	// 디버깅용 Input Update 문, 실제로는 내가 조종하는 플레이어일 경우에만 가능한 행동들
-	void Update() 
-	{
-		if(Input.GetKeyDown(KeyCode.Alpha1)){
-			WeaponChange(0);
-        }
-		if(Input.GetKeyDown(KeyCode.Alpha2)){
-			WeaponChange(1);
-        }
-		if(Input.GetMouseButtonDown(0)){
-			if(weapons.Count>0)
-				weapons[currentWeaponIndex].Shot();
-        }
-		if(Input.GetKeyDown(KeyCode.R)){
-			if(weapons.Count>0)
-				weapons[currentWeaponIndex].Reload();
-        }
-
-		Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * MaxDistance, Color.blue, 0.3f);
-		
 		currentInteraction = null;
-		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, MaxDistance, layerMask)) // 충돌 감지 시
+		if(Physics.Raycast(cam.position, cam.forward, out hit, interactionMaxDistance, interactionLayerMask)) // 충돌 감지 시
 		{
 			Debug.Log(hit.transform);
 			if (hit.transform.GetComponent<InteractionComponent>() != null) // InteractionComponent 감지 시
@@ -197,8 +179,70 @@ public class PlayerComponent : SyncComponent
 				}
 			}
 		}
+	}
+
+	public void ShotCheck()
+	{
+		if (weapons[currentWeaponIndex].LoadData().weaponType == WeaponData.WEAPON_TYPE.GUN)
+		{
+			Debug.DrawRay(cam.position, cam.forward * gunMaxDistance, Color.red, 1f);
+			if (Physics.Raycast(cam.position, cam.forward, out hit, gunMaxDistance, shotLayerMask)) // 충돌 감지 시
+			{
+				Debug.Log("Shot : " + hit.transform);
+				if (hit.transform.GetComponent<StatusComponent>() != null)
+				{
+					hit.transform.GetComponent<StatusComponent>().Hit(weapons[currentWeaponIndex].LoadData().damage);
+				}
+			}
+		}
+		else if (weapons[currentWeaponIndex].LoadData().weaponType == WeaponData.WEAPON_TYPE.KNIFE)
+		{
+			Debug.DrawRay(cam.position, cam.forward * knifeMaxDistance, Color.red, 1f);
+			if (Physics.Raycast(cam.position, cam.forward, out hit, knifeMaxDistance, shotLayerMask)) // 충돌 감지 시
+			{
+				Debug.Log("Shot : " + hit.transform);
+				if (hit.transform.GetComponent<StatusComponent>() != null)
+				{
+					hit.transform.GetComponent<StatusComponent>().Hit(weapons[currentWeaponIndex].LoadData().damage);
+				}
+			}
+		}
+	}
+
+	void Start()
+	{
+		interactionLayerMask = ~LayerMask.GetMask("Player");
+		shotLayerMask = ~LayerMask.GetMask("Player") & ~LayerMask.GetMask("Interaction");
+		cam = Camera.main.transform;
+	}
+
+	// 디버깅용 Input Update 문, 실제로는 내가 조종하는 플레이어일 경우에만 가능한 행동들
+	void Update() 
+	{
+		if(Input.GetKeyDown(KeyCode.Alpha1)){
+			WeaponChange(0);
+        }
+		if(Input.GetKeyDown(KeyCode.Alpha2)){
+			WeaponChange(1);
+        }
+		if(Input.GetMouseButtonDown(0)){
+			if (weapons.Count > 0)
+			{
+				if (weapons[currentWeaponIndex].LoadData().currentMagazine > 0)
+				{
+					weapons[currentWeaponIndex].Shot();
+					ShotCheck();
+				}
+			}
+        }
+		if(Input.GetKeyDown(KeyCode.R)){
+			if(weapons.Count>0)
+				weapons[currentWeaponIndex].Reload();
+        }
 
 
+		Debug.DrawRay(cam.position, cam.forward * interactionMaxDistance, Color.blue, 0.3f);
+		InteractionCheck();
 	}
 
 }

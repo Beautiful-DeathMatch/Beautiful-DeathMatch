@@ -203,5 +203,15 @@ public class StatusSubSystem : MonoSubSystem
         AllGameStart();
     }
 
+    // 초기 MaxHP 세팅 (Component에 설정 되어 있을 경우에만)
+    public void SetInitialHP(int ID, int amount)
+    {
+        statuses[ID].maxHp = amount;
+        statuses[ID].hp = statuses[ID].maxHp;
+    }
+    public void TrySetInitialHP(int ID, int amount)
+    {
+        SetInitialHP(ID, amount);
+    }
 
 }

@@ -29,7 +29,8 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
     {
         if (ID == 0)
         {
-            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다.");
+            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다. 재등록 시도 중...");
+            Register(); 
             return 0;
         }
         else if (!System.IsContainsKey(ID))
@@ -112,8 +113,6 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
         {
             DeleteObject();
         }
-        else if (Check() == 0)
-            Register(); 
 
         // =================== DEBUG =================== //
 

@@ -10,6 +10,7 @@ public class UISystem : MonoBehaviour
     public GameObject canvas;
     public TextMeshProUGUI weapon;
     public TextMeshProUGUI weaponContent;
+    public TextMeshProUGUI weaponList;
     public TextMeshProUGUI mission;
     public TextMeshProUGUI interaction;
     [SerializeField]
@@ -22,14 +23,32 @@ public class UISystem : MonoBehaviour
     {
         stringBuilder.Clear();
         WeaponData weaponData = playerComponent.weapons[playerComponent.currentWeaponIndex].LoadData();
-        weapon.text = tempDB.GetWeaponNameByType(weaponData.weaponType); // 무기 이름 출력
-        stringBuilder.Clear();
+        weapon.text = tempDB.GetWeaponNameByIndex(weaponData.weaponIndex); // 무기 이름 출력
         stringBuilder.AppendFormat("[{0}", weaponData.ownerID);
         stringBuilder.AppendFormat("{0}] ", weaponData.weaponType);
         stringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
         stringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
         stringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
         weaponContent.text = stringBuilder.ToString(); // 무기 정보 출력
+    }
+
+    void PrintWeaponListText()
+    {
+        stringBuilder.Clear();
+        for (int i = 0; i < playerComponent.weapons.Count; i++)
+        {
+            WeaponComponent weaponComponent = playerComponent.weapons[i];
+            WeaponData weaponData = weaponComponent.LoadData();
+            stringBuilder.AppendFormat("{0} : ", i+1);
+            stringBuilder.AppendFormat("{0} ", tempDB.GetWeaponNameByIndex(weaponData.weaponIndex));
+            stringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
+            stringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
+            stringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
+            if (playerComponent.weapons[playerComponent.currentWeaponIndex] == weaponComponent)
+                stringBuilder.Append(" (선택 중)");
+            stringBuilder.Append("\n");   
+        }
+            weaponList.text = stringBuilder.ToString(); // 무기 정보 출력
     }
 
     void PrintMissionText()
@@ -59,6 +78,11 @@ public class UISystem : MonoBehaviour
                 }       
     }
 
+    void Awake()
+    {
+        canvas.SetActive(false);
+    }
+
     void Update()
     {
         if(canvas.activeSelf)
@@ -67,6 +91,7 @@ public class UISystem : MonoBehaviour
                 playerComponent = playerCamera.Follow.parent.GetComponent<PlayerComponent>();
             else
             {
+                PrintWeaponListText();
                 PrintWeaponText();
                 PrintMissionText();
                 PrintInteractionText();

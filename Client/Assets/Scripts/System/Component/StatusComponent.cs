@@ -7,6 +7,8 @@ public class StatusComponent : MonoComponent<StatusSubSystem>
     // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
+    [SerializeField]
+    int initialHP = 0;
 
     // =================== 내부 호출용도 =================== //
 
@@ -16,7 +18,8 @@ public class StatusComponent : MonoComponent<StatusSubSystem>
     {
         if (ID == 0)
         {
-            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다.");
+            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다. 재등록 시도 중...");
+            Register();
             return 0;
         }
         else if (!System.IsContainsKey(ID))
@@ -62,10 +65,14 @@ public class StatusComponent : MonoComponent<StatusSubSystem>
 
     // =================== System 요청 함수 =================== //
 
-    // Status 는 캐릭터에 달려 나오므로 System애 최초 등록이 필요함
+    // Status 는 캐릭터에 달려 나오므로 System에 최초 등록이 필요함
     public void Register()
     {
         System.TryRegister(this, 1);
+        if(initialHP > 0)
+        {
+            SetInitialHP(initialHP);
+        }
     }
 
     // Status 소유자 변경
@@ -92,6 +99,11 @@ public class StatusComponent : MonoComponent<StatusSubSystem>
         System.TryDead(ID);
     }
 
+    // 초기 MaxHP 세팅 (Component에 설정 되어 있을 경우에만)
+    public void SetInitialHP(int amount)
+    {
+        System.SetInitialHP(ID, amount);
+    }
     
     // =================== Awake 함수 (최초 생성 시 시스템 등록 용) =================== //
     void Awake()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using StarterAssets;
 using UnityEngine;
 using UnityEngine.InputSystem; // For Debug
 
@@ -10,12 +11,16 @@ public class InGameSystem : MonoSystem
     StatusSubSystem statusSubSystem;
     MissionSubSystem missionSubSystem;
     public List<int> playerIdList= new();
+    public bool isDebugOn { get; private set; } = false;
+
+    TempDB tempDB;
 
     private void Awake() 
     {
         statusSubSystem = FindObjectOfType<StatusSubSystem>();
         weaponSubSystem = FindObjectOfType<WeaponSubSystem>();
         missionSubSystem = FindObjectOfType<MissionSubSystem>();
+        tempDB = FindObjectOfType<TempDB>();
     }
 
     // 게임 준비
@@ -28,6 +33,24 @@ public class InGameSystem : MonoSystem
     void GameStart()
     {
         statusSubSystem.AllGameStart();
+    }
+
+    // 디버그 게임 시작
+    void DebugGameStart()
+    {
+        foreach (int playerId in playerIdList)
+        {
+            //PlayerComponent playerComponent = FindObjectOfType<SpawnSystem>().GetPlayerComponent(playerId);
+            weaponSubSystem.TryCreate(playerId, 2, 5, 15);
+            weaponSubSystem.TryCreate(playerId, 1, 1, 10);
+
+            missionSubSystem.TryCreate(playerId, 1, 0, 1);
+            missionSubSystem.TryCreate(playerId, 2, 0, 5);
+        }
+        FindObjectOfType<UISystem>().canvas.SetActive(true);
+        FindObjectOfType<StarterAssetsInputs>().cursorLocked = true;
+        FindObjectOfType<StarterAssetsInputs>().cursorInputForLook = true;
+        isDebugOn = true;
     }
 
     // 신규 플레이어 입장 시 해야 할 것
@@ -43,7 +66,8 @@ public class InGameSystem : MonoSystem
 
     GUIStyle style_ = new GUIStyle();
 
-    private void OnGUI() {
+    private void OnGUI() 
+    {
         style_.normal.textColor = new Color(0, 0, 0, 1);
         GUI.Label(
             new Rect(Screen.width * 0.85f, Screen.height * 0.9f, Screen.width * 0.98f, Screen.height * 0.98f)
@@ -52,19 +76,10 @@ public class InGameSystem : MonoSystem
 
     private void Update() 
     {
-        if(Input.GetKeyDown(KeyCode.Z) && (FindObjectOfType<UISystem>().canvas.activeSelf==false)){
+        if(Input.GetKeyDown(KeyCode.Z) && (isDebugOn==false)){
             if (playerIdList.Count > 0)
             {
-                foreach (int playerId in playerIdList)
-                {
-                    //PlayerComponent playerComponent = FindObjectOfType<SpawnSystem>().GetPlayerComponent(playerId);
-                    weaponSubSystem.TryCreate(playerId, 1, 1, 1, 10);
-                    weaponSubSystem.TryCreate(playerId, 2, 5, 5, 15);
-
-                    missionSubSystem.TryCreate(playerId, 1, 0, 1);
-                    missionSubSystem.TryCreate(playerId, 2, 0, 5);
-                }
-                FindObjectOfType<UISystem>().canvas.SetActive(true);
+                DebugGameStart();
             }
         }
     }
