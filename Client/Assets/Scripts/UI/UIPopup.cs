@@ -11,7 +11,7 @@ public class UIParam
 
 
 /// <summary>
-/// ÄÚµå¸¦ ÅëÇØ À¯±âÀûÀ¸·Î ¿­°í ´ÝÀ» ¼ö ÀÖ´Â UI´Â PopupÀ» »ó¼Ó¹Þ´Â´Ù.
+/// ì½”ë“œë¥¼ í†µí•´ ìœ ê¸°ì ìœ¼ë¡œ ì—´ê³  ë‹«ì„ ìˆ˜ ìžˆëŠ” UIëŠ” Popupì„ ìƒì†ë°›ëŠ”ë‹¤.
 /// </summary>
 
 public class UIPopup : UIWindow

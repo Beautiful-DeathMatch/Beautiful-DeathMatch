@@ -87,21 +87,21 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
 
 	public virtual void OnStartClient()
 	{
-		throw new NotImplementedException();
+		
 	}
 
 	public virtual void OnStopClient()
 	{
-		throw new NotImplementedException();
+		
 	}
 
 	public virtual void OnClientConnected()
 	{
-		throw new NotImplementedException();
+		
 	}
 
 	public virtual void OnClientDisconnected()
 	{
-		throw new NotImplementedException();
+		
 	}
 }

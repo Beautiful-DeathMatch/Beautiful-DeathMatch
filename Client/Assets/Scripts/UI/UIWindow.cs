@@ -7,16 +7,18 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasScaler))]
 public class UIWindow : MonoBehaviour
 {
-	[SerializeField] protected PrefabLinkedUISystem uiSystem = null;
+	protected PrefabLinkedUISystem uiSystem = null;
+
     [SerializeField] private Canvas canvas;
     [SerializeField] private CanvasScaler scaler;
 
 #if UNITY_EDITOR
 	private void Reset()
 	{
-		uiSystem = FindObjectOfType<PrefabLinkedUISystem>();
         canvas = GetComponent<Canvas>();
 		scaler = GetComponent<CanvasScaler>();
+
+		uiSystem = FindObjectOfType<PrefabLinkedUISystem>();
 
 		SetCanvas();
 		SetScaler();
@@ -27,6 +29,8 @@ public class UIWindow : MonoBehaviour
 	private void Awake()
 	{
 		canvas.worldCamera = Camera.main;
+
+		uiSystem = FindObjectOfType<PrefabLinkedUISystem>();
 	}
 
 	private void SetCanvas()

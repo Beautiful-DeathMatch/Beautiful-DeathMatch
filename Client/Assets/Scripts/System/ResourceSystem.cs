@@ -10,25 +10,27 @@ using Object = UnityEngine.Object;
 
 public class ResourceSystem : MonoSystem
 {
-	public T Load<T>() where T : Object
+	public T Load<T>(string path = "") where T : Object
 	{
-		return Resources.Load<T>("");
+		if (path == null || path == string.Empty)
+		{
+			path = Utility.GetResourcePath<T>();
+		}
+
+		return Resources.Load<T>(path);
 	}
 
-	public ResourceRequest LoadAsync<T>(string path) where T : Object
+	public T Instantiate<T>(string path = "") where T : Object
 	{
-		return Resources.LoadAsync<T>(path);
-	}
+		var prefab = Load<T>(path);
+		if (prefab == null)
+			return null;
 
-	public T Instantiate<T>() where T : Object
-	{
-		var prefab = Load<T>();
-		return MonoBehaviour.Instantiate<T>(prefab);
+		return Instantiate(prefab);
 	}
 
 	public void Unload(Object obj)
 	{
 		Resources.UnloadAsset(obj);
 	}
-
 }
