@@ -28,12 +28,11 @@ public class PrefabLinkedUISystem : MonoSystem
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
 	{
 		FindMainWindow(SceneModuleSystemManager.Instance.CurrentSceneType);
-		SceneModuleSystemManager.Instance.onSceneChanged += FindMainWindow;
 	}
 
     public override void OnExit()
 	{
-		SceneModuleSystemManager.Instance.onSceneChanged -= FindMainWindow;
+		
 	}
 
 	private void FindMainWindow(SceneType type)
@@ -58,6 +57,12 @@ public class PrefabLinkedUISystem : MonoSystem
 	private void ReleasePopups(SceneType type)
 	{
 		popupStack.Clear();
+
+		foreach (var popup in popupDictionary.Values)
+		{
+			Destroy(popup.gameObject);
+		}
+
 		popupDictionary.Clear();
 	}
 
