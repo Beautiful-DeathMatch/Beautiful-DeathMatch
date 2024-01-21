@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using kcp2k;
 using Mirror;
 using System.Collections;
@@ -22,6 +23,7 @@ public class BattleSceneModule : NetworkSceneModule
 	}
 
 	[SerializeField] private SpawnSystem spawnSystem = null;
+	// 시스템 추가
 
 #if UNITY_EDITOR
 	protected override NetworkManager CreateNetworkManager()
@@ -59,7 +61,7 @@ public class BattleSceneModule : NetworkSceneModule
 		infos[0] = new PlayerInfo();
 		infos[0].playerId = 0;
 
-		if (GUI.Button(new Rect(0, 0, 300, 200), "캐릭터 스폰"))
+		if (GUI.Button(new Rect(0, 0, 300, 200), "캐릭터 스폰 (디버깅용)"))
 		{
 			OnEnter(new Param(true, 0, infos));
 		}
@@ -71,6 +73,32 @@ public class BattleSceneModule : NetworkSceneModule
 		base.OnEnter(param);
 
 		spawnSystem.OnEnter(param);
+	}
+
+	public override void OnExit()
+	{
+		base.OnExit();
+
+		// 로직 추가
+	}
+
+	public override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
+	{
+		// 로직 추가
+		return base.OnPrepareEnterRoutine(param);
+	}
+
+	public override UniTask OnPrepareExitRoutine()
+	{
+		// 로직 추가
+		return base.OnPrepareExitRoutine();
+	}
+
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+	{
+		base.OnUpdate(deltaFrameCount, deltaTime);
+
+		// 로직 추가
 	}
 
 }
