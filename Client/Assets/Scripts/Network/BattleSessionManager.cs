@@ -48,21 +48,25 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	public override void OnStartClient() 
 	{
-		
+		subscriber?.OnStartClient();
 	}
 
 	public override void OnStopClient()
 	{
-		
+		subscriber?.OnStopClient();
 	}
 
 	public override void OnClientConnect()
 	{
 		base.OnClientConnect();
+
+		subscriber?.OnClientConnected();
 	}
 
 	public override void OnClientDisconnect()
 	{
 		base.OnClientDisconnect();
+
+		subscriber?.OnClientDisconnected();	
 	}
 }

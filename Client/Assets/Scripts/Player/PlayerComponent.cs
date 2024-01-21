@@ -13,52 +13,17 @@ public enum CharacterType
 	MAX
 }
 
-public class SyncComponent : MonoBehaviour
-{
-	public virtual void Initialize(int playerId)
-	{
-		
-	}
-
-	public virtual void Clear()
-	{
-		
-	}
-}
-
-public class PlayerComponent : SyncComponent
+public class PlayerComponent : MonoBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;
 	[SerializeField] private Transform cameraHead = null;
 
 	[SerializeField] private CharacterViewComponent characterViewComponent = null;
 
-	private IEnumerable<SyncComponent> childSyncComponents = null;
-
-	public override void Initialize(int playerId)
+	public void Initialize(int playerId)
 	{
-		base.Initialize(playerId);
-
-		childSyncComponents = GetComponentsInChildren<SyncComponent>().Where(c => c != this);
-		foreach (var child in childSyncComponents)
-		{
-			child.Initialize(playerId);
-		}
 		// JH // Player 생성 시 현재 플레이어의 ID를 InGameSystem의 리스트에 등록 (디버깅용)
 		FindObjectOfType<InGameSystem>().playerIdList.Add(playerId);
-	}
-
-	public override void Clear()
-	{
-		base.Clear();
-
-		if (childSyncComponents != null)
-		{
-			foreach (var child in childSyncComponents)
-			{
-				child.Clear();
-			}
-		}
 	}
 
 	public void SetCharacter(CharacterType characterType)

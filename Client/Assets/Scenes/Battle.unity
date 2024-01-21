@@ -10281,6 +10281,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 594291853}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &595372780 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2115748689266406413, guid: 1ac37513e35265a42948be173494124c,
+    type: 3}
+  m_PrefabInstance: {fileID: 329174213}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509033de55019dd47b16de22bce3d6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &600235694
 GameObject:
   m_ObjectHideFlags: 0
@@ -10293,8 +10305,9 @@ GameObject:
   - component: {fileID: 600235697}
   - component: {fileID: 600235696}
   - component: {fileID: 600235695}
+  - component: {fileID: 600235699}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: BattleMainWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10329,11 +10342,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -10349,7 +10362,7 @@ Canvas:
   m_GameObject: {fileID: 600235694}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -10361,7 +10374,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5000
   m_TargetDisplay: 0
 --- !u!224 &600235698
 RectTransform:
@@ -10387,6 +10400,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &600235699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600235694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed2bb445e5274af419e45f2f9574cbbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiSystem: {fileID: 595372780}
+  canvas: {fileID: 600235697}
+  scaler: {fileID: 600235696}
 --- !u!1001 &601261914
 PrefabInstance:
   m_ObjectHideFlags: 0

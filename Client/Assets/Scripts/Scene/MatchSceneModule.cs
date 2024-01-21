@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class MatchSceneModule : NetworkSceneModule
 {
-	[SerializeField] private MatchBoardCanvas matchBoardCanvas;
+	[SerializeField] private MatchBoardMainWindow matchBoardCanvas;
 
 #if UNITY_EDITOR
 	protected override NetworkManager CreateNetworkManager()

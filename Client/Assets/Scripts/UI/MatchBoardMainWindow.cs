@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MatchBoardCanvas : UIMainWindow, IMatchSessionSubscriber
+public class MatchBoardMainWindow : UIMainWindow, IMatchSessionSubscriber
 {
 	private Dictionary<Guid, MatchInfo> openMatches = new Dictionary<Guid, MatchInfo>();
 
