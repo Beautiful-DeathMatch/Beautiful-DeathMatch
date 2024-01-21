@@ -42,7 +42,7 @@ public class WeaponData
     }
 }
 
-public class WeaponSubSystem : MonoSubSystem
+public class WeaponSubSystem : MonoSystem
 {
 
     // 무기 List
@@ -75,14 +75,14 @@ public class WeaponSubSystem : MonoSubSystem
     // weapon 생성
     public void Create(int ownerID, int weaponIndex, int currentMagazine, int remainedMagazine)
     {
-        int newID = CreateID();
-        WeaponDBData weaponDB = tempDB.GetWeaponDB(weaponIndex); // DB Load
-        weapons.Add(newID, new WeaponData(ownerID, weaponIndex, weaponDB.weaponType, weaponDB.damage, weaponDB.maxMagazine, currentMagazine, remainedMagazine));
-        // WeaponComponent 생성하여 유저에게 할당
-        Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
-        WeaponComponent weapon = Instantiate(weaponPrefeb, ownerTransform);
-        weapon.SetID(newID);
-        weapon.AddToPlayerComponent(ownerTransform);
+        //int newID = CreateID();
+        //WeaponDBData weaponDB = tempDB.GetWeaponDB(weaponIndex); // DB Load
+        //weapons.Add(newID, new WeaponData(ownerID, weaponIndex, weaponDB.weaponType, weaponDB.damage, weaponDB.maxMagazine, currentMagazine, remainedMagazine));
+        //// WeaponComponent 생성하여 유저에게 할당
+        //Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
+        //WeaponComponent weapon = Instantiate(weaponPrefeb, ownerTransform);
+        //weapon.SetID(newID);
+        //weapon.AddToPlayerComponent(ownerTransform);
         
     }
     public void TryCreate(int ownerID, int weaponIndex, int currentMagazine, int remainedMagazine)

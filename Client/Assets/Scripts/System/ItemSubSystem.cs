@@ -21,7 +21,7 @@ public class ItemData
     public int currentMagazine = 0;                       // 보유 갯수
 }
 
-public class ItemSubSystem : MonoSubSystem
+public class ItemSubSystem : MonoSystem
 {
     // 아이템 List
     Dictionary<int, ItemData> items = new Dictionary<int, ItemData>();
@@ -52,14 +52,14 @@ public class ItemSubSystem : MonoSubSystem
     // item 생성
     public void Create(int ownerID, int itemIndex)
     {
-        int newID = CreateID();
-        ItemDBData itemDB = tempDB.GetItemDB(itemIndex); // DB Load
-        items.Add(newID, new ItemData(ownerID, itemIndex, itemDB.initialMagazine));
-        // ItemComponent 생성하여 유저에게 할당
-        Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
-        ItemComponent item = Instantiate(itemPrefeb, ownerTransform);
-        item.SetID(newID);
-        item.AddToPlayerComponent(ownerTransform);
+        //int newID = CreateID();
+        //ItemDBData itemDB = tempDB.GetItemDB(itemIndex); // DB Load
+        //items.Add(newID, new ItemData(ownerID, itemIndex, itemDB.initialMagazine));
+        //// ItemComponent 생성하여 유저에게 할당
+        //Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
+        //ItemComponent item = Instantiate(itemPrefeb, ownerTransform);
+        //item.SetID(newID);
+        //item.AddToPlayerComponent(ownerTransform);
         
     }
     public void TryCreate(int ownerID, int itemIndex)

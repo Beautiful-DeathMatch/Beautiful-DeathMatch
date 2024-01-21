@@ -2,7 +2,6 @@ using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +11,19 @@ public enum CharacterType
 	CH_29,
 	CH_46,
 	MAX
+}
+
+public class SyncComponent : MonoBehaviour
+{
+	public virtual void Initialize(int playerId)
+	{
+		
+	}
+
+	public virtual void Clear()
+	{
+		
+	}
 }
 
 public class PlayerComponent : SyncComponent
@@ -68,11 +80,6 @@ public class PlayerComponent : SyncComponent
     {
         transform.position = pos;
     }
-
-	public override void OnReceive(IPacket packet)
-	{
-		
-	}
 
 	// =============JH============= //
 

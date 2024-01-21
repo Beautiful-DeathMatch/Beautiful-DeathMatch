@@ -6,8 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/FantasyDemoScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/MatchServer.unity
+    guid: 2e5af4c043c04554ba68501380faef8c
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 9965f77202f18e1439b83ad4cd295f87
+  - enabled: 1
+    path: Assets/Scenes/Match.unity
+    guid: b1567bb42b1d9a546b0ba359254e0ca0
+  - enabled: 1
+    path: Assets/Scenes/Battle.unity
+    guid: b21d77501704f3a43b8f9ccba21b0cd6
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7,
       type: 2}

@@ -26,7 +26,7 @@ public class MissionData
     public int maxProgression;  // 미션 최대 진행도
 }
 
-public class MissionSubSystem : MonoSubSystem
+public class MissionSubSystem : MonoSystem
 {    
     // 미션 List
     Dictionary<int, MissionData> missions = new Dictionary<int, MissionData>();
@@ -52,13 +52,13 @@ public class MissionSubSystem : MonoSubSystem
     // mission 생성
     public void Create(int ownerID, int missionType, int progression, int maxProgression)
     {
-        int newID = CreateID();
-        missions.Add(newID, new MissionData(ownerID, missionType, progression, maxProgression));
-        // MissionComponent 생성하여 유저에게 할당
-        Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
-        MissionComponent mission = Instantiate(missionPrefeb, ownerTransform);
-        mission.SetID(newID);
-        mission.AddToPlayerComponent(ownerTransform);
+        //int newID = CreateID();
+        //missions.Add(newID, new MissionData(ownerID, missionType, progression, maxProgression));
+        //// MissionComponent 생성하여 유저에게 할당
+        //Transform ownerTransform = FindObjectOfType<SpawnSystem>().GetPlayerComponent(ownerID).transform;
+        //MissionComponent mission = Instantiate(missionPrefeb, ownerTransform);
+        //mission.SetID(newID);
+        //mission.AddToPlayerComponent(ownerTransform);
     }
     public void TryCreate(int ownerID, int missionType, int progression, int maxProgression)
     {

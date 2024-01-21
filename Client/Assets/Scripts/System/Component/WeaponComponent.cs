@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Text;
-using Microsoft.Unity.VisualStudio.Editor; // For Debug
 
 public class WeaponComponent : MonoComponent<WeaponSubSystem>
 {

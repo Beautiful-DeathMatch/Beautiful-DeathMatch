@@ -48,7 +48,7 @@ public class StatusData
 
 }
 
-public class StatusSubSystem : MonoSubSystem
+public class StatusSubSystem : MonoSystem
 {
 
     // Status 리스트

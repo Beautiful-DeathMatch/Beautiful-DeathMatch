@@ -2,15 +2,12 @@ using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SpawnSystem : MonoSystem, IPacketReceiver
+public class SpawnSystem : MonoSystem
 {
-	[SerializeField] private SessionSystem sessionSystem = null;
-
 	[SerializeField] private Cinemachine.CinemachineVirtualCamera playerCamera = null;
 	[SerializeField] private StarterAssetsInputs inputAsset = null;
 	[SerializeField] private PlayerInput inputComponent = null;
@@ -20,44 +17,23 @@ public class SpawnSystem : MonoSystem, IPacketReceiver
 
 	private Dictionary<int, PlayerComponent> playerDictionary = new Dictionary<int, PlayerComponent>();
 
-	protected override void OnAwake()
+	public override void OnEnter(SceneModuleParam sceneModuleParam)
 	{
+		base.OnEnter(sceneModuleParam);
+
 		playerDictionary.Clear();
-		sessionSystem.RegisterPacketReceiver(this);
-	}
 
-	protected override bool OnDispose()
-	{
-		if (base.OnDispose() == false)
-			return false;
-
-		sessionSystem.UnRegisterPacketReceiver(this);
-		return true;
-	}
-
-	private void OnGUI()
-	{
-		if (GUI.Button(new Rect(0, 0, 300, 100), "네트워크 연결 및 캐릭터 스폰"))
+		if (sceneModuleParam is BattleSceneModule.Param battleParam)
 		{
-			sessionSystem.TryConnect();
+			foreach (var playerInfo in battleParam.playerInfoList)
+			{
+				var player = CreatePlayer(playerInfo.playerId, playerInfo.playerId == battleParam.myPlayerId, characterType, transform.position);
+				if (player == null)
+					continue;
+
+				playerDictionary.Add(playerInfo.playerId, player);
+			}
 		}
-
-		characterType = (CharacterType)GUI.Toolbar(new Rect(350, 30, 300, 30), (int)characterType, new string[(int)CharacterType.MAX]
-		{
-			CharacterType.CH_03.ToString(),
-			CharacterType.CH_29.ToString(),
-			CharacterType.CH_46.ToString()
-		});
-	}
-
-	public PlayerComponent GetPlayerComponent(int playerId)
-	{
-		if (playerDictionary.TryGetValue(playerId, out var player))
-		{
-			return player;
-		}
-
-		return null;
 	}
 
 	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
@@ -78,58 +54,5 @@ public class SpawnSystem : MonoSystem, IPacketReceiver
 		playerComponent.SetPosition(initialPos);
 
 		return playerComponent;
-	}
-
-	public void OnReceive(IPacket packet)
-	{
-		if(packet is RES_CONNECTED connectedPacket)
-		{
-			var enterPacket = new REQ_ENTER_GAME();
-			enterPacket.characterType = (int)characterType;
-			sessionSystem.Send(enterPacket);
-		}
-		else if (packet is RES_BROADCAST_ENTER_GAME enterPacket ||
-		    packet is RES_BROADCAST_LEAVE_GAME leavePacket)
-		{
-			REQ_PLAYER_LIST req = new REQ_PLAYER_LIST();
-			sessionSystem.Send(req);
-		}
-		else if(packet is RES_PLAYER_LIST playerListPacket)
-		{
-			var leftPlayerIds = GetLeftPlayerIds(playerListPacket.players).ToList();
-			
-			foreach (var id in leftPlayerIds)
-			{
-				if (playerDictionary.TryGetValue(id, out var controller))
-				{
-					playerDictionary.Remove(id);
-					Destroy(controller.gameObject);
-				}
-			}
-
-			foreach (var player in playerListPacket.players)
-			{
-				if (playerDictionary.ContainsKey(player.playerId))
-					continue;
-
-				var controller = CreatePlayer(player.playerId, player.isSelf, (CharacterType)player.characterType, transform.position);
-				playerDictionary[player.playerId] = controller;
-			}
-		}
-	}
-
-	private IEnumerable<int> GetLeftPlayerIds(IEnumerable<RES_PLAYER_LIST.Player> players)
-	{
-		foreach (var playerComponent in playerDictionary.Values)
-		{
-			if (playerComponent == null)
-				yield break;
-
-			bool isContain = players.Any(p => p.playerId == playerComponent.playerId);
-			if (isContain)
-				continue;
-
-			yield return playerComponent.playerId;
-		}
 	}
 }

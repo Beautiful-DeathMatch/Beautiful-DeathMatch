@@ -29,7 +29,7 @@ public class InteractionData
 
 }
 
-public class InteractionSubSystem : MonoSubSystem
+public class InteractionSubSystem : MonoSystem
 {
     // List
     Dictionary<int, InteractionData> interactions = new Dictionary<int, InteractionData>();
