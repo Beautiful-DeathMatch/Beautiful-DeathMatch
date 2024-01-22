@@ -22,8 +22,7 @@ public class PlayerComponent : MonoBehaviour
 
 	public void Initialize(int playerId)
 	{
-		// JH // Player 생성 시 현재 플레이어의 ID를 InGameSystem의 리스트에 등록 (디버깅용)
-		FindObjectOfType<InGameSystem>().playerIdList.Add(playerId);
+
 	}
 
 	public void SetCharacter(CharacterType characterType)

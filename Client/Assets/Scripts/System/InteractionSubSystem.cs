@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class InteractionData
 {
-    public InteractionData(INTERACTION_TYPE _interactionType, int _subType)
+    public InteractionData(int _ownerID=0, INTERACTION_TYPE _interactionType=INTERACTION_TYPE.NONE, int _subType=0)
     {
+        ownerID = _ownerID;
         interactionType = _interactionType;
         subType = _subType;
     }
     public InteractionData(InteractionData _ID)
     {
+        ownerID = _ID.ownerID;
         interactionType = _ID.interactionType;
         subType = _ID.subType;
     }
 
+    public int ownerID;                     // 소유자 ID (Interaction에선 미사용 예정, Mono 호환용)
     public INTERACTION_TYPE interactionType;     // 인터랙션 타입   
     public int subType;                     // 세부 타입
 
@@ -32,58 +35,66 @@ public class InteractionData
 public class InteractionSubSystem : MonoSystem
 {
     // List
-    Dictionary<int, InteractionData> interactions = new Dictionary<int, InteractionData>();
-
+    Dictionary<int, InteractionData> components = new Dictionary<int, InteractionData>();
 
     // 마지막으로 생성된 고유 ID, 1 부터 시작
     [SerializeField] // For Debug
-    int interactionIDUnique = 0;
-
-    // Interaction이 달릴 오브젝트 프리팹
-    // [SerializeField]
-    // InteractionComponent interactionPrefeb;
+    int componentIDUnique = 0;
     
+    // ====================== 공통 ==========================//
 
     // =================== 생성/삭제 =================== //
 
     // Component 고유 ID 생성 및 반환
     int CreateID()
     {
-        interactionIDUnique++;
-        return interactionIDUnique;
+        componentIDUnique++;
+        return componentIDUnique;
     }
 
-    // interaction 생성 (기존 오브젝트 등록)
-    public void Create(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
+    // Component가 자기 자신의 등록을 요청했을 경우
+    public void Register(InteractionComponent component, int ownerID, InteractionData data = null)
+    {
+        if (data == null)
+            TryCreateData(component, new InteractionData(ownerID));
+        else
+            TryCreateData(component, data);
+    }
+    public void TryRegister(InteractionComponent component, int ownerID, InteractionData data = null)
+    {
+        Register(component, ownerID, data);
+    }
+
+    // Component Data 생성
+    public void CreateData(InteractionComponent component, InteractionData data)
     {
         int newID = CreateID();
-        interactions.Add(newID, new InteractionData(interactionType, subType));
-        interacionComponent.SetID(newID);
+        components.Add(newID, new InteractionData(data));
+        component.SetID(newID);
     }
-    public void TryCreate(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
+    public void TryCreateData(InteractionComponent component, InteractionData data)
     {
-        Create(interacionComponent, interactionType, subType);
+        CreateData(component, data);
     }
 
-
-    // interaction 제거
+    // Component 제거
     public void Delete(int ID)
     {
-        interactions.Remove(ID);
+        components.Remove(ID);
     }
     public void TryDelete(int ID)
     {
         Delete(ID);
     }
 
-    // Component가 자기 자신의 등록을 요청했을 경우
-    public void Register(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
+    // component 소유자 변경
+    public void Acquire(int ID, int ownerID)
     {
-        TryCreate(interacionComponent, interactionType, subType);
+        components[ID].ownerID = ownerID;
     }
-    public void TryRegister(InteractionComponent interacionComponent, InteractionData.INTERACTION_TYPE interactionType, int subType)
+    public void TryAcquire(int ID, int ownerID)
     {
-        Register(interacionComponent, interactionType, subType);
+        Acquire(ID, ownerID);
     }
 
     // =================== 외부에서의 Data 확인용 =================== //
@@ -91,15 +102,15 @@ public class InteractionSubSystem : MonoSystem
     // 존재 여부 확인
     public bool IsContainsKey(int ID)
     {
-        return interactions.ContainsKey(ID);
+        return components.ContainsKey(ID);
     }
 
     // Data 확인
     public InteractionData LoadData(int ID)
     {
-        if (interactions.ContainsKey(ID))
+        if (components.ContainsKey(ID))
         {
-            return new InteractionData(interactions[ID]);
+            return new InteractionData(components[ID]);
         }
         else
         {
@@ -108,5 +119,21 @@ public class InteractionSubSystem : MonoSystem
         }
     }
 
+    // ownerID로 Data 리스트 찾기
+    public List<InteractionData> FindByOwnerID(int ownerID)
+    {
+        List<InteractionData> returnComponents = new();
+        foreach (InteractionData component in components.Values)
+        {
+            if (component.ownerID == ownerID)
+                returnComponents.Add(component);
+        }
+        return returnComponents;
+    }
+
+    // ====================== 공통 끝 ==========================//
+
     // =================== 기능 =================== //
+
+
 }

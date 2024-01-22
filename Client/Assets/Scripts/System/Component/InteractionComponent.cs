@@ -16,21 +16,22 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
     // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
+    InteractionData initialData = null;
     // InteractionComponent 는 맵에 기본 배치될 경우 초기 데이터 값을 가지고 있음
     [SerializeField]
     InteractionData.INTERACTION_TYPE interactionType;
     [SerializeField]
     int subType;
 
-    // =================== 내부 호출용도 =================== //
+    // ====================== 공통 ==========================//
 
     // 유효성 검사
     int Check()
     {
         if (ID == 0)
         {
-            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다. 재등록 시도 중...");
-            Register(); 
+            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다. 재등록 시도합니다.");
+            Register(initialData);
             return 0;
         }
         else if (!System.IsContainsKey(ID))
@@ -41,20 +42,25 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
         else return ID;
     }
 
-    // =================== 외부 반환 용도 =================== //
-
     // ID 반환
     public int ReturnID()
     {
         return ID;
     }
-    
-    // =================== System 에 의한 호출 함수 =================== //
 
     // 시스템에 의한 ID 설정
     public void SetID(int id)
     {
         ID = id;
+    }
+
+    // System Data 조회 함수 
+    public InteractionData LoadData()
+    {
+        if(Check() >0)
+            return System.LoadData(ID);  
+        else
+            return null;      
     }
 
     // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
@@ -63,15 +69,29 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
         Destroy(this.gameObject);
     }
 
-    // =================== System 조회 함수 =================== //
+    // =================== System 요청 함수 =================== //
 
-    public InteractionData LoadData()
+    public void Register(InteractionData data = null)
     {
-        if(Check() >0)
-            return System.LoadData(ID);  
-        else
-            return null;      
+        initialData = data;
+        System.TryRegister(this, 0, data);
     }
+
+    // 소유자 변경
+    public void Acquire(int ownerID)
+    {
+        System.TryAcquire(ID, ownerID);
+    }
+
+    // 컴포넌트 삭제 -> 시스템에 삭제 요청
+    public void Delete()
+    {
+        System.TryDelete(ID);
+    }
+    
+    // ====================== 공통 끝 ==========================//
+
+    // =================== System 조회 함수 =================== //
 
     public InteractionData.INTERACTION_TYPE GetInteractionType()
     {
@@ -84,25 +104,12 @@ public class InteractionComponent : MonoComponent<InteractionSubSystem>
         return interaction.subType;
     }
 
-    // =================== System 요청 함수 =================== //
-
-    // Interaction은 최초 배치되어 있을 수 있으므로 System에 최초 등록이 필요함
-    public void Register()
-    {
-        System.TryRegister(this, interactionType, subType);
-    }
-
-    // 무기 삭제 -> 시스템에 삭제 요청
-    public void Delete()
-    {
-        System.TryDelete(ID);
-    }
-    
     // =================== Start 함수 (Register 용) =================== //
 
     private void Start() 
     {
-        // Register();
+        initialData = new(0, interactionType, subType);
+        Register(initialData);
     }
 
     // =================== Update 함수 (유효하지 않은 오브젝트 삭제 용) =================== //

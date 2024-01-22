@@ -9,22 +9,20 @@ public class MissionComponent : MonoComponent<MissionSubSystem>
     // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
+    MissionData initialData = null;
     // 해당 Component의 PlayerComponent
     [SerializeField]
     PlayerComponent playerComponent = null;
 
-    // =================== 내부 호출용도 =================== //
-
-    // 무기 정보 로드 from json DB
-    // DBLoad()
-
+// ====================== 공통 ==========================//
 
     // 유효성 검사
     int Check()
     {
         if (ID == 0)
         {
-            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다.");
+            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다. 재등록 시도합니다.");
+            Register(initialData);
             return 0;
         }
         else if (!System.IsContainsKey(ID))
@@ -35,26 +33,11 @@ public class MissionComponent : MonoComponent<MissionSubSystem>
         else return ID;
     }
 
-    // =================== 외부 반환 용도 =================== //
-
     // ID 반환
     public int ReturnID()
     {
         return ID;
     }
-
-    // 미션 유효 여부 (진행 가능 여부) 조회
-    public bool IsMissionInProgress()
-    {
-        if (Check() <= 0)
-            return false;
-        MissionData mission = System.LoadData(ID);
-        if (mission.progression < mission.maxProgression)
-            return true;
-        return false;
-    }
-
-    // =================== System 에 의한 호출 함수 =================== //
 
     // 시스템에 의한 ID 설정
     public void SetID(int id)
@@ -62,18 +45,52 @@ public class MissionComponent : MonoComponent<MissionSubSystem>
         ID = id;
     }
 
-    // owner인 Player Component 에 자기 자신 추가
-    public void AddToPlayerComponent(Transform transform)
+    // System Data 조회 함수 
+    public MissionData LoadData()
     {
-        playerComponent = transform.GetComponent<PlayerComponent>();
-        playerComponent.MissionAdd(this);
+        if(Check() >0)
+            return System.LoadData(ID);  
+        else
+            return null;      
     }
 
     // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
     public void DeleteObject()
     {
-        DeleteFromPlayerComponent();
         Destroy(this.gameObject);
+    }
+
+    // =================== System 요청 함수 =================== //
+
+    // System에 최초 등록 요청
+    public void Register(MissionData data = null)
+    {
+        initialData = data;
+        System.TryRegister(this, 0, data);
+    }
+
+    // 소유자 변경
+    public void Acquire(int ownerID)
+    {
+        System.TryAcquire(ID, ownerID);
+    }
+
+    // 컴포넌트 삭제 -> 시스템에 삭제 요청
+    public void Delete()
+    {
+        System.TryDelete(ID);
+    }
+    
+    // ====================== 공통 끝 ==========================//
+
+    // =================== Player Component 관련 =================== //
+    
+
+    // owner인 Player Component 에 자기 자신 추가
+    public void AddToPlayerComponent(Transform transform)
+    {
+        playerComponent = transform.GetComponent<PlayerComponent>();
+        playerComponent.MissionAdd(this);
     }
 
     void DeleteFromPlayerComponent() // owner인 Player Component 에 자기 자신 삭제
@@ -88,21 +105,24 @@ public class MissionComponent : MonoComponent<MissionSubSystem>
         }
     }
 
-    // =================== System 조회 함수 =================== //
-
-    public MissionData LoadData()
+    // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
+    public void DeleteObjectAtPlayer()
     {
-        if(Check() >0)
-            return System.LoadData(ID);  
-        else
-            return null;      
+        DeleteFromPlayerComponent();
+        Destroy(this.gameObject);
     }
 
-    // =================== System 요청 함수 =================== //
+    // =================== 기능 =================== //
 
-    public void Acquire(int ownerID)
+    // 미션 유효 여부 (진행 가능 여부) 조회
+    public bool IsMissionInProgress()
     {
-        System.TryAcquire(ID, ownerID);
+        if (Check() <= 0)
+            return false;
+        MissionData mission = System.LoadData(ID);
+        if (mission.progression < mission.maxProgression)
+            return true;
+        return false;
     }
 
     // 미션 진행도 변경

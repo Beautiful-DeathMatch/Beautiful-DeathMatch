@@ -10,22 +10,20 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
     // 해당 Component의 ID
     [SerializeField]
     int ID = 0;
+    WeaponData initialData = null;
     // 해당 Component의 PlayerComponent
     [SerializeField]
     PlayerComponent playerComponent = null;
 
-    // =================== 내부 호출용도 =================== //
-
-    // 무기 정보 로드 from json DB
-    // DBLoad()
-
+    // ====================== 공통 ==========================//
 
     // 유효성 검사
     int Check()
     {
         if (ID == 0)
         {
-            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다.");
+            Debug.Log("경고! 해당 Component가 List에 등록되어있지 않습니다. 재등록 시도합니다.");
+            Register(initialData);
             return 0;
         }
         else if (!System.IsContainsKey(ID))
@@ -36,15 +34,11 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
         else return ID;
     }
 
-    // =================== 외부 반환 용도 =================== //
-
     // ID 반환
     public int ReturnID()
     {
         return ID;
     }
-    
-    // =================== System 에 의한 호출 함수 =================== //
 
     // 시스템에 의한 ID 설정
     public void SetID(int id)
@@ -52,18 +46,52 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
         ID = id;
     }
 
-    // owner인 Player Component 에 자기 자신 추가
-    public void AddToPlayerComponent(Transform transform)
+    // System Data 조회 함수 
+    public WeaponData LoadData()
     {
-        playerComponent = transform.GetComponent<PlayerComponent>();
-        playerComponent.WeaponAdd(this);
+        if(Check() >0)
+            return System.LoadData(ID);  
+        else
+            return null;      
     }
 
     // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
     public void DeleteObject()
     {
-        DeleteFromPlayerComponent();
         Destroy(this.gameObject);
+    }
+
+    // =================== System 요청 함수 =================== //
+
+    // System에 최초 등록 요청
+    public void Register(WeaponData data = null)
+    {
+        initialData = data;
+        System.TryRegister(this, 0, data);
+    }
+
+    // 소유자 변경
+    public void Acquire(int ownerID)
+    {
+        System.TryAcquire(ID, ownerID);
+    }
+
+    // 컴포넌트 삭제 -> 시스템에 삭제 요청
+    public void Delete()
+    {
+        System.TryDelete(ID);
+    }
+    
+    // ====================== 공통 끝 ==========================//
+
+    // =================== Player Component 관련 =================== //
+    
+
+    // owner인 Player Component 에 자기 자신 추가
+    public void AddToPlayerComponent(Transform transform)
+    {
+        playerComponent = transform.GetComponent<PlayerComponent>();
+        playerComponent.WeaponAdd(this);
     }
 
     void DeleteFromPlayerComponent() // owner인 Player Component 에 자기 자신 삭제
@@ -77,23 +105,15 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
             Debug.Log("Player Component의 리스트에서 삭제 실패 : "+ e);
         }
     }
-    // =================== System 조회 함수 =================== //
 
-    public WeaponData LoadData()
+    // 오브젝트 삭제: 현재 컴포넌트가 달려 있는 Object 삭제
+    public void DeleteObjectAtPlayer()
     {
-        if(Check() >0)
-            return System.LoadData(ID);  
-        else
-            return null;      
+        DeleteFromPlayerComponent();
+        Destroy(this.gameObject);
     }
 
-    // =================== System 요청 함수 =================== //
-
-    // 무기 소유자 변경
-    public void Acquire(int ownerID)
-    {
-        System.TryAcquire(ID, ownerID);
-    }
+    // =================== 기능 =================== //
 
     // 탄약 소모
     public void Shot()
@@ -105,12 +125,6 @@ public class WeaponComponent : MonoComponent<WeaponSubSystem>
     public void Reload()
     {
         System.TryReload(ID);
-    }
-
-    // 무기 삭제 -> 시스템에 삭제 요청
-    public void Delete()
-    {
-        System.TryDelete(ID);
     }
 
     // =================== Update 함수 (유효하지 않은 오브젝트 삭제 용) =================== //

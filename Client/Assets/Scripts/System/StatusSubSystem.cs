@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class StatusData
 {
-    public StatusData(int _ownerID, int _maxHp, int _hp, STATE _state, PHASE _phase)
+    public StatusData(int _ownerID=0, int _maxHp=100, int _hp=100, STATE _state=STATE.UNKNOWN, PHASE _phase=PHASE.UNKNOWN)
     {
         ownerID = _ownerID;
         maxHp = _maxHp;    
@@ -51,56 +50,68 @@ public class StatusData
 public class StatusSubSystem : MonoSystem
 {
 
-    // Status 리스트
-    Dictionary<int, StatusData> statuses = new Dictionary<int, StatusData>();
+    // Component 리스트
+    Dictionary<int, StatusData> components = new Dictionary<int, StatusData>();
 
     // 마지막으로 생성된 고유 ID
     [SerializeField] // For Debug
-    int statusIDUnique = 0;
-
-    // status Component는 프리팹 미사용
+    int componentIDUnique = 0;
     
+
+    // ====================== 공통 ==========================//
 
     // =================== 생성/삭제 =================== //
 
     // Component 고유 ID 생성 및 반환
     int CreateID()
     {
-        statusIDUnique++;
-        return statusIDUnique;
+        componentIDUnique++;
+        return componentIDUnique;
     }
 
-    // status 생성
-    public void Create(StatusComponent statusComponent, int ownerID, int maxHP, int hp, StatusData.STATE state, StatusData.PHASE phase)
+    // Component가 자기 자신의 등록을 요청했을 경우
+    public void Register(StatusComponent component, int ownerID, StatusData data = null)
+    {
+        if (data == null)
+            TryCreateData(component, new StatusData(ownerID));
+        else
+            TryCreateData(component, data);
+    }
+    public void TryRegister(StatusComponent component, int ownerID, StatusData data = null)
+    {
+        Register(component, ownerID, data);
+    }
+
+    // Component Data 생성
+    public void CreateData(StatusComponent component, StatusData data)
     {
         int newID = CreateID();
-        statuses.Add(newID, new StatusData(ownerID, maxHP, hp, state, phase));
-        statusComponent.SetID(newID);
-
+        components.Add(newID, new StatusData(data));
+        component.SetID(newID);
     }
-    public void TryCreate(StatusComponent statusComponent, int ownerID, int maxHP, int hp, StatusData.STATE state, StatusData.PHASE phase)
+    public void TryCreateData(StatusComponent component, StatusData data)
     {
-        Create(statusComponent, ownerID, maxHP, hp, state, phase);
+        CreateData(component, data);
     }
 
-    // weapon 제거
+    // Component 제거
     public void Delete(int ID)
     {
-        statuses.Remove(ID);
+        components.Remove(ID);
     }
     public void TryDelete(int ID)
     {
         Delete(ID);
     }
 
-    // Component가 자기 자신의 등록을 요청했을 경우
-    public void Register(StatusComponent statusComponent, int ownerID)
+    // component 소유자 변경
+    public void Acquire(int ID, int ownerID)
     {
-        TryCreate(statusComponent, ownerID, 100, 100, StatusData.STATE.UNKNOWN, StatusData.PHASE.UNKNOWN);
+        components[ID].ownerID = ownerID;
     }
-    public void TryRegister(StatusComponent statusComponent, int ownerID)
+    public void TryAcquire(int ID, int ownerID)
     {
-        Register(statusComponent, ownerID);
+        Acquire(ID, ownerID);
     }
 
     // =================== 외부에서의 Data 확인용 =================== //
@@ -108,16 +119,15 @@ public class StatusSubSystem : MonoSystem
     // 존재 여부 확인
     public bool IsContainsKey(int ID)
     {
-        return statuses.ContainsKey(ID);
+        return components.ContainsKey(ID);
     }
 
     // Data 확인
     public StatusData LoadData(int ID)
     {
-        if (statuses.ContainsKey(ID))
+        if (components.ContainsKey(ID))
         {
-            // return statuses[ID];
-            return new StatusData(statuses[ID]); // 보안을 위해?
+            return new StatusData(components[ID]); // 보안을 위해?
         }
         else
         {
@@ -126,22 +136,26 @@ public class StatusSubSystem : MonoSystem
         }
     }
 
-    // =================== 기능 =================== //
+    // ownerID로 Data 리스트 찾기
+    public List<StatusData> FindByOwnerID(int ownerID)
+    {
+        List<StatusData> returnComponents = new();
+        foreach (StatusData component in components.Values)
+        {
+            if (component.ownerID == ownerID)
+                returnComponents.Add(component);
+        }
+        return returnComponents;
+    }
 
-    // Status 소유자 변경
-    public void Acquire(int ID, int ownerID)
-    {
-        statuses[ID].ownerID = ownerID;
-    }
-    public void TryAcquire(int ID, int ownerID)
-    {
-        Acquire(ID, ownerID);
-    }
+    // ====================== 공통 끝 ==========================//
+
+    // =================== 기능 =================== //
 
     // 피격
     public void Hit(int ID, int amount)
     {
-        StatusData status = statuses[ID];
+        StatusData status = components[ID];
         status.hp -= amount;
         if (status.hp <= 0)
         {
@@ -157,7 +171,7 @@ public class StatusSubSystem : MonoSystem
     // 힐
     public void Heal(int ID, int amount)
     {
-        StatusData status = statuses[ID];
+        StatusData status = components[ID];
         status.hp += amount;
         if (status.hp > status.maxHp)
             status.hp = status.maxHp;
@@ -170,7 +184,7 @@ public class StatusSubSystem : MonoSystem
     // 죽음 처리 (시스템에 의해)
     public void Dead(int ID)
     {
-        statuses[ID].state = StatusData.STATE.DEAD;
+        components[ID].state = StatusData.STATE.DEAD;
     }
     public void TryDead(int ID)
     {
@@ -180,9 +194,9 @@ public class StatusSubSystem : MonoSystem
     // 게임 준비
     public void AllGameReady()
     {
-        foreach (int ID in statuses.Keys)
+        foreach (int ID in components.Keys)
         {
-            statuses[ID].phase = StatusData.PHASE.READY;
+            components[ID].phase = StatusData.PHASE.READY;
         }
     }
     public void TryAllGameReady()
@@ -193,9 +207,9 @@ public class StatusSubSystem : MonoSystem
     // 게임 시작
     public void AllGameStart()
     {
-        foreach (int ID in statuses.Keys)
+        foreach (int ID in components.Keys)
         {
-            statuses[ID].phase = StatusData.PHASE.START;
+            components[ID].phase = StatusData.PHASE.START;
         }
     }
     public void TryAllGameStart()
@@ -206,8 +220,8 @@ public class StatusSubSystem : MonoSystem
     // 초기 MaxHP 세팅 (Component에 설정 되어 있을 경우에만)
     public void SetInitialHP(int ID, int amount)
     {
-        statuses[ID].maxHp = amount;
-        statuses[ID].hp = statuses[ID].maxHp;
+        components[ID].maxHp = amount;
+        components[ID].hp = components[ID].maxHp;
     }
     public void TrySetInitialHP(int ID, int amount)
     {

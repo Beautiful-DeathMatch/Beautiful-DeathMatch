@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class WeaponDBData
 {
-    public WeaponDBData(WeaponData.WEAPON_TYPE _weaponType,int _maxMagazine, int _damage, string _nameKey)
+    public WeaponDBData(WeaponData.WEAPON_TYPE _weaponType, int _maxMagazine, int _damage, string _nameKey)
     {
         weaponType = _weaponType;
         maxMagazine = _maxMagazine;
