@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemComponent : MonoComponent<ItemSubSystem>
+public class FieldItemComponent : MonoComponent<ItemSubSystem>
 {
     // 해당 Component의 ID
     [SerializeField]

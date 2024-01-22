@@ -50,9 +50,9 @@ public class PlayerComponent : MonoBehaviour
 	// 해당 Player 가 가지고 있는 Weapon Component, Mission Component 리스트
 	// 다른 Component, System, UI 에서 참조할 수 있음
 	[SerializeField]
-	public List<WeaponComponent> weapons { get; private set; } = new();
+	public List<FieldWeaponComponent> weapons { get; private set; } = new();
 	[SerializeField]
-	public List<ItemComponent> items { get; private set; } = new();
+	public List<FieldItemComponent> items { get; private set; } = new();
 	[SerializeField]
 	public List<MissionComponent> missions { get; private set; } = new();
 	[SerializeField] // For Debug
@@ -70,24 +70,24 @@ public class PlayerComponent : MonoBehaviour
 	LayerMask shotLayerMask; // 공격 레이 무시용 레이어 마스크
 
 	// 각 리스트 항목 추가 및 삭제 (외부 접근용)
-	public void WeaponAdd(WeaponComponent weaponComponent)
+	public void WeaponAdd(FieldWeaponComponent weaponComponent)
 	{
 		weapons.Add(weaponComponent);
 	}
 
-	public void WeaponDelete(WeaponComponent weaponComponent)
+	public void WeaponDelete(FieldWeaponComponent weaponComponent)
 	{
 		weapons.Remove(weaponComponent);
 		if (currentActiveIndex+1 > weapons.Count) // Remove 대상을 들고 있을 경우
 			currentActiveIndex--;
 	}
 
-	public void ItemAdd(ItemComponent itemComponent)
+	public void ItemAdd(FieldItemComponent itemComponent)
 	{
 		items.Add(itemComponent);
 	}
 
-	public void ItemDelete(ItemComponent itemComponent)
+	public void ItemDelete(FieldItemComponent itemComponent)
 	{
 		items.Remove(itemComponent);
 		if (currentActiveIndex-2 +1 > items.Count) // Remove 대상을 들고 있을 경우
@@ -149,12 +149,12 @@ public class PlayerComponent : MonoBehaviour
 				currentActiveIndex = index;
 	}
 
-	public WeaponComponent GetCurrentWeapon()
+	public FieldWeaponComponent GetCurrentWeapon()
 	{
 		return weapons[currentActiveIndex];
 	}
 
-	public ItemComponent GetCurrentItem()
+	public FieldItemComponent GetCurrentItem()
 	{
 		return items[currentActiveIndex-2];
 	}

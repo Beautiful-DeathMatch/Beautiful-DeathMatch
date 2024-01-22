@@ -67,26 +67,26 @@ public class WeaponSubSystem : MonoSystem
     }
 
     // Component가 자기 자신의 등록을 요청했을 경우
-    public void Register(WeaponComponent component, int ownerID, WeaponData data = null)
+    public void Register(FieldWeaponComponent component, int ownerID, WeaponData data = null)
     {
         if (data == null)
             TryCreateData(component, new WeaponData(ownerID));
         else
             TryCreateData(component, data);
     }
-    public void TryRegister(WeaponComponent component, int ownerID, WeaponData data = null)
+    public void TryRegister(FieldWeaponComponent component, int ownerID, WeaponData data = null)
     {
         Register(component, ownerID, data);
     }
 
     // Component Data 생성
-    public void CreateData(WeaponComponent component, WeaponData data)
+    public void CreateData(FieldWeaponComponent component, WeaponData data)
     {
         int newID = CreateID();
         components.Add(newID, new WeaponData(data));
         component.SetID(newID);
     }
-    public void TryCreateData(WeaponComponent component, WeaponData data)
+    public void TryCreateData(FieldWeaponComponent component, WeaponData data)
     {
         CreateData(component, data);
     }

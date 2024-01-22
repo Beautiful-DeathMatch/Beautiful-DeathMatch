@@ -51,7 +51,7 @@ public class BattleMainWindow : UIMainWindow
         tempStringBuilder.Clear();
         for (int i = 0; i < playerComponent.weapons.Count; i++)
         {
-            WeaponComponent weaponComponent = playerComponent.weapons[i];
+            FieldWeaponComponent weaponComponent = playerComponent.weapons[i];
             WeaponData weaponData = weaponComponent.LoadData();
             tempStringBuilder.AppendFormat("{0} : ", i+1);
             tempStringBuilder.AppendFormat("{0} ", tempDB.GetWeaponNameByIndex(weaponData.weaponIndex));
@@ -70,7 +70,7 @@ public class BattleMainWindow : UIMainWindow
         tempStringBuilder.Clear();
         for (int i = 0; i < playerComponent.items.Count; i++)
         {
-            ItemComponent itemComponent = playerComponent.items[i];
+            FieldItemComponent itemComponent = playerComponent.items[i];
             ItemData itemData = itemComponent.LoadData();
             tempStringBuilder.AppendFormat("{0} : ", i+3);
             tempStringBuilder.AppendFormat("{0} ", tempDB.GetItemNameByIndex(itemData.itemIndex));

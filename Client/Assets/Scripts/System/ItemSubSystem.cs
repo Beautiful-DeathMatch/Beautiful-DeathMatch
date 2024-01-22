@@ -50,26 +50,26 @@ public class ItemSubSystem : MonoSystem
     }
 
     // Component가 자기 자신의 등록을 요청했을 경우
-    public void Register(ItemComponent component, int ownerID, ItemData data = null)
+    public void Register(FieldItemComponent component, int ownerID, ItemData data = null)
     {
         if (data == null)
             TryCreateData(component, new ItemData(ownerID));
         else
             TryCreateData(component, data);
     }
-    public void TryRegister(ItemComponent component, int ownerID, ItemData data = null)
+    public void TryRegister(FieldItemComponent component, int ownerID, ItemData data = null)
     {
         Register(component, ownerID, data);
     }
 
     // Component Data 생성
-    public void CreateData(ItemComponent component, ItemData data)
+    public void CreateData(FieldItemComponent component, ItemData data)
     {
         int newID = CreateID();
         components.Add(newID, new ItemData(data));
         component.SetID(newID);
     }
-    public void TryCreateData(ItemComponent component, ItemData data)
+    public void TryCreateData(FieldItemComponent component, ItemData data)
     {
         CreateData(component, data);
     }

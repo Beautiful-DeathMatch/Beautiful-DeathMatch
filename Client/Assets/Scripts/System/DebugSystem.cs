@@ -20,7 +20,7 @@ public class DebugSystem : MonoSystem
 
     // Weapon이 달릴 오브젝트 프리팹
     [SerializeField]
-    WeaponComponent weaponPrefeb;
+    FieldWeaponComponent weaponPrefeb;
 
     // mission이 달릴 오브젝트 프리팹
     [SerializeField]
@@ -28,7 +28,7 @@ public class DebugSystem : MonoSystem
 
     // Item이 달릴 오브젝트 프리팹
     [SerializeField]
-    ItemComponent itemPrefeb;
+    FieldItemComponent itemPrefeb;
 
     private void CreateWeaponObject(int ownerID, int weaponIndex, int currentMagazine, int remainedMagazine)
     {
@@ -37,7 +37,7 @@ public class DebugSystem : MonoSystem
         int maxMagazine = TempDB.tempWeaponDB[weaponIndex].maxMagazine;
 
         WeaponData newData = new(ownerID, weaponIndex, weaponType, damage, maxMagazine, currentMagazine, remainedMagazine);
-        WeaponComponent component = Instantiate(weaponPrefeb, weaponSubSystem.transform);
+        FieldWeaponComponent component = Instantiate(weaponPrefeb, weaponSubSystem.transform);
         component.Register(newData);
     }
 
@@ -46,7 +46,7 @@ public class DebugSystem : MonoSystem
         int initialMagazine = TempDB.tempItemDB[itemIndex].initialMagazine;
 
         ItemData newData = new(ownerID, itemIndex, initialMagazine);
-        ItemComponent component = Instantiate(itemPrefeb, itemSubSystem.transform);
+        FieldItemComponent component = Instantiate(itemPrefeb, itemSubSystem.transform);
         component.Register(newData);
     }
 

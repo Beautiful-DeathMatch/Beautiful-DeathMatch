@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Text;
 
-public class WeaponComponent : MonoComponent<WeaponSubSystem>
+public class FieldWeaponComponent : MonoComponent<WeaponSubSystem>
 {
     // 해당 Component의 ID
     [SerializeField]
