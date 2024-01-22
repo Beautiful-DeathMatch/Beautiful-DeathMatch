@@ -10,14 +10,13 @@ public class DebugSystem : MonoSystem
     [SerializeField] StatusSubSystem statusSubSystem;
     [SerializeField] MissionSubSystem missionSubSystem;
     [SerializeField] ItemSubSystem itemSubSystem;
+
     [SerializeField] TempDB tempDB;
-    [SerializeField] BattleMainWindow battleMainWindow;
+
     [SerializeField] StarterAssetsInputs starterAssetsInputs;
 
-    List<PlayerInfo> players = new();
-    int myPlayerId;
-    GUIStyle style_ = new GUIStyle();
-    public bool isDebugOn { get; private set; } = false;
+    private List<PlayerInfo> players = new List<PlayerInfo>();
+	private bool isDebugOn = false;
 
     // Weapon이 달릴 오브젝트 프리팹
     [SerializeField]
@@ -40,7 +39,6 @@ public class DebugSystem : MonoSystem
         WeaponData newData = new(ownerID, weaponIndex, weaponType, damage, maxMagazine, currentMagazine, remainedMagazine);
         WeaponComponent component = Instantiate(weaponPrefeb, weaponSubSystem.transform);
         component.Register(newData);
-        //component.AddToPlayerComponent()
     }
 
     private void CreateItemObject(int ownerID, int itemIndex)
@@ -63,19 +61,30 @@ public class DebugSystem : MonoSystem
     public override void OnEnter(SceneModuleParam sceneModuleParam)
     {
         base.OnEnter(sceneModuleParam);
-        if(sceneModuleParam is BattleSceneModule.Param param)
+
+        if (sceneModuleParam is BattleSceneModule.Param param)
         {
             players = param.playerInfoList;
-            myPlayerId = param.myPlayerId;
         }
     }
 
-    // 디버그 게임 시작
-    void DebugGameStart()
+	private void OnGUI()
+	{
+		if (GUI.Button(new Rect(Screen.width * 0.85f, Screen.height * 0.9f, Screen.width * 0.98f, Screen.height * 0.98f), "디버그 모드 시작"))
+		{
+			if (players.Count > 0 && !isDebugOn)
+			{
+				DebugGameStart();
+				isDebugOn = true;
+			}
+		}
+	}
+
+	// 디버그 게임 시작
+	private void DebugGameStart()
     {
         foreach (PlayerInfo player in players)
         {
-            //PlayerComponent playerComponent = FindObjectOfType<SpawnSystem>().GetPlayerComponent(playerId);
             CreateWeaponObject(player.playerId, 2, 5, 15);
             CreateWeaponObject(player.playerId, 1, 1, 10);
 
@@ -84,32 +93,9 @@ public class DebugSystem : MonoSystem
 
             CreateMissionObject(player.playerId, 1, 0, 1);
             CreateMissionObject(player.playerId, 2, 0, 5);
-
         }
 
-        battleMainWindow.tempFolder.SetActive(true);
         starterAssetsInputs.cursorLocked = true;
         starterAssetsInputs.cursorInputForLook = true;
-        isDebugOn = true;
     }
-
-    private void OnGUI() 
-    {
-        style_.normal.textColor = new Color(0, 0, 0, 1);
-        GUI.Label(
-            new Rect(Screen.width * 0.85f, Screen.height * 0.9f, Screen.width * 0.98f, Screen.height * 0.98f)
-            , "캐릭터 생성 후 Z를 눌러 기본세팅 ", style_);
-    }
-
-    private void Update() 
-    {
-        if(Input.GetKeyDown(KeyCode.Z) && (isDebugOn==false)){
-            Debug.Log(players.Count);
-            if (players.Count > 0)
-            {
-                DebugGameStart();
-            }
-        }
-    }
-
 }

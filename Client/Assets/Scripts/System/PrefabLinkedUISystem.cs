@@ -27,21 +27,32 @@ public class PrefabLinkedUISystem : MonoSystem
 
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
 	{
-		FindMainWindow(SceneModuleSystemManager.Instance.CurrentSceneType);
+		SetMainWindow(SceneModuleSystemManager.Instance.CurrentSceneType, sceneModuleParam);
 	}
 
-    public override void OnExit()
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
-		
+		base.OnUpdate(deltaFrameCount, deltaTime);
+
+		currentMainWindow.OnUpdate(deltaFrameCount, deltaTime);
 	}
 
-	private void FindMainWindow(SceneType type)
+	public override void OnExit()
+	{
+		if (currentMainWindow != null)
+		{
+			currentMainWindow.OnExit();
+		}
+	}
+
+	private void SetMainWindow(SceneType type, SceneModuleParam sceneModuleParam)
 	{
 		currentMainWindow = UnityEngine.Object.FindObjectOfType<UIMainWindow>();
 		if(currentMainWindow != null)
 		{
 			currentMainWindow.SetOrder(0);
-        }
+			currentMainWindow.OnEnter(sceneModuleParam);
+		}
 		else
 		{
 			Debug.LogError($"{type} 씬에 Main Window가 존재하지 않습니다.");

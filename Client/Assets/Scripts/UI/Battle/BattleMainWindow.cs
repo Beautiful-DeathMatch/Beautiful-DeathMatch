@@ -6,125 +6,122 @@ using UnityEngine;
 
 public class BattleMainWindow : UIMainWindow
 {
-    public GameObject tempFolder;
-    public TextMeshProUGUI current;
-    public TextMeshProUGUI currentContent;
+    public TextMeshProUGUI currentWeaponText;
+    public TextMeshProUGUI currentWeaponInfoText;
     public TextMeshProUGUI weaponList;
-    public TextMeshProUGUI itemList;
-    public TextMeshProUGUI mission;
-    public TextMeshProUGUI interaction;
-    [SerializeField]
-    private Cinemachine.CinemachineVirtualCamera playerCamera = null;
+    public TextMeshProUGUI itemListText;
+    public TextMeshProUGUI missionText;
+    public TextMeshProUGUI interactionText;
+
     public PlayerComponent playerComponent = null;
     public TempDB tempDB;
-    StringBuilder stringBuilder = new StringBuilder();
-    int currentPlayerID;
+    StringBuilder tempStringBuilder = new StringBuilder();
 
-    void PrintCurrentActiveText()
+    public override void OnEnter(SceneModuleParam param)
     {
-        stringBuilder.Clear();
+		playerComponent = FindObjectOfType<PlayerComponent>();
+	}
+
+    private void PrintCurrentActiveText()
+    {
+        tempStringBuilder.Clear();
         if (playerComponent.currentActiveIndex < 2)
         {
             WeaponData weaponData = playerComponent.weapons[playerComponent.currentActiveIndex].LoadData();
-            current.text = tempDB.GetWeaponNameByIndex(weaponData.weaponIndex); // 무기 이름 출력
-            stringBuilder.AppendFormat("[{0}", weaponData.ownerID);
-            stringBuilder.AppendFormat("{0}] ", weaponData.weaponType);
-            stringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
-            stringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
-            stringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
+            currentWeaponText.text = tempDB.GetWeaponNameByIndex(weaponData.weaponIndex); // 무기 이름 출력
+
+            tempStringBuilder.AppendFormat("[{0}", weaponData.ownerID);
+            tempStringBuilder.AppendFormat("{0}] ", weaponData.weaponType);
+            tempStringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
+            tempStringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
+            tempStringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
         }
         else
         {
             ItemData itemData = playerComponent.items[playerComponent.currentActiveIndex-2].LoadData();
-            current.text = tempDB.GetItemNameByIndex(itemData.itemIndex); // 아이템 이름 출력
-            stringBuilder.AppendFormat("[{0}]", itemData.ownerID);
-            stringBuilder.AppendFormat("{0} ", itemData.currentMagazine);
+            currentWeaponText.text = tempDB.GetItemNameByIndex(itemData.itemIndex); // 아이템 이름 출력
+            tempStringBuilder.AppendFormat("[{0}]", itemData.ownerID);
+            tempStringBuilder.AppendFormat("{0} ", itemData.currentMagazine);
         }
-        currentContent.text = stringBuilder.ToString(); // 무기 정보 출력
+        currentWeaponInfoText.text = tempStringBuilder.ToString(); // 무기 정보 출력
     }
 
-    void PrintWeaponListText()
+	private void PrintWeaponListText()
     {
-        stringBuilder.Clear();
+        tempStringBuilder.Clear();
         for (int i = 0; i < playerComponent.weapons.Count; i++)
         {
             WeaponComponent weaponComponent = playerComponent.weapons[i];
             WeaponData weaponData = weaponComponent.LoadData();
-            stringBuilder.AppendFormat("{0} : ", i+1);
-            stringBuilder.AppendFormat("{0} ", tempDB.GetWeaponNameByIndex(weaponData.weaponIndex));
-            stringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
-            stringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
-            stringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
+            tempStringBuilder.AppendFormat("{0} : ", i+1);
+            tempStringBuilder.AppendFormat("{0} ", tempDB.GetWeaponNameByIndex(weaponData.weaponIndex));
+            tempStringBuilder.AppendFormat("{0} ", weaponData.currentMagazine);
+            tempStringBuilder.AppendFormat("/ {0} ", weaponData.maxMagazine);
+            tempStringBuilder.AppendFormat("/ {0} ", weaponData.remainedMagazine);
             if (playerComponent.currentActiveIndex < 2 && playerComponent.weapons[playerComponent.currentActiveIndex] == weaponComponent)
-                stringBuilder.Append(" (선택 중)");
-            stringBuilder.Append("\n");   
+                tempStringBuilder.Append(" (선택 중)");
+            tempStringBuilder.Append("\n");   
         }
-            weaponList.text = stringBuilder.ToString(); // 무기 정보 출력
+            weaponList.text = tempStringBuilder.ToString(); // 무기 정보 출력
     }
 
-    void PrintItemListText()
+	private void PrintItemListText()
     {
-        stringBuilder.Clear();
+        tempStringBuilder.Clear();
         for (int i = 0; i < playerComponent.items.Count; i++)
         {
             ItemComponent itemComponent = playerComponent.items[i];
             ItemData itemData = itemComponent.LoadData();
-            stringBuilder.AppendFormat("{0} : ", i+3);
-            stringBuilder.AppendFormat("{0} ", tempDB.GetItemNameByIndex(itemData.itemIndex));
-            stringBuilder.AppendFormat("{0} ", itemData.currentMagazine);
+            tempStringBuilder.AppendFormat("{0} : ", i+3);
+            tempStringBuilder.AppendFormat("{0} ", tempDB.GetItemNameByIndex(itemData.itemIndex));
+            tempStringBuilder.AppendFormat("{0} ", itemData.currentMagazine);
             if (playerComponent.currentActiveIndex >= 2 && playerComponent.items[playerComponent.currentActiveIndex-2] == itemComponent)
-                stringBuilder.Append(" (선택 중)");
-            stringBuilder.Append("\n");   
+                tempStringBuilder.Append(" (선택 중)");
+            tempStringBuilder.Append("\n");   
         }
-            itemList.text = stringBuilder.ToString(); // 아이템 정보 출력
+            itemListText.text = tempStringBuilder.ToString(); // 아이템 정보 출력
     }
 
-    void PrintMissionText()
+	private void PrintMissionText()
     {
-        stringBuilder.Clear();
+        tempStringBuilder.Clear();
         foreach (MissionComponent missionComponent in playerComponent.missions)
         {
             MissionData missionData = missionComponent.LoadData();
-            stringBuilder.AppendFormat("{0}", tempDB.GetMissionNameByType(missionData.missionType));
+            tempStringBuilder.AppendFormat("{0}", tempDB.GetMissionNameByType(missionData.missionType));
             if (missionData.progression >= missionData.maxProgression)
-                stringBuilder.Append(" (완료)");
-            stringBuilder.Append("\n");   
+                tempStringBuilder.Append(" (완료)");
+            tempStringBuilder.Append("\n");   
         }
-        mission.text = stringBuilder.ToString(); // 미션 정보 출력        
+        missionText.text = tempStringBuilder.ToString(); // 미션 정보 출력        
     }
 
-    void PrintInteractionText()
+	private void PrintInteractionText()
     {
-        stringBuilder.Clear();
-        interaction.text = "";
+        tempStringBuilder.Clear();
+        interactionText.text = "";
+
         if (playerComponent.currentInteraction != null)
-            if (playerComponent.currentInteraction.interactionType == InteractionData.INTERACTION_TYPE.MISSION)
-                if (playerComponent.IsMissionTypeInProgress(playerComponent.currentInteraction.subType))
-                {
-                    stringBuilder.AppendFormat("sys.temp.interaction.mission{0}", playerComponent.currentInteraction.subType);
-                    interaction.text = tempDB.GetStringByKey(stringBuilder.ToString()); // 인터랙션 정보 출력
-                }       
-    }
-
-    void Awake()
-    {
-        tempFolder.SetActive(false);
-    }
-
-    void Update()
-    {
-        if(tempFolder.activeSelf)
         {
-            if (playerComponent == null)
-                playerComponent = playerCamera.Follow.parent.GetComponent<PlayerComponent>();
-            else
+			if (playerComponent.currentInteraction.interactionType == InteractionData.INTERACTION_TYPE.MISSION)
             {
-                PrintCurrentActiveText();
-                PrintWeaponListText();
-                PrintItemListText();
-                PrintMissionText();
-                PrintInteractionText();
-            }
-        }
+				if (playerComponent.IsMissionTypeInProgress(playerComponent.currentInteraction.subType))
+				{
+					tempStringBuilder.AppendFormat("sys.temp.interaction.mission{0}", playerComponent.currentInteraction.subType);
+					interactionText.text = tempDB.GetStringByKey(tempStringBuilder.ToString()); // 인터랙션 정보 출력
+				}
+			}
+		}
     }
+
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+    {
+        base.OnUpdate(deltaFrameCount, deltaTime);
+
+		PrintCurrentActiveText();
+		PrintWeaponListText();
+		PrintItemListText();
+		PrintMissionText();
+		PrintInteractionText();
+	}
 }

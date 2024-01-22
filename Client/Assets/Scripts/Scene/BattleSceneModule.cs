@@ -23,6 +23,7 @@ public class BattleSceneModule : NetworkSceneModule
 	}
 
 	[SerializeField] private SpawnSystem spawnSystem = null;
+	[SerializeField] private DebugSystem debugSystem = null;
 	// 시스템 추가
 
 #if UNITY_EDITOR
@@ -52,27 +53,23 @@ public class BattleSceneModule : NetworkSceneModule
 
 		return transport;
 	}
+#endif
 
-	protected override void OnGUI()
+	private void Awake()
 	{
-		base.OnGUI();
-
 		var infos = new PlayerInfo[1];
 		infos[0] = new PlayerInfo();
 		infos[0].playerId = 0;
 
-		if (GUI.Button(new Rect(0, 0, 300, 200), "캐릭터 스폰 (디버깅용)"))
-		{
-			OnEnter(new Param(true, 0, infos));
-		}
+		OnEnter(new Param(true, 0, infos));
 	}
-#endif
 
 	public override void OnEnter(SceneModuleParam param)
 	{
 		base.OnEnter(param);
 
 		spawnSystem.OnEnter(param);
+		debugSystem.OnEnter(param);
 	}
 
 	public override void OnExit()
