@@ -1,4 +1,6 @@
- using UnityEngine;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -108,6 +110,15 @@ namespace StarterAssets
 
         private const float _threshold = 0.01f;
 
+        public event Action onPressInteract = null;
+        public event Action offPressInteract = null;
+
+        public event Action<int> onClickNumber = null;
+        public event Action onClickUse = null;
+
+        public event Func<bool> isInWater;
+        public event Func<bool> isInteracting;
+
 		private bool IsCurrentDeviceMouse
         {
             get
@@ -161,6 +172,7 @@ namespace StarterAssets
 				Move();
                 ItemStateOffset();
                 Attack();
+                Interact();
 			}
         }
 
@@ -387,7 +399,7 @@ namespace StarterAssets
             {
                 if (FootstepAudioClips.Length > 0)
                 {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
+                    var index = UnityEngine.Random.Range(0, FootstepAudioClips.Length);
                     AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
                 }
             }
@@ -401,14 +413,31 @@ namespace StarterAssets
             }
         }
 
+        private bool IsSwimming()
+        {
+            if (isInWater == null)
+                return false;
+
+            return isInWater.Invoke();
+		}
+
+        private bool IsInteracting()
+        {
+            if (isInteracting == null)
+                return false;
+
+            return isInteracting.Invoke();
+        }
+
         private void Swim()
         {
-            // ... 물 레이어(태그) 충돌 조건 추가하기
-
-            if (_animator)
+            if (IsSwimming())
             {
-                _animator.SetBool(_animIDSwim, true);
-            }
+				if (_animator)
+				{
+					_animator.SetBool(_animIDSwim, true);
+				}
+			}
         }
 
         // 플레이어의 아이템 상태를 관리합니다. 즉, 손에 들고 있을 것의 번호
@@ -435,6 +464,17 @@ namespace StarterAssets
                 }
             }
         }
+
+        private void Interact()
+        {
+            if(Input.GetKey(KeyCode.F))
+            {
+                if (IsInteracting() == false)
+                {
+					onPressInteract?.Invoke();
+				}
+			}
+		}
 
         void Attack()
         {

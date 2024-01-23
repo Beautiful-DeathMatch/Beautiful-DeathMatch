@@ -24,6 +24,7 @@ public class BattleSceneModule : NetworkSceneModule
 
 	[SerializeField] private SpawnSystem spawnSystem = null;
 	[SerializeField] private DebugSystem debugSystem = null;
+	[SerializeField] private ItemSystem itemSystem = null;
 	// 시스템 추가
 
 #if UNITY_EDITOR
@@ -70,6 +71,7 @@ public class BattleSceneModule : NetworkSceneModule
 
 		spawnSystem.OnEnter(param);
 		debugSystem.OnEnter(param);
+		itemSystem.OnEnter(param);
 	}
 
 	public override void OnExit()

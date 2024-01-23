@@ -10,11 +10,9 @@ public class CharacterViewAsset
 	[SerializeField] private RuntimeAnimatorController animatorController;
 	[SerializeField] private Avatar avatar;
 
-	[SerializeField] private Transform leftHandSocket;
 	[SerializeField] private Transform rightHandSocket;
 
-	private GameObject currentOwnerObj = null;
-	private GameObject currentHandObj = null;
+	private GameObject currentItemObj = null;
 
 	public void SetController(ThirdPersonController controller)
 	{
@@ -26,26 +24,12 @@ public class CharacterViewAsset
 		characterObj.SetActive(isActive);
 	}
 
-	public void AttachRightHand(GameObject prefab)
+	public void AttachRightHand(ENUM_ITEM_TYPE itemType)
 	{
-		if (currentOwnerObj == null)
-			return;
+		currentItemObj.SetActive(false);
+		// ìƒˆ ì•„ì´í…œ íƒ€ì…ìœ¼ë¡œ ì°¾ì•„ì„œ ì‚½ì…
 
-		if (currentHandObj != null)
-			MonoBehaviour.Destroy(currentHandObj);
-
-		currentHandObj = MonoBehaviour.Instantiate(prefab, rightHandSocket.transform);
-	}
-
-	public void AttachLeftHand(GameObject prefab)
-	{
-		if (currentOwnerObj == null)
-			return;
-
-		if (currentHandObj != null)
-			MonoBehaviour.Destroy(currentHandObj);
-
-		currentHandObj = MonoBehaviour.Instantiate(prefab, leftHandSocket.transform);
+		currentItemObj.SetActive(true);
 	}
 }
 
@@ -75,22 +59,12 @@ public class CharacterViewComponent : MonoBehaviour
 		}
 	}
 
-	// ¿©±â ³ªÁß¿¡ µé °Í Å¸ÀÔ Ãß°¡µÇ¸é, WeaponType ³Ñ±â´Â ÂÊÀ¸·Î ¼öÁ¤ÇÒ °Í
-	public bool TryAttachRightHand(GameObject prefab)
+	public bool TryAttachRightHand(ENUM_ITEM_TYPE itemType)
 	{
 		if (characterType == CharacterType.MAX)
 			return false;
 
-		viewAssets[(int)characterType].AttachRightHand(prefab);
-		return true;
-	}
-
-	public bool TryAttachLeftHand(GameObject prefab)
-	{
-		if (characterType == CharacterType.MAX)
-			return false;
-
-		viewAssets[(int)characterType].AttachLeftHand(prefab);
+		viewAssets[(int)characterType].AttachRightHand(itemType);
 		return true;
 	}
 }

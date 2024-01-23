@@ -50,7 +50,7 @@ MonoBehaviour:
   inputAsset: {fileID: 5637566273571236080}
   inputComponent: {fileID: 702594960255621039}
   characterType: 0
-  playerPrefab: {fileID: 1751881056893200556, guid: 4a48d9982aaf9244a955d6dab20560a1,
+  playerPrefab: {fileID: 3172668859761069214, guid: 4a48d9982aaf9244a955d6dab20560a1,
     type: 3}
 --- !u!1 &3177698156310182166
 GameObject:
@@ -267,6 +267,7 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  attack: 0
   analogMovement: 0
   cursorLocked: 0
   cursorInputForLook: 0

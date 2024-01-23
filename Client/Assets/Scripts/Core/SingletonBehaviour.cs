@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-// ½Ì±ÛÅæ°ú MonoBehaviour¸¦ ¿¬°áÇØÁÖ´Â ¿ªÇÒ
+// ì‹±ê¸€í†¤ê³¼ MonoBehaviourë¥¼ ì—°ê²°í•´ì£¼ëŠ” ì—­í• 
 
 public class SingletonBehaviour : MonoBehaviour
 {
@@ -24,8 +24,7 @@ public class SingletonBehaviour : MonoBehaviour
 
     private static SingletonBehaviour instance;
 
-    [System.Serializable] public class SingletonDictionary : SerializableDictionary<string, Singleton> { }
-    [SerializeField] private SingletonDictionary singletonDictionary = new SingletonDictionary();
+    [SerializeField] private SerializableDictionary<string, Singleton> singletonDictionary = new SerializableDictionary<string, Singleton>();
 
     public event Action onFixedUpdate;
     public event Action onUpdate;
