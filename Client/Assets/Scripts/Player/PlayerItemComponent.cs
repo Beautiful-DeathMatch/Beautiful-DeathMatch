@@ -3,17 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class PlayerItemComponent : MonoComponent<ItemSystem>
 {
     [SerializeField] private PlayerInteractionComponent interactionComponent = null;
 	[SerializeField] private CharacterViewComponent characterViewComponent = null;
 	
-	[SerializeField] private PlayerShotComponent shotComponent = null;
-	[SerializeField] private PlayerSlashComponent slashComponent = null;
+	[SerializeField] private PlayerAttackComponent attackComponent = null;
 
 	[SerializeField] private ThirdPersonController controller = null;
+
+	private int playerId = -1;
 
 	private const int MaxItemSlotCount = 5;
 	private int[] itemSlots = new int[MaxItemSlotCount]
@@ -21,7 +20,7 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		-1, -1, -1, -1, -1
 	};
 
-	private int currentItemSlotIndex = 0;
+	public int currentItemSlotIndex { get; private set; }
 
 	private void OnEnable()
 	{
@@ -38,15 +37,20 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		controller.onClickNumber -= OnClickNumber;
 		controller.onClickUse -= OnClickUse;
 	}
+	
+	public void SetPlayerId(int playerId)
+	{
+		this.playerId = playerId;
+	}
 
 	private void OnPressInteract(IInteractableObject interactableObject)
 	{
 		if (interactableObject == null)
 			return;
 
-		if (interactableObject.TryInteract(uniqueId) == false)
+		if (interactableObject.TryInteract(playerId) == false)
 		{
-			Debug.LogError("현재 상호 작용이 불가능한 객체입니다.");
+			Debug.LogError("현재 상호 작용이 불가능한 오브젝트입니다.");
 			return;
 		}
 
@@ -87,14 +91,8 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		switch(usedItemData.itemType)
 		{
 			case ENUM_ITEM_TYPE.Knife:
-				slashComponent.Slash();
-				break;
-
 			case ENUM_ITEM_TYPE.Gun:
-				shotComponent.Shot();
-				break;
-
-			default:
+				attackComponent.Attack(usedItemData);
 				break;
 		}
 	}

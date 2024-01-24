@@ -11,12 +11,12 @@ public class PlayerSwimComponent : MonoBehaviour
 
 	private void OnEnable()
 	{
-		controller.isInWater += IsInWater;
+		controller.IsInWater += IsInWater;
 	}
 
 	private void OnDisable()
 	{
-		controller.isInWater -= IsInWater;
+		controller.IsInWater -= IsInWater;
 	}
 
 	private void OnTriggerEnter(Collider other)

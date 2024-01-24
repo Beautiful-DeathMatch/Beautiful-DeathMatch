@@ -5,14 +5,7 @@ using UnityEngine;
 
 public abstract class MonoComponent<TSystem> : MonoBehaviour where TSystem : MonoSystem
 {
-    public int uniqueId { get; private set; }
-
     protected TSystem cachedSystem = null;
-
-    public void Initialize(int uniqueId)
-    {
-        this.uniqueId = uniqueId;
-    }
 
     protected TSystem System
     {

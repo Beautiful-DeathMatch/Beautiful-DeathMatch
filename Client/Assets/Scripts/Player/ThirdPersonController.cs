@@ -116,8 +116,8 @@ namespace StarterAssets
         public event Action<int> onClickNumber = null;
         public event Action onClickUse = null;
 
-        public event Func<bool> isInWater;
-        public event Func<bool> isInteracting;
+        public event Func<bool> IsInWater;
+        public event Func<bool> IsInteracting;
 
 		private bool IsCurrentDeviceMouse
         {
@@ -415,19 +415,11 @@ namespace StarterAssets
 
         private bool IsSwimming()
         {
-            if (isInWater == null)
+            if (IsInWater == null)
                 return false;
 
-            return isInWater.Invoke();
+            return IsInWater.Invoke();
 		}
-
-        private bool IsInteracting()
-        {
-            if (isInteracting == null)
-                return false;
-
-            return isInteracting.Invoke();
-        }
 
         private void Swim()
         {

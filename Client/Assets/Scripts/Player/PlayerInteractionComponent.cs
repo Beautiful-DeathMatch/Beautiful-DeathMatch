@@ -27,7 +27,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private void OnEnable()
 	{
-		controller.isInteracting += IsInteracting;
+		controller.IsInteracting += IsInteracting;
 
 		controller.onPressInteract += OnPressInteract;
 		controller.offPressInteract += OffPressInteract;
@@ -35,7 +35,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private void OnDisable()
 	{
-		controller.isInteracting -= IsInteracting;
+		controller.IsInteracting -= IsInteracting;
 
 		controller.onPressInteract -= OnPressInteract;
 		controller.offPressInteract -= OffPressInteract;
@@ -59,10 +59,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 	private void OnPressInteract()
 	{
 		if (currentInteractableObject == null || currentInteractableObject.IsInteractable() == false)
-		{
-			isInteracting = false;
 			return;
-		}
 
 		isInteracting = true;
 		onPressInteract?.Invoke(currentInteractableObject);
@@ -71,6 +68,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 	private void OffPressInteract()
 	{
 		isInteracting = false;
+		offPressInteract?.Invoke();
 	}
 
 	private bool IsInteracting()

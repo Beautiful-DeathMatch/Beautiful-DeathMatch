@@ -7,15 +7,17 @@ using UnityEngine;
 
 public class BattleMainWindow : UIMainWindow
 {
+    [SerializeField] private ItemSystem itemSystem;
+    [SerializeField] private MissionSystem missionSystem;
+    [SerializeField] private StatusSystem statusSystem;
+
     private int myPlayerId = -1;
-    private PlayerComponent myPlayerComponent = null;
     
     public override void OnEnter(SceneModuleParam param)
     {
 		if (param is BattleSceneModule.Param battleParam)
         {
             myPlayerId = battleParam.myPlayerId;
-            myPlayerComponent = FindObjectsOfType<PlayerComponent>().FirstOrDefault(com => com.playerId == myPlayerId);
         }
 	}
 

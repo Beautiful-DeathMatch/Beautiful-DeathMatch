@@ -16,12 +16,14 @@ public class ItemData
 	public readonly int maxUsableCount = 0;
 
 	public readonly int hpAmount = 0;
+	public readonly int attackDistance = 0;
 
-	public ItemData(ENUM_ITEM_TYPE itemType, int maxUsableCount, int hpAmount)
+	public ItemData(ENUM_ITEM_TYPE itemType, int maxUsableCount, int hpAmount, int attackDistance)
 	{
 		this.itemType = itemType;
 		this.maxUsableCount = maxUsableCount;
 		this.hpAmount = hpAmount;
+		this.attackDistance = attackDistance;
 	}
 }
 
@@ -34,15 +36,10 @@ public class DynamicItemData : ItemData
 
 	public int currentUsableCount { get; private set; }
 
-	public DynamicItemData(int itemId, ItemData itemData) : base(itemData.itemType, itemData.maxUsableCount, itemData.hpAmount)
+	public DynamicItemData(int itemId, ItemData itemData) : base(itemData.itemType, itemData.maxUsableCount, itemData.hpAmount, itemData.attackDistance)
 	{
 		this.itemId = itemId;
 		this.currentUsableCount = currentUsableCount;
-	}
-
-	public DynamicItemData(int itemId, ENUM_ITEM_TYPE itemType, int maxUsableCount, int hpAmount) : base(itemType, maxUsableCount, hpAmount)
-	{
-		this.itemId = itemId;
 	}
 
 	public void UseItem()
@@ -128,8 +125,8 @@ public class ItemSystem : MonoSystem
 	{
 		itemDataDictionary = new Dictionary<ENUM_ITEM_TYPE, ItemData>()
 		{
-			{ ENUM_ITEM_TYPE.Knife, new ItemData(ENUM_ITEM_TYPE.Knife, -1, 10) },
-			{ ENUM_ITEM_TYPE.Gun, new ItemData(ENUM_ITEM_TYPE.Gun, 5, 15) },
+			{ ENUM_ITEM_TYPE.Knife, new ItemData(ENUM_ITEM_TYPE.Knife, -1, 10, 10) },
+			{ ENUM_ITEM_TYPE.Gun, new ItemData(ENUM_ITEM_TYPE.Gun, 5, 15, 100) },
 		};
 	}
 
@@ -140,9 +137,6 @@ public class ItemSystem : MonoSystem
 			var fieldItemObj = Instantiate(prefab, transform);
 			fieldItemObj.transform.SetParent(transform, false);
 			fieldItemObj.gameObject.SetActive(false);
-
-			fieldItemObj.Initialize(itemId);
-			fieldItemObj.SetItemType(itemType);
 
 			return fieldItemObj;
 		}

@@ -17,10 +17,9 @@ public enum CharacterType
 [RequireComponent(typeof(PlayerInteractionComponent))]
 [RequireComponent(typeof(PlayerItemComponent))]
 [RequireComponent(typeof(PlayerMissionComponent))]
-[RequireComponent(typeof(PlayerStatusComponent))]
-[RequireComponent(typeof(PlayerShotComponent))]
-[RequireComponent(typeof(PlayerSlashComponent))]
+[RequireComponent(typeof(PlayerAttackComponent))]
 [RequireComponent(typeof(PlayerSwimComponent))]
+[RequireComponent(typeof(StatusComponent))]
 public class PlayerComponent : MonoBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;
@@ -28,11 +27,19 @@ public class PlayerComponent : MonoBehaviour
 
 	[SerializeField] private CharacterViewComponent characterViewComponent = null;
 
+	[SerializeField] private PlayerItemComponent playerItemComponent = null;
+	[SerializeField] private PlayerAttackComponent playerAttackComponent = null;
+	[SerializeField] private PlayerMissionComponent playerMissionComponent = null;
+
 	public int playerId { get; private set; }
 
 	public void Initialize(int playerId)
 	{
 		this.playerId = playerId;
+
+		playerItemComponent.SetPlayerId(playerId);
+		playerAttackComponent.SetPlayerId(playerId);
+		playerMissionComponent.SetPlayerId(playerId);
 	}
 
 	public void SetCharacter(CharacterType characterType)

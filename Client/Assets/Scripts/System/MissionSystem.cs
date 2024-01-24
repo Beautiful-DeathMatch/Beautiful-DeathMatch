@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 미션은 살짝 보류...
+/// 어떤 형태가 될 지 알 수 없다.
+/// 우선 MissionComponent를 미션에 해당하는 애들에 붙이고
+/// PlayerMissionComponent가 이를 추적하여 클리어 
+/// </summary>
+
 public enum ENUM_MISSION_TYPE
 {
-
+	NONE = -1,
 }
 
 public class MissionData
@@ -23,7 +30,6 @@ public class MissionSystem : MonoSystem
 		base.OnEnter(sceneModuleParam);
 
 		// 미션 데이터 딕셔너리 생성
-
 
 	}
 }

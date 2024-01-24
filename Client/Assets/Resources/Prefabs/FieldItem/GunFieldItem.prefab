@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 7964392623145317990}
   - component: {fileID: 1629560632050478977}
   - component: {fileID: 4850404910195507054}
-  - component: {fileID: 8015946827788798111}
-  m_Layer: 0
+  - component: {fileID: 8926065188582669634}
+  m_Layer: 6
   m_Name: GunFieldItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7964392623145317990
 MeshFilter:
@@ -108,7 +108,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8015946827788798111
+--- !u!114 &8926065188582669634
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,6 +117,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5433701130395990040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15cad27fca7ac4b4490f82b3630fd2e4, type: 3}
+  m_Script: {fileID: 11500000, guid: d2413ea051c09a94c9bc63daa542b8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemType: 1

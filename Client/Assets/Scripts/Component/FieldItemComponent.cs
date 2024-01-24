@@ -21,31 +21,24 @@ public interface IInteractableObject
 
 public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractableObject
 {
-	public ENUM_ITEM_TYPE ItemType { get; private set; }
+	[SerializeField] private ENUM_ITEM_TYPE itemType = ENUM_ITEM_TYPE.None;
 	public ENUM_INTERACT_TYPE Type => ENUM_INTERACT_TYPE.ITEM;
 
-	private bool isInteractable = true;
-
-	public void SetItemType(ENUM_ITEM_TYPE itemType)
-	{
-		this.ItemType = itemType;
-	}
+	private bool isInteracting = true;
 
 	public virtual void EndInteract()
 	{
-		Debug.Log($"상호 작용 종료");
-		isInteractable = true;
+		isInteracting = false;
 	}
 
 	public virtual bool TryInteract(int uniqueId)
 	{
-		Debug.Log($"{uniqueId}와의 상호 작용");
-		isInteractable = false;
+		isInteracting = true;
 		return true;
 	}
 
 	public bool IsInteractable()
 	{
-		return isInteractable;
+		return isInteracting == false;
 	}
 }
