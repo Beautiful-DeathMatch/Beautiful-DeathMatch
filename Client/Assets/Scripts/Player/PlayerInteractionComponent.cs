@@ -12,9 +12,9 @@ public class PlayerInteractionComponent : MonoBehaviour
 	private LayerMask interactionLayerMask;
 	private float interactionMaxDistance = 8.0f;
 
-	private IInteractableObject currentInteractableObject = null;
+	private IInteractable currentInteractableObject = null;
 
-	public event Action<IInteractableObject> onPressInteract = null;
+	public event Action<IInteractable> onPressInteract = null;
 	public event Action offPressInteract = null;
 
 	private bool isInteracting = false;
@@ -47,7 +47,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 		if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, interactionMaxDistance, interactionLayerMask)) // 충돌 감지 시
 		{
-			currentInteractableObject = hit.transform.GetComponent<IInteractableObject>();
+			currentInteractableObject = hit.transform.GetComponent<IInteractable>();
 		}
 
 		if (currentInteractableObject == null)

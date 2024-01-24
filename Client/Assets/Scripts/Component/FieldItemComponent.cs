@@ -10,7 +10,7 @@ public enum ENUM_INTERACT_TYPE
 }
 
 
-public interface IInteractableObject
+public interface IInteractable
 {
 	ENUM_INTERACT_TYPE Type { get; }
 
@@ -19,7 +19,7 @@ public interface IInteractableObject
     void EndInteract();
 }
 
-public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractableObject
+public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 {
 	[SerializeField] private ENUM_ITEM_TYPE itemType = ENUM_ITEM_TYPE.None;
 	public ENUM_INTERACT_TYPE Type => ENUM_INTERACT_TYPE.ITEM;

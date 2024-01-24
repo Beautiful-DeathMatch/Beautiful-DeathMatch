@@ -27,7 +27,7 @@ public class PlayerMissionComponent : MonoComponent<MissionSystem>
 		interactionComponent.onPressInteract -= OnPressInteract;
 	}
 
-	private void OnPressInteract(IInteractableObject interactableObject)
+	private void OnPressInteract(IInteractable interactableObject)
 	{
 		if (interactableObject == null)
 			return;

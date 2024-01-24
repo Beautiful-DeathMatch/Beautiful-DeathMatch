@@ -43,7 +43,7 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		this.playerId = playerId;
 	}
 
-	private void OnPressInteract(IInteractableObject interactableObject)
+	private void OnPressInteract(IInteractable interactableObject)
 	{
 		if (interactableObject == null)
 			return;
