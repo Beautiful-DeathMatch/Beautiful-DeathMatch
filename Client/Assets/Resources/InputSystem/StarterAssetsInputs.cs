@@ -14,6 +14,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool attack;
+		public bool interact;
 
         [Header("Movement Settings")]
 		public bool analogMovement;
@@ -41,14 +42,22 @@ namespace StarterAssets
 			JumpInput(value.isPressed);
 		}
 
+		public void OnSprint(InputValue value)
+		{
+			SprintInput(value.isPressed);
+		}
+
         public void OnAttack(InputValue value)
         {
             AttackInput(value.isPressed);
         }
 
+		public void OnInteract(InputValue value)
+		{
+			InteractInput(value.isPressed);
+		}
 
 #endif
-
 
         public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -70,13 +79,15 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 
+		public void InteractInput(bool newInteractState)
+		{
+			interact = newInteractState;
+		}
 
         public void AttackInput(bool newAttackState)
         {
             attack = newAttackState;
         }
-
-
 
         private void OnApplicationFocus(bool hasFocus)
 		{

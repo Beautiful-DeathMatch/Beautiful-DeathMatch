@@ -65,6 +65,11 @@ public class PrefabLinkedUISystem : MonoSystem
 		}
 	}
 
+	public TWindow GetMainWindow<TWindow>() where TWindow : UIMainWindow
+	{
+		return currentMainWindow as TWindow;
+	}
+
 	private void ReleasePopups(SceneType type)
 	{
 		popupStack.Clear();
