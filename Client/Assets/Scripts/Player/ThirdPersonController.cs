@@ -470,16 +470,17 @@ namespace StarterAssets
 
         void Attack()
         {
-            /*
-            Debug.Log(_input.attack);
+
             if (_input.attack == true)
             {
+                Debug.Log(_input.attack);
                 if (_animator)
                 {
                     _animator.SetBool(_animIDAttack, true);
                 }
             }
-            */
+
         }
     }
+
 }
