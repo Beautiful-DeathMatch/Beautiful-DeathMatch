@@ -189,7 +189,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4dd90171247a774aa0016935e242321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionComponent: {fileID: 6532361993978613561}
   characterViewComponent: {fileID: 1070376234558942627}
   attackComponent: {fileID: 5318714989550188421}
   controller: {fileID: 5921198921731900175}
@@ -264,6 +263,7 @@ MonoBehaviour:
   playerItemComponent: {fileID: 6888900654595934027}
   playerAttackComponent: {fileID: 5318714989550188421}
   playerMissionComponent: {fileID: 3321746215759049666}
+  playerInteractionComponent: {fileID: 6532361993978613561}
 --- !u!1 &5659143674777258060
 GameObject:
   m_ObjectHideFlags: 0
