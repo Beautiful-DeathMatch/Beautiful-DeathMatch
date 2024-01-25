@@ -38,7 +38,7 @@ public class PlayerGroundCheckComponent : MonoBehaviour
 	private void OnEnable()
 	{
 		controller.IsGrounded += IsGrounded;
-		controller.IsFallTimeout += IsFalledTimeout;
+		controller.IsFallTimeout += IsFallTimeout;
 		controller.IsFirstJumpTrigger += IsFirstJumpTrigger;
 		controller.onJump += OnJump;
 	}
@@ -46,12 +46,12 @@ public class PlayerGroundCheckComponent : MonoBehaviour
 	private void OnDisable()
 	{
 		controller.IsGrounded -= IsGrounded;
-		controller.IsFallTimeout -= IsFalledTimeout;
+		controller.IsFallTimeout -= IsFallTimeout;
 		controller.IsFirstJumpTrigger -= IsFirstJumpTrigger;
 		controller.onJump -= OnJump;
 	}
 
-	private bool IsFalledTimeout()
+	private bool IsFallTimeout()
 	{
 		return isFallTimeout;
 	}
