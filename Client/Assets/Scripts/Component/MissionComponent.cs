@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class MissionComponent : MonoComponent<MissionSystem>
 {
-    [SerializeField] private int missionId = 0;
-    [SerializeField] private ENUM_MISSION_TYPE missionType = ENUM_MISSION_TYPE.NONE;
+	[SerializeField] public ENUM_MISSION_TYPE missionType = ENUM_MISSION_TYPE.None;
+
+	[SerializeField] private int missionId = 0;
     [SerializeField] private int checkProgress = 0;
 
-    public bool TryCompleteMission(int playerId)
+    public bool TryCompleteMission(ENUM_MISSION_TYPE missionType, int playerId)
     {
+        if (this.missionType != missionType)
+            return false;
+
         return true;
     }
 }

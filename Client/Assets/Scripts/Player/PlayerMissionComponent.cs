@@ -10,6 +10,10 @@ public class PlayerMissionComponent : MonoComponent<MissionSystem>
 {
 	[SerializeField] private PlayerInteractionComponent interactionComponent = null;
 
+	/// <summary>
+	/// 이것저것 컴포넌트에 이벤트를 등록하여, 적당한 때에 TryCompleteMission을 호출하도록 한다.
+	/// </summary>
+
 	private int playerId = -1;
 
 	public void SetPlayerId(int playerId)
@@ -19,15 +23,15 @@ public class PlayerMissionComponent : MonoComponent<MissionSystem>
 
 	private void OnEnable()
 	{
-		interactionComponent.onPressInteract += OnPressInteract;
+		interactionComponent.onSuccessInteract += OnEndInteract;
 	}
 
 	private void OnDisable()
 	{
-		interactionComponent.onPressInteract -= OnPressInteract;
+		interactionComponent.onSuccessInteract -= OnEndInteract;
 	}
 
-	private void OnPressInteract(IInteractable interactableObject)
+	private void OnEndInteract(IInteractable interactableObject)
 	{
 		if (interactableObject == null)
 			return;
@@ -38,7 +42,7 @@ public class PlayerMissionComponent : MonoComponent<MissionSystem>
 			if (missionObj == null)
 				return;
 
-			missionObj.TryCompleteMission(playerId);
+			missionObj.TryCompleteMission(ENUM_MISSION_TYPE.Interaction, playerId);
 		}
 	}
 }

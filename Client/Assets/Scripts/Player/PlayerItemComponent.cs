@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PlayerItemComponent : MonoComponent<ItemSystem>
 {
-    [SerializeField] private PlayerInteractionComponent interactionComponent = null;
 	[SerializeField] private CharacterViewComponent characterViewComponent = null;
 	
 	[SerializeField] private PlayerAttackComponent attackComponent = null;
@@ -14,26 +13,16 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 
 	private int playerId = -1;
 
-	private const int MaxItemSlotCount = 5;
-	private int[] itemSlots = new int[MaxItemSlotCount]
-	{
-		-1, -1, -1, -1, -1
-	};
-
 	public int currentItemSlotIndex { get; private set; }
 
 	private void OnEnable()
-	{
-		interactionComponent.onPressInteract += OnPressInteract;
-		
+	{		
 		controller.onClickNumber += OnClickNumber;
 		controller.onClickUse += OnClickUse;
 	}
 
 	private void OnDisable()
 	{
-		interactionComponent.onPressInteract -= OnPressInteract;
-
 		controller.onClickNumber -= OnClickNumber;
 		controller.onClickUse -= OnClickUse;
 	}
@@ -43,27 +32,11 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		this.playerId = playerId;
 	}
 
-	private void OnPressInteract(IInteractable interactableObject)
-	{
-		if (interactableObject == null)
-			return;
-
-		if (interactableObject.TryInteract(playerId) == false)
-		{
-			Debug.LogError("현재 상호 작용이 불가능한 오브젝트입니다.");
-			return;
-		}
-
-		interactableObject.EndInteract();
-	}
-
 	private void OnClickNumber(int number)
 	{
 		int slotIndex = number - 1;
-		if (slotIndex >= itemSlots.Length)
-			return;
-
-		int slotItemId = itemSlots[slotIndex];
+		
+		int slotItemId = System.GetItemId(playerId, slotIndex);
 		if (slotItemId == -1)
 			return;
 
@@ -76,14 +49,7 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 
 	private void OnClickUse()
 	{
-		if (currentItemSlotIndex >= itemSlots.Length)
-			return;
-
-		int slotItemId = itemSlots[currentItemSlotIndex];
-		if (slotItemId == -1)
-			return;
-
-		System.TryUseItem(slotItemId, OnUseItem);
+		System.TryUseItem(playerId, currentItemSlotIndex, OnUseItem);
 	}
 
 	private void OnUseItem(int itemId, DynamicItemData usedItemData)

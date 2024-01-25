@@ -6,8 +6,8 @@ using UnityEngine;
 public enum ENUM_ITEM_TYPE
 {
 	None = -1,
-    Knife,
-    Gun,
+    Gun = 0,
+	Knife = 1,
 }
 
 public class ItemData
@@ -48,6 +48,52 @@ public class DynamicItemData : ItemData
 	}
 }
 
+public class PlayerItemSlot
+{
+	public int[] itemSlots = new int[5];
+
+	public bool TryAddItem(int itemId, ENUM_ITEM_TYPE itemType)
+	{
+		switch(itemType)
+		{
+			case ENUM_ITEM_TYPE.Gun:
+			case ENUM_ITEM_TYPE.Knife:
+
+				int itemTypeInt = (int)itemType;
+
+				if (itemSlots[itemTypeInt] != -1)
+				{
+					itemSlots[itemTypeInt] = itemId;
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			default:
+
+				for (int i = 2; i < itemSlots.Length; i++)
+				{
+					if (itemSlots[i] == -1)
+					{
+						itemSlots[i] = itemId;
+						return true;
+					}
+				}
+
+				return false;
+		}
+	}
+
+	public int GetItemId(int slotIndex)
+	{
+		if (slotIndex >= itemSlots.Length)
+			return -1;
+
+		return itemSlots[slotIndex];
+	}
+}
 
 public class ItemSystem : MonoSystem
 {
@@ -58,7 +104,6 @@ public class ItemSystem : MonoSystem
 	private Dictionary<ENUM_ITEM_TYPE, ItemData> itemDataDictionary = new Dictionary<ENUM_ITEM_TYPE, ItemData>();
 	private Dictionary<int, ENUM_ITEM_TYPE> itemTypeDictionary = new Dictionary<int, ENUM_ITEM_TYPE>();
 
-
 	/// <summary>
 	/// 아래 둘을 동기화 할 예정입니다.
 	/// 1. 살아있는 필드 아이템 목록
@@ -67,6 +112,7 @@ public class ItemSystem : MonoSystem
 	private Dictionary<int, FieldItemComponent> fieldItemComponentDictionary = new Dictionary<int, FieldItemComponent>();
 	private Dictionary<int, DynamicItemData> dynamicItemDataDictionary = new Dictionary<int, DynamicItemData>();
 
+	private Dictionary<int, PlayerItemSlot> playerItemSlotDictionary = new Dictionary<int, PlayerItemSlot>();
 
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
 	{
@@ -92,8 +138,6 @@ public class ItemSystem : MonoSystem
 				fieldItemComponentDictionary.Add(itemId, fieldItemObj);
 			}
 		}
-
-		fieldItemComponentDictionary[0].gameObject.SetActive(true);
 	}
 
 	private IEnumerable<int> GetItemIds()
@@ -163,8 +207,30 @@ public class ItemSystem : MonoSystem
 		return null;
 	}
 
-	public bool TryUseItem(int itemId, Action<int, DynamicItemData> onUseItem = null)
+	public bool TryGiveItem(int playerId, int itemId, ENUM_ITEM_TYPE itemType)
 	{
+		if (playerItemSlotDictionary.TryGetValue(playerId, out var slot))
+		{
+			return slot.TryAddItem(itemId, itemType);
+		}
+
+		return false;
+	}
+
+	public int GetItemId(int playerId, int slotIndex)
+	{
+		if (playerItemSlotDictionary.TryGetValue(playerId, out var slot) == false)
+			return -1;
+
+		return slot.GetItemId(slotIndex);
+	}
+
+	public bool TryUseItem(int playerId, int slotIndex, Action<int, DynamicItemData> onUseItem = null)
+	{
+		int itemId = GetItemId(playerId, slotIndex);
+		if (itemId == -1)
+			return false;
+
 		var itemData = GetDynamicItemData(itemId);
 		if (itemData == null)
 			return false;

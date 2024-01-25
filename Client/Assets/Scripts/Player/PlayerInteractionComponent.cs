@@ -14,11 +14,23 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private IInteractable currentInteractableObject = null;
 
-	public event Action<IInteractable> onPressInteract = null;
-	public event Action offPressInteract = null;
+	public event Action<IInteractable> onHoldInteract = null;
+	public event Action<IInteractable> onSuccessInteract = null;
+
+	public event Action onCancelInteract = null;
 
 	private bool isInteracting = false;
 
+	private float currentInteractionTime = 0.0f;
+	private const float MaxInteractionTime = 5.0f;
+
+	private int playerId = -1;
+
+	public void SetPlayerId(int playerId)
+	{
+		this.playerId = playerId;
+	}
+	
 	private void Awake()
 	{
 		interactionLayerMask = ~LayerMask.GetMask("Player"); // 인터렉션 레이 무시용 레이어 마스크
@@ -29,16 +41,16 @@ public class PlayerInteractionComponent : MonoBehaviour
 	{
 		controller.IsInteracting += IsInteracting;
 
-		controller.onPressInteract += OnPressInteract;
-		controller.offPressInteract += OffPressInteract;
+		controller.onPressInteract += OnHoldInteract;
+		controller.offPressInteract += OnCancelInteract;
 	}
 
 	private void OnDisable()
 	{
 		controller.IsInteracting -= IsInteracting;
 
-		controller.onPressInteract -= OnPressInteract;
-		controller.offPressInteract -= OffPressInteract;
+		controller.onPressInteract -= OnHoldInteract;
+		controller.offPressInteract -= OnCancelInteract;
 	}
 
 	private void Update()
@@ -49,6 +61,13 @@ public class PlayerInteractionComponent : MonoBehaviour
 		{
 			currentInteractableObject = hit.transform.GetComponent<IInteractable>();
 		}
+		else
+		{
+			if (currentInteractableObject != null)
+			{
+				currentInteractableObject.EndInteract();
+			}
+		}
 
 		if (currentInteractableObject == null)
 		{
@@ -56,19 +75,45 @@ public class PlayerInteractionComponent : MonoBehaviour
 		}
 	}
 
-	private void OnPressInteract()
+	private void OnHoldInteract()
 	{
 		if (currentInteractableObject == null || currentInteractableObject.IsInteractable() == false)
 			return;
 
 		isInteracting = true;
-		onPressInteract?.Invoke(currentInteractableObject);
+		currentInteractionTime += Time.deltaTime;
+
+		if (currentInteractionTime == 0.0f)
+		{
+			currentInteractableObject.TryStartInteract(playerId);
+		}
+
+		onHoldInteract?.Invoke(currentInteractableObject);
+
+		if (currentInteractionTime >= MaxInteractionTime)
+		{
+			OnSuccessInteract();
+		}
 	}
 
-	private void OffPressInteract()
+	private void OnCancelInteract()
 	{
 		isInteracting = false;
-		offPressInteract?.Invoke();
+		currentInteractionTime = 0.0f;
+
+		currentInteractableObject.EndInteract();
+		onCancelInteract?.Invoke();
+	}
+
+	private void OnSuccessInteract()
+	{
+		isInteracting = false;
+		currentInteractionTime = 0.0f;
+
+		currentInteractableObject.SuccessInteract(playerId);
+		currentInteractableObject.EndInteract();
+
+		onSuccessInteract?.Invoke(currentInteractableObject);
 	}
 
 	private bool IsInteracting()

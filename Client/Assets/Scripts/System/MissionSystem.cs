@@ -11,7 +11,8 @@ using UnityEngine;
 
 public enum ENUM_MISSION_TYPE
 {
-	NONE = -1,
+	None = -1,
+	Interaction = 0,
 }
 
 public class MissionData
