@@ -23,15 +23,15 @@ public class PlayerMissionComponent : MonoComponent<MissionSystem>
 
 	private void OnEnable()
 	{
-		interactionComponent.onSuccessInteract += OnEndInteract;
+		interactionComponent.onSuccessInteract += OnSuccessInteract;
 	}
 
 	private void OnDisable()
 	{
-		interactionComponent.onSuccessInteract -= OnEndInteract;
+		interactionComponent.onSuccessInteract -= OnSuccessInteract;
 	}
 
-	private void OnEndInteract(IInteractable interactableObject)
+	private void OnSuccessInteract(IInteractable interactableObject)
 	{
 		if (interactableObject == null)
 			return;
