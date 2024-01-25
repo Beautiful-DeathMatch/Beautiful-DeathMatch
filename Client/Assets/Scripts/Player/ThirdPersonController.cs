@@ -40,7 +40,7 @@ namespace StarterAssets
         public event Func<bool> IsInWater;
         public event Func<bool> IsInteracting;
 
-        public event Func<bool> IsFirstJumpTrigger;
+        public event Func<bool> IsNotYetJump;
         public event Func<bool> IsFallTimeout;
         public event Func<bool> IsGrounded;
 
@@ -119,7 +119,7 @@ namespace StarterAssets
         {
             if (IsGrounded())
             {
-                if (_input.jump && IsFirstJumpTrigger())
+                if (_input.jump && IsNotYetJump())
                 {
                     onJump?.Invoke();
 					_animator.SetBool(_animIDJump, true);
