@@ -30,7 +30,8 @@ public class PlayerComponent : MonoBehaviour
 	[SerializeField] private PlayerItemComponent playerItemComponent = null;
 	[SerializeField] private PlayerAttackComponent playerAttackComponent = null;
 	[SerializeField] private PlayerMissionComponent playerMissionComponent = null;
-
+	[SerializeField] private PlayerInteractionComponent playerInteractionComponent = null;
+	
 	public int playerId { get; private set; }
 
 	public void Initialize(int playerId)
@@ -40,6 +41,7 @@ public class PlayerComponent : MonoBehaviour
 		playerItemComponent.SetPlayerId(playerId);
 		playerAttackComponent.SetPlayerId(playerId);
 		playerMissionComponent.SetPlayerId(playerId);
+		playerInteractionComponent.SetPlayerId(playerId);
 	}
 
 	public void SetCharacter(CharacterType characterType)

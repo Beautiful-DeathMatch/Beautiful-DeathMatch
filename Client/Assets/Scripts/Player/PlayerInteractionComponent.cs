@@ -51,6 +51,11 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 		controller.onPressInteract -= OnHoldInteract;
 		controller.offPressInteract -= OnCancelInteract;
+
+		if (currentInteractableObject != null)
+		{
+			currentInteractableObject.EndInteract();
+		}
 	}
 
 	private void Update()
