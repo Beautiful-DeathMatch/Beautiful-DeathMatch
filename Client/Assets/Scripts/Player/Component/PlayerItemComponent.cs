@@ -52,9 +52,9 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		System.TryUseItem(playerId, currentItemSlotIndex, OnUseItem);
 	}
 
-	private void OnUseItem(int itemId, DynamicItemData usedItemData)
+	private void OnUseItem(int itemId, ItemData usedItemData)
 	{
-		switch(usedItemData.itemType)
+		switch(usedItemData.tableData.key)
 		{
 			case ENUM_ITEM_TYPE.Knife:
 			case ENUM_ITEM_TYPE.Gun:

@@ -49,7 +49,7 @@ public class ResourceAttribute : Attribute
 
 	public ResourceAttribute(string path, ResourceType type)
 	{
-		this.resourcePath = "Assets/Bundle/" + path;
+		this.resourcePath = "Assets/Resources/" + path;
 		this.resourceType = type;
 	}
 }

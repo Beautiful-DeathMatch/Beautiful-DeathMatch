@@ -23,8 +23,9 @@ public class BattleSceneModule : NetworkSceneModule
 	}
 
 	[SerializeField] private SpawnSystem spawnSystem = null;
-	[SerializeField] private DebugSystem debugSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
+
+	public bool isDebugMode;
 	// 시스템 추가
 
 #if UNITY_EDITOR
@@ -54,23 +55,14 @@ public class BattleSceneModule : NetworkSceneModule
 
 		return transport;
 	}
+
 #endif
-
-	private void Awake()
-	{
-		var infos = new PlayerInfo[1];
-		infos[0] = new PlayerInfo();
-		infos[0].playerId = 0;
-
-		OnEnter(new Param(true, 0, infos));
-	}
 
 	public override void OnEnter(SceneModuleParam param)
 	{
 		base.OnEnter(param);
 
 		spawnSystem.OnEnter(param);
-		debugSystem.OnEnter(param);
 		itemSystem.OnEnter(param);
 	}
 
