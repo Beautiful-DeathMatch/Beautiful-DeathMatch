@@ -20,7 +20,6 @@ public class PlayerInputAsset : MonoBehaviour
 	public event Action onJump = null;
 	public event Action onSprint = null;
 	public event Action onAttack = null;
-	public event Action onInteract = null;
 	public event Action<int> onClickNumber = null;
 
 	public void OnMove(InputValue value)
@@ -39,21 +38,69 @@ public class PlayerInputAsset : MonoBehaviour
 	public void OnJump(InputValue value)
 	{
 		onJump?.Invoke();
+		Debug.Log("점프 키 눌림");
 	}
 
 	public void OnSprint(InputValue value)
 	{
 		isSprint = value.isPressed;
+		if (isSprint)
+		{
+			Debug.Log("스프린트 시작");
+		}
+		else
+		{
+			Debug.Log("스프린트 종료");
+		}
 	}
 
 	public void OnAttack(InputValue value)
 	{
 		onAttack?.Invoke();
+		Debug.Log("공격 키 눌림");
 	}
 
 	public void OnInteract(InputValue value)
 	{
 		isInteract = value.isPressed;
+		if (isInteract)
+		{
+			Debug.Log("상호 작용 시작");
+		}
+		else
+		{
+			Debug.Log("상호 작용 종료");
+		}
+	}
+
+	public void OnNumber1(InputValue value)
+	{
+		onClickNumber?.Invoke(1);
+		Debug.Log($"숫자 키 1 눌림");
+	}
+
+	public void OnNumber2(InputValue value)
+	{
+		onClickNumber?.Invoke(2);
+		Debug.Log($"숫자 키 2 눌림");
+	}
+
+	public void OnNumber3(InputValue value)
+	{
+		onClickNumber?.Invoke(3);
+		Debug.Log($"숫자 키 3 눌림");
+	}
+
+	public void OnNumber4(InputValue value)
+	{
+		onClickNumber?.Invoke(4);
+		Debug.Log($"숫자 키 4 눌림");
+	}
+
+	public void OnNumber5(InputValue value)
+	{
+		onClickNumber?.Invoke(5);
+		Debug.Log($"숫자 키 5 눌림");
 	}
 
 	private void OnApplicationFocus(bool hasFocus)

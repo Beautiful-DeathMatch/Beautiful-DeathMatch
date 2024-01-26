@@ -106,7 +106,11 @@ public class PlayerInteractionComponent : MonoBehaviour
 		isInteracting = false;
 		currentInteractionTime = 0.0f;
 
-		currentInteractableObject.EndInteract();
+		if (currentInteractableObject != null)
+		{
+			currentInteractableObject.EndInteract();
+		}
+
 		onCancelInteract?.Invoke();
 	}
 
@@ -115,10 +119,13 @@ public class PlayerInteractionComponent : MonoBehaviour
 		isInteracting = false;
 		currentInteractionTime = 0.0f;
 
-		currentInteractableObject.SuccessInteract(playerId);
-		currentInteractableObject.EndInteract();
+		if (currentInteractableObject != null)
+		{
+			currentInteractableObject.SuccessInteract(playerId);
+			currentInteractableObject.EndInteract();
 
-		onSuccessInteract?.Invoke(currentInteractableObject);
+			onSuccessInteract?.Invoke(currentInteractableObject);
+		}
 	}
 
 	private bool IsInteracting()

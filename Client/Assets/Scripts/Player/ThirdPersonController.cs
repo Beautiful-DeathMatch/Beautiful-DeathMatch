@@ -74,7 +74,6 @@ namespace StarterAssets
 			if (inputAsset != null)
 			{
 				inputAsset.onAttack -= OnInputAttack;
-				inputAsset.onInteract -= CheckInteract;
 				inputAsset.onJump -= OnJump;
 				inputAsset.onClickNumber -= OnInputNumber;
 			}
@@ -87,7 +86,6 @@ namespace StarterAssets
 			if (inputAsset != null)
 			{
 				inputAsset.onAttack += OnInputAttack;
-				inputAsset.onInteract += CheckInteract;
 				inputAsset.onJump += OnJump;
 				inputAsset.onClickNumber += OnInputNumber;
 			}			
@@ -102,6 +100,7 @@ namespace StarterAssets
 
                 // 얘네 가도 됨
 				CheckMove();
+				CheckInteract();
 				CheckSwim();
 			}
         }
@@ -141,22 +140,10 @@ namespace StarterAssets
 			onRotate?.Invoke(yaw, pitch);
 		}
 
-        public void CheckMove()
+        private void CheckMove()
         {
             onMove?.Invoke(inputAsset.isSprint, inputAsset.analogMovement, inputAsset.moveDir);
         }
-
-        private void OnJump()
-        {
-			if (IsGrounded())
-			{
-				if (IsNotYetJump())
-				{
-					onJump?.Invoke();
-					_animator.SetBool(_animIDJump, true);
-				}
-			}
-		}
 
         private void CheckFall()
         {
@@ -177,13 +164,8 @@ namespace StarterAssets
 			_animator.SetBool(_animIDSwim, true);
 		}
 
-        private void OnInputNumber(int number)
-        {
-			_animator.SetInteger(_animIDItemOffset, number);
-		}
-
-        private void CheckInteract()
-        {
+		private void CheckInteract()
+		{
 			if (inputAsset.isInteract)
 			{
 				if (IsInteracting?.Invoke() == false)
@@ -199,7 +181,24 @@ namespace StarterAssets
 				isInteracting = false;
 			}
 		}
-		
+
+		private void OnJump()
+		{
+			if (IsGrounded())
+			{
+				if (IsNotYetJump())
+				{
+					onJump?.Invoke();
+					_animator.SetBool(_animIDJump, true);
+				}
+			}
+		}
+
+
+		private void OnInputNumber(int number)
+        {
+			_animator.SetInteger(_animIDItemOffset, number);
+		}
 
 		private void OnInputAttack()
         {
