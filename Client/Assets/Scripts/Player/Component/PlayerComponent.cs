@@ -49,9 +49,9 @@ public class PlayerComponent : MonoBehaviour
 		characterViewComponent.SetCharacter(characterType, controller);
 	}
 
-	public void SetInput(PlayerInput inputComponent, StarterAssetsInputs inputAsset)
+	public void SetInput(PlayerInputAsset inputAsset)
 	{
-		controller.SetInput(inputComponent, inputAsset);	
+		controller.SetInput(inputAsset);	
 	}
 
 	public void SetCamera(Cinemachine.CinemachineVirtualCamera virtualCamera)

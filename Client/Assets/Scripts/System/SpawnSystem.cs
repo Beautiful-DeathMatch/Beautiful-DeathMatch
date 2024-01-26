@@ -9,8 +9,7 @@ using UnityEngine.InputSystem;
 public class SpawnSystem : MonoSystem
 {
 	[SerializeField] private Cinemachine.CinemachineVirtualCamera playerCamera = null;
-	[SerializeField] private StarterAssetsInputs inputAsset = null;
-	[SerializeField] private PlayerInput inputComponent = null;
+	[SerializeField] private PlayerInputAsset inputAsset = null;
 
 	[SerializeField] private CharacterType characterType = CharacterType.MAX;
 	[SerializeField] private PlayerComponent playerPrefab = null;
@@ -44,7 +43,7 @@ public class SpawnSystem : MonoSystem
 
 		if (isSelf)
 		{
-			playerComponent.SetInput(inputComponent, inputAsset);
+			playerComponent.SetInput(inputAsset);
 			playerComponent.SetCamera(playerCamera);
 		}
 

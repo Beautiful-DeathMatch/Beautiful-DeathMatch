@@ -33,8 +33,8 @@ public class PlayerRotateComponent : MonoBehaviour
 
 	public void Rotate(float yaw, float pitch)
     {
-		_cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw + yaw * Time.deltaTime, float.MinValue, float.MaxValue);
-		_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch + pitch * Time.deltaTime, BottomClamp, TopClamp);
+		_cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw + yaw, float.MinValue, float.MaxValue);
+		_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch + pitch, BottomClamp, TopClamp);
 
 		cameraTransform.rotation = Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0);
 	}

@@ -18,10 +18,7 @@ namespace StarterAssets
         int _animIDAttack = Animator.StringToHash("Attack");
         int _animIDSwim = Animator.StringToHash("Swim");
 
-#if ENABLE_INPUT_SYSTEM
-        private PlayerInput _playerInput;
-#endif
-		private StarterAssetsInputs _input;
+		private PlayerInputAsset inputAsset;
 
 		private Animator _animator;
 
@@ -53,30 +50,63 @@ namespace StarterAssets
 			CharacterControllerState.Initialize(_animator);
 		}
 
-		public void SetInput(PlayerInput inputComponent, StarterAssetsInputs inputAsset)
+		public void SetInput(PlayerInputAsset inputAsset)
         {
-			_playerInput = inputComponent;
-            _input = inputAsset;
+            this.inputAsset = inputAsset;
+
+			SetInputActions();
 		}
 
-        private void Update()
-        {
-            if(_input && _playerInput)
-            {
-				CheckGrounded(); // 상시 적용이라 스테이트로 안 가도 됨
+		private void OnEnable()
+		{
+			SetInputActions();
+		}
 
-                // 얘넨 가도 될 듯
-				CheckJump();
+		private void OnDisable()
+		{
+			ClearInputActions();
+		}
+
+		private void ClearInputActions()
+		{
+			if (inputAsset != null)
+			{
+				inputAsset.onAttack -= OnInputAttack;
+				inputAsset.onInteract -= OnInputInteract;
+				inputAsset.onJump -= OnJump;
+				inputAsset.onClickNumber -= OnInputNumber;
+			}
+		}
+
+		private void SetInputActions()
+		{
+			ClearInputActions();
+
+			if (inputAsset != null)
+			{
+				inputAsset.onAttack += OnInputAttack;
+				inputAsset.onInteract += OnInputInteract;
+				inputAsset.onJump += OnJump;
+				inputAsset.onClickNumber += OnInputNumber;
+			}			
+		}
+
+		private void Update()
+        {
+            if (inputAsset)
+            {
+				CheckGrounded(); // 상시 적용이라 얘넨 스테이트로 안 가도 됨
+				CheckFall();
+
+                // 얘네 가도 됨
 				CheckMove();
-                CheckItem();
-                CheckAttack();
-                CheckInteract();
+				CheckSwim();
 			}
         }
 
         private void LateUpdate()
         {
-            if (_input && _playerInput)
+            if (inputAsset)
 			{
                 // 얘도 가도 됨
 				CheckRotation();
@@ -86,7 +116,6 @@ namespace StarterAssets
         private void CheckGrounded()
         {
             bool isGrounded = IsGrounded();
-            
             if (isGrounded)
             {
 				_animator.SetBool(_animIDFreeFall, false);
@@ -101,10 +130,10 @@ namespace StarterAssets
             float yaw = 0.0f;
             float pitch = 0.0f;
 
-            if (_input.look.sqrMagnitude >= _threshold)
+            if (inputAsset.lookDir.sqrMagnitude >= _threshold)
             {
-                yaw += _input.look.x;
-                pitch += _input.look.y;
+                yaw += inputAsset.lookDir.x * Time.deltaTime;
+                pitch += inputAsset.lookDir.y * Time.deltaTime;
 			}
 
 			onRotate?.Invoke(yaw, pitch);
@@ -112,31 +141,33 @@ namespace StarterAssets
 
         public void CheckMove()
         {
-            onMove?.Invoke(_input.sprint, _input.analogMovement, _input.move);
+            onMove?.Invoke(inputAsset.isSprint, inputAsset.analogMovement, inputAsset.moveDir);
         }
 
-        private void CheckJump()
+        private void OnJump()
         {
-            if (IsGrounded())
-            {
-                if (_input.jump && IsNotYetJump())
-                {
-                    onJump?.Invoke();
+			if (IsGrounded())
+			{
+				if (IsNotYetJump())
+				{
+					onJump?.Invoke();
 					_animator.SetBool(_animIDJump, true);
 				}
-            }
-            else
-            {
+			}
+		}
+
+        private void CheckFall()
+        {
+			if (IsGrounded() == false)
+			{
 				if (IsFallTimeout())
 				{
 					_animator.SetBool(_animIDFreeFall, true);
 				}
-
-				_input.jump = false;
             }
         }
 
-        private void Swim()
+        private void CheckSwim()
         {
             if (IsInWater() == false)
                 return;
@@ -144,53 +175,25 @@ namespace StarterAssets
 			_animator.SetBool(_animIDSwim, true);
 		}
 
-        // 플레이어의 아이템 상태를 관리합니다. 즉, 손에 들고 있을 것의 번호
-        // 0: 기본, 1: 총, 2: 칼, 3:아이템
-        void CheckItem()
+        private void OnInputNumber(int number)
         {
-            if (_animator)
-            {
-                if (_input) // 키보드 0 입력시
-                {
-                    _animator.SetInteger(_animIDItemOffset, 0);
-                }
-                else if (_input) // 키보드 1 입력시 ...
-                {
-                    _animator.SetInteger(_animIDItemOffset, 1);
-                }
-                else if (_input)
-                {
-                    _animator.SetInteger(_animIDItemOffset, 2);
-                }
-                else if (_input)
-                {
-                    _animator.SetInteger(_animIDItemOffset, 3);
-                }
-            }
-        }
+			_animator.SetInteger(_animIDItemOffset, number);
+		}
 
-        private void CheckInteract()
+        private void OnInputInteract()
         {
-            if(_input.interact)
-            {
-                if (IsInteracting?.Invoke() == false)
-                {
-					onPressInteract?.Invoke();
-                    _input.interact = false;
-				}
+			if (IsInteracting?.Invoke() == false)
+			{
+				onPressInteract?.Invoke();
 			}
 		}
 
-        void CheckAttack()
+		private void OnInputAttack()
         {
-    //        if (_input.attack)
-    //        {
-    //            if (_animator)
-    //            {
-    //                _animator.SetBool(_animIDAttack, true);
-    //                _input.attack = false;
-				//}
-    //        }
-        }
-    }
+		    if (_animator)
+			{
+			    _animator.SetBool(_animIDAttack, true);
+			}
+		}
+	}
 }
