@@ -8,6 +8,8 @@ public class PlayerInputAsset : MonoBehaviour
 
 	public bool isSprint { get; private set; }	
 
+	public bool isInteract { get; private set; }
+
 	[Header("Movement Settings")]
 	public bool analogMovement;
 
@@ -51,7 +53,7 @@ public class PlayerInputAsset : MonoBehaviour
 
 	public void OnInteract(InputValue value)
 	{
-		onInteract?.Invoke();
+		isInteract = value.isPressed;
 	}
 
 	private void OnApplicationFocus(bool hasFocus)

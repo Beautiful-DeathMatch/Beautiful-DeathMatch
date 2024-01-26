@@ -51,9 +51,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Test",
-                    "type": "Button",
-                    "id": "21097e36-d7f2-456f-b5c1-fd0997aa73b5",
+                    "name": "Interact",
+                    "type": "PassThrough",
+                    "id": "eabd66f2-4ba1-4d07-9d28-452dacba33a0",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -250,12 +250,12 @@
                 },
                 {
                     "name": "",
-                    "id": "ff0a0cd5-9832-4382-b8d7-f0b6eeed00a6",
-                    "path": "<Keyboard>/backquote",
+                    "id": "c3679aba-9dd9-4d21-8b99-82e67de0de61",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Test",
+                    "groups": "KeyboardMouse",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

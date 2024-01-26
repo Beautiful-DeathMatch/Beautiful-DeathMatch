@@ -41,16 +41,16 @@ public class PlayerInteractionComponent : MonoBehaviour
 	{
 		controller.IsInteracting += IsInteracting;
 
-		controller.onPressInteract += OnHoldInteract;
-		controller.offPressInteract += OnCancelInteract;
+		controller.onHoldInteract += OnHoldInteract;
+		controller.onCancelInteract += OnCancelInteract;
 	}
 
 	private void OnDisable()
 	{
 		controller.IsInteracting -= IsInteracting;
 
-		controller.onPressInteract -= OnHoldInteract;
-		controller.offPressInteract -= OnCancelInteract;
+		controller.onHoldInteract -= OnHoldInteract;
+		controller.onCancelInteract -= OnCancelInteract;
 
 		if (currentInteractableObject != null)
 		{

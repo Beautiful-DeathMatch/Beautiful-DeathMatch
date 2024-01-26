@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
@@ -19,13 +20,12 @@ namespace StarterAssets
         int _animIDSwim = Animator.StringToHash("Swim");
 
 		private PlayerInputAsset inputAsset;
-
 		private Animator _animator;
 
         private const float _threshold = 0.01f;
 
-        public event Action onPressInteract = null;
-        public event Action offPressInteract = null;
+        public event Action onHoldInteract = null;
+        public event Action onCancelInteract = null;
 
         public event Action<int> onClickNumber = null;
         public event Action onClickUse = null;
@@ -40,6 +40,8 @@ namespace StarterAssets
         public event Func<bool> IsNotYetJump;
         public event Func<bool> IsFallTimeout;
         public event Func<bool> IsGrounded;
+
+		private bool isInteracting = false;
 
         public void SetAnimatorController(RuntimeAnimatorController controller, Avatar avatar)
 		{
@@ -72,7 +74,7 @@ namespace StarterAssets
 			if (inputAsset != null)
 			{
 				inputAsset.onAttack -= OnInputAttack;
-				inputAsset.onInteract -= OnInputInteract;
+				inputAsset.onInteract -= CheckInteract;
 				inputAsset.onJump -= OnJump;
 				inputAsset.onClickNumber -= OnInputNumber;
 			}
@@ -85,7 +87,7 @@ namespace StarterAssets
 			if (inputAsset != null)
 			{
 				inputAsset.onAttack += OnInputAttack;
-				inputAsset.onInteract += OnInputInteract;
+				inputAsset.onInteract += CheckInteract;
 				inputAsset.onJump += OnJump;
 				inputAsset.onClickNumber += OnInputNumber;
 			}			
@@ -180,20 +182,28 @@ namespace StarterAssets
 			_animator.SetInteger(_animIDItemOffset, number);
 		}
 
-        private void OnInputInteract()
+        private void CheckInteract()
         {
-			if (IsInteracting?.Invoke() == false)
+			if (inputAsset.isInteract)
 			{
-				onPressInteract?.Invoke();
+				if (IsInteracting?.Invoke() == false)
+				{
+					onHoldInteract?.Invoke();
+				}
+
+				isInteracting = true;
+			}
+			else if (isInteracting)
+			{
+				onCancelInteract?.Invoke();
+				isInteracting = false;
 			}
 		}
+		
 
 		private void OnInputAttack()
         {
-		    if (_animator)
-			{
-			    _animator.SetBool(_animIDAttack, true);
-			}
+			_animator.SetBool(_animIDAttack, true);
 		}
 	}
 }
