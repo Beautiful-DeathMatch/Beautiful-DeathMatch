@@ -17,8 +17,8 @@ public class PlayerRotateComponent : MonoBehaviour
 
 	private void Start()
 	{
-		_cinemachineTargetPitch = cameraTransform.rotation.eulerAngles.x;
-		_cinemachineTargetYaw = cameraTransform.rotation.eulerAngles.y;
+		_cinemachineTargetPitch = cameraTransform.rotation.eulerAngles.y;
+		_cinemachineTargetYaw = cameraTransform.rotation.eulerAngles.x;
 	}
 
 	private void OnEnable()

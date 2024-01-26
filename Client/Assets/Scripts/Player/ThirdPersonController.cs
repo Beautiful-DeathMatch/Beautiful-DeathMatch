@@ -95,7 +95,8 @@ namespace StarterAssets
         {
             if (inputAsset)
             {
-				CheckGrounded(); // 상시 적용이라 얘넨 스테이트로 안 가도 됨
+				// 상시 적용이라 얘넨 스테이트로 안 가도 됨
+				CheckGrounded();
 				CheckFall();
 
                 // 얘네 가도 됨
@@ -133,8 +134,8 @@ namespace StarterAssets
 
             if (inputAsset.lookDir.sqrMagnitude >= _threshold)
             {
-                yaw += inputAsset.lookDir.x * Time.deltaTime;
-                pitch += inputAsset.lookDir.y * Time.deltaTime;
+				yaw += inputAsset.lookDir.x; // * Time.deltaTime;
+				pitch += inputAsset.lookDir.y; // * Time.deltaTime;
 			}
 
 			onRotate?.Invoke(yaw, pitch);
@@ -202,7 +203,7 @@ namespace StarterAssets
 
 		private void OnInputAttack()
         {
-			_animator.SetBool(_animIDAttack, true);
+			// _animator.SetBool(_animIDAttack, true);
 		}
 	}
 }
