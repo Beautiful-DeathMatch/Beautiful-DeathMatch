@@ -6,7 +6,6 @@ using UnityEngine.InputSystem; // For Debug
 
 public class DebugSystem : MonoSystem   
 {
-    [SerializeField] private BattleSceneModule module;
     [SerializeField] PlayerInputAsset starterAssetsInputs;
 
 	private void OnGUI()
