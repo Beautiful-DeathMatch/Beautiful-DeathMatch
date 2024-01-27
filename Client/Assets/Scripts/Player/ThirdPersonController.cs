@@ -35,7 +35,6 @@ namespace StarterAssets
         public event Action<bool, bool, Vector2> onMove = null;
 
         public event Func<bool> IsInWater;
-        public event Func<bool> IsInteracting;
 
         public event Func<bool> IsNotYetJump;
         public event Func<bool> IsFallTimeout;
@@ -197,8 +196,13 @@ namespace StarterAssets
 			_animator.SetInteger(_animIDItemOffset, number);
 		}
 
+		/// <summary>
+		/// Left Click은 기획상 공격이 아니라 '아이템 사용' 입니다.
+		/// Gun, Knife를 장착하고 있을 때 해당 아이템을 사용한다면 총알이 나가는 형태로 로직을 구성합니다.
+		/// </summary>
 		private void OnInputAttack()
         {
+			onClickUse?.Invoke();
 			// _animator.SetBool(_animIDAttack, true);
 		}
 	}

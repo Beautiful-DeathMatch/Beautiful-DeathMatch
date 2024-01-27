@@ -27,7 +27,7 @@ public class ItemData
 	public ItemData(int itemId, ItemTable.ItemData tableData)
 	{
 		this.itemId = itemId;
-		this.currentUsableCount = currentUsableCount;
+		this.currentUsableCount = tableData.maxUsableCount;
 		this.tableData = tableData;
 	}
 
@@ -46,14 +46,14 @@ public class PlayerItemSlot
 
 	public bool TryAddItem(int itemId, ENUM_ITEM_TYPE itemType)
 	{
-		switch(itemType)
+		switch (itemType)
 		{
 			case ENUM_ITEM_TYPE.Gun:
 			case ENUM_ITEM_TYPE.Knife:
 
 				int itemTypeInt = (int)itemType;
 
-				if (itemSlots[itemTypeInt] != -1)
+				if (itemSlots[itemTypeInt] == -1)
 				{
 					itemSlots[itemTypeInt] = itemId;
 					return true;
@@ -101,12 +101,12 @@ public class ItemSystem : MonoSystem
 
 	/// <summary>
 	/// 아래 목록을 동기화 할 예정입니다.
-	/// 1. 살아있는 필드 아이템 목록
-	/// 2. 유저가 획득하여 사용 중인 아이템의 현재 정보
-	/// 3. 유저가 보유한 Item Slot 정보
+	/// 1. 관리 중인 필드 아이템 목록 : itemId - 필드 아이템
+	/// 2. 모든 아이템들의 현재 상태 : itemId - 아이템
+	/// 3. 유저가 보유한 Item Slot 정보 : playerId - 슬롯 정보
 	/// </summary>
 	private Dictionary<int, FieldItemComponent> fieldItemComponentDictionary = new Dictionary<int, FieldItemComponent>();
-	private Dictionary<int, ItemData> dynamicItemDataDictionary = new Dictionary<int, ItemData>();
+	private Dictionary<int, ItemData> itemDataDictionary = new Dictionary<int, ItemData>();
 	private Dictionary<int, PlayerItemSlot> playerItemSlotDictionary = new Dictionary<int, PlayerItemSlot>();
 
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
@@ -124,7 +124,7 @@ public class ItemSystem : MonoSystem
         }
 
         fieldItemComponentDictionary.Clear();
-		dynamicItemDataDictionary.Clear();
+		itemDataDictionary.Clear();
 
 		foreach (var itemId in itemTable.GetAllItemIds())
 		{
@@ -133,7 +133,7 @@ public class ItemSystem : MonoSystem
 				continue;
 
 			var dynamicItemData = new ItemData(itemId, itemData);
-			dynamicItemDataDictionary.Add(itemId, dynamicItemData);
+			itemDataDictionary.Add(itemId, dynamicItemData);
 
 			var fieldItemObj = CreateFieldItem(itemId, itemData.key);
 			fieldItemComponentDictionary.Add(itemId, fieldItemObj);
@@ -184,8 +184,6 @@ public class ItemSystem : MonoSystem
 			{
 				return sprite;
 			}
-
-			Debug.LogError($"{type}에 해당하는 스프라이트가 없습니다.");
 			return null;
 		});
 	}
@@ -203,16 +201,16 @@ public class ItemSystem : MonoSystem
 
 	public ENUM_ITEM_TYPE GetItemType(int itemId)
 	{
-		var data = GetDynamicItemData(itemId);
+		var data = GetItemData(itemId);
 		if (data == null)
 			return ENUM_ITEM_TYPE.None;
 
 		return data.tableData.key;
 	}
 
-	public ItemData GetDynamicItemData(int itemId)
+	public ItemData GetItemData(int itemId)
 	{
-		if (dynamicItemDataDictionary.TryGetValue(itemId, out  var itemData))
+		if (itemDataDictionary.TryGetValue(itemId, out  var itemData))
 		{
 			return itemData;
 		}
@@ -238,21 +236,32 @@ public class ItemSystem : MonoSystem
 		return slot.GetItemId(slotIndex);
 	}
 
+	public bool TryDestroyFieldItem(int itemId)
+	{
+		if (fieldItemComponentDictionary.TryGetValue(itemId, out var fieldItem) == false)
+			return false;
+
+		Destroy(fieldItem.gameObject);
+		fieldItemComponentDictionary.Remove(itemId);
+
+		return true;
+	}
+
 	public bool TryUseItem(int playerId, int slotIndex, Action<int, ItemData> onUseItem = null)
 	{
 		int itemId = GetItemId(playerId, slotIndex);
 		if (itemId == -1)
 			return false;
 
-		var dynamicItemData = GetDynamicItemData(itemId);
-		if (dynamicItemData == null)
+		var itemData = GetItemData(itemId);
+		if (itemData == null)
 			return false;
 
-		if (dynamicItemData.tableData.maxUsableCount > 0 && dynamicItemData.currentUsableCount <= 0)
+		if (itemData.tableData.maxUsableCount > 0 && itemData.currentUsableCount <= 0)
 			return false;
 
-		dynamicItemData.UseItem();
-		onUseItem?.Invoke(itemId, dynamicItemData);
+		itemData.UseItem();
+		onUseItem?.Invoke(itemId, itemData);
 		return true;
 	}
 }

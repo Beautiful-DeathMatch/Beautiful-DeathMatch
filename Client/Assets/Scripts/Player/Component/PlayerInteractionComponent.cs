@@ -19,10 +19,8 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	public event Action onCancelInteract = null;
 
-	private bool isInteracting = false;
-
 	private float currentInteractionTime = 0.0f;
-	private const float MaxInteractionTime = 2.0f;
+	private const float MaxInteractionTime = 2.0f; // 상호 작용 오브젝트 쪽으로 뺄 수 있다면
 
 	private int playerId = -1;
 
@@ -39,16 +37,12 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private void OnEnable()
 	{
-		controller.IsInteracting += IsInteracting;
-
 		controller.onHoldInteract += OnHoldInteract;
 		controller.onCancelInteract += OnCancelInteract;
 	}
 
 	private void OnDisable()
 	{
-		controller.IsInteracting -= IsInteracting;
-
 		controller.onHoldInteract -= OnHoldInteract;
 		controller.onCancelInteract -= OnCancelInteract;
 
@@ -70,19 +64,12 @@ public class PlayerInteractionComponent : MonoBehaviour
 		{
 			currentInteractableObject = null;
         }
-
-		if (currentInteractableObject == null)
-		{
-			isInteracting = false;
-		}
 	}
 
 	private void OnHoldInteract()
 	{
 		if (currentInteractableObject == null || currentInteractableObject.IsInteractable(playerId) == false)
 			return;
-
-		isInteracting = true;
 
 		if (currentInteractionTime == 0.0f)
 		{
@@ -100,7 +87,6 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private void OnCancelInteract()
 	{
-		isInteracting = false;
 		currentInteractionTime = 0.0f;
 
 		if (currentInteractableObject != null)
@@ -114,23 +100,14 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private void OnSuccessInteract()
 	{
-		isInteracting = false;
 		currentInteractionTime = 0.0f;
 
 		if (currentInteractableObject != null)
 		{
 			currentInteractableObject.SuccessInteract(playerId);
-			currentInteractableObject.EndInteract();
-
             onSuccessInteract?.Invoke(currentInteractableObject);
 
             currentInteractableObject = null;
 		}
 	}
-
-	private bool IsInteracting()
-	{
-		return isInteracting;
-	}
-	
 }

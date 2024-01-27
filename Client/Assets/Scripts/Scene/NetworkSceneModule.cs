@@ -69,6 +69,11 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
         
     }
 
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+	{
+		base.OnUpdate(deltaFrameCount, deltaTime);
+	}
+
 	public override void OnExit()
     {
         base.OnExit();

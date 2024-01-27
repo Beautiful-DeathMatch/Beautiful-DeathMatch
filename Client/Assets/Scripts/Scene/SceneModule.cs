@@ -79,7 +79,10 @@ public abstract class SceneModule : MonoBehaviour
     public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		sceneOpenDeltaTime += deltaTime;
-    }
+
+		uiSystem.OnUpdate(deltaFrameCount, deltaTime);
+
+	}
 
 	public virtual void OnPostUpdate(int deltaFrameCount, float deltaTime)
 	{

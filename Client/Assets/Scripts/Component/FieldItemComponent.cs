@@ -34,18 +34,14 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 		this.itemId = itemId;
 	}
 
-	private bool isInteracting = true;
-
 	public void EndInteract()
 	{
-		isInteracting = false;
-
         Debug.Log($"{currentInteractingPlayerId}와 {itemId} : {itemType}가 상호 작용 중도 종료");
 
-        currentInteractingPlayerId = -1;
-    }
+		currentInteractingPlayerId = -1;
+	}
 
-    public void SuccessInteract(int playerId)
+	public void SuccessInteract(int playerId)
 	{
 		if (currentInteractingPlayerId != playerId)
 			return;
@@ -56,25 +52,26 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 		}
 		else
         {
-            Debug.Log($"{playerId}와 {itemId} : {itemType}가 상호 작용에 성공... 필드 아이템이 제거됩니다.");
-
-            // 나중에 System으로 돌려준다.
-            Destroy(gameObject);
+            Debug.Log($"{playerId}와 {itemId} : {itemType}가 상호 작용에 성공하였습니다.");
+			System.TryDestroyFieldItem(itemId);
         }
-    }
+
+		EndInteract();
+	}
 
     public bool TryStartInteract(int playerId)
 	{
+		if (currentInteractingPlayerId != -1)
+			return false;
+
 		Debug.Log($"{playerId}와 {itemId} : {itemType}가 상호 작용 시작...");
 
 		currentInteractingPlayerId = playerId;
-
-        isInteracting = true;
 		return true;
 	}
 
 	public bool IsInteractable(int playerId)
 	{
-		return isInteracting == false || isInteracting && currentInteractingPlayerId == playerId;
+		return currentInteractingPlayerId == -1 || currentInteractingPlayerId == playerId;
 	}
 }

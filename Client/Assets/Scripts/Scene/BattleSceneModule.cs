@@ -24,8 +24,6 @@ public class BattleSceneModule : NetworkSceneModule
 
 	[SerializeField] private SpawnSystem spawnSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
-
-	public bool isDebugMode;
 	// 시스템 추가
 
 #if UNITY_EDITOR
