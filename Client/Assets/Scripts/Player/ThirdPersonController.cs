@@ -169,12 +169,8 @@ namespace StarterAssets
 		{
 			if (inputAsset.isInteract)
 			{
-				if (IsInteracting?.Invoke() == false)
-				{
-					onHoldInteract?.Invoke();
-				}
-
-				isInteracting = true;
+                onHoldInteract?.Invoke();
+                isInteracting = true;
 			}
 			else if (isInteracting)
 			{

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public enum ENUM_INTERACT_TYPE
@@ -14,7 +15,7 @@ public interface IInteractable
 {
 	ENUM_INTERACT_TYPE Type { get; }
 
-	bool IsInteractable();
+	bool IsInteractable(int playerId);
 	bool TryStartInteract(int playerId);
 	void SuccessInteract(int playerId);
     void EndInteract();
@@ -26,6 +27,7 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 	public ENUM_INTERACT_TYPE Type => ENUM_INTERACT_TYPE.ITEM;
 
 	private int itemId = -1;
+	private int currentInteractingPlayerId = -1;
 
 	public void SetItemId(int itemId)
 	{
@@ -37,24 +39,42 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 	public void EndInteract()
 	{
 		isInteracting = false;
-	}
 
-	public void SuccessInteract(int playerId)
+        Debug.Log($"{currentInteractingPlayerId}와 {itemId} : {itemType}가 상호 작용 중도 종료");
+
+        currentInteractingPlayerId = -1;
+    }
+
+    public void SuccessInteract(int playerId)
 	{
+		if (currentInteractingPlayerId != playerId)
+			return;
+
 		if (System.TryGiveItem(playerId, itemId, itemType) == false)
 		{
-			Debug.LogError($"{itemId}, {itemType} : 획득 실패");
+			Debug.LogError($"플레이어 {playerId}가 {itemId}, {itemType} 획득에 실패");
 		}
-	}
+		else
+        {
+            Debug.Log($"{playerId}와 {itemId} : {itemType}가 상호 작용에 성공... 필드 아이템이 제거됩니다.");
 
-	public bool TryStartInteract(int playerId)
+            // 나중에 System으로 돌려준다.
+            Destroy(gameObject);
+        }
+    }
+
+    public bool TryStartInteract(int playerId)
 	{
-		isInteracting = true;
+		Debug.Log($"{playerId}와 {itemId} : {itemType}가 상호 작용 시작...");
+
+		currentInteractingPlayerId = playerId;
+
+        isInteracting = true;
 		return true;
 	}
 
-	public bool IsInteractable()
+	public bool IsInteractable(int playerId)
 	{
-		return isInteracting == false;
+		return isInteracting == false || isInteracting && currentInteractingPlayerId == playerId;
 	}
 }

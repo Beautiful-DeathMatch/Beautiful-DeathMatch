@@ -1,7 +1,11 @@
+using Mono.CecilX;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static ItemTable;
+using static UnityEditor.Progress;
 
 public enum ENUM_ITEM_TYPE
 {
@@ -35,7 +39,10 @@ public class ItemData
 
 public class PlayerItemSlot
 {
-	public int[] itemSlots = new int[5];
+	public readonly int[] itemSlots = new int[5]
+	{
+		-1, -1, -1, -1, -1
+	};
 
 	public bool TryAddItem(int itemId, ENUM_ITEM_TYPE itemType)
 	{
@@ -86,23 +93,37 @@ public class ItemSystem : MonoSystem
 	public class FieldItemDictionary : SerializableDictionary<ENUM_ITEM_TYPE, FieldItemComponent> { }
 	[SerializeField] private FieldItemDictionary fieldItemPrefabDictionary = new FieldItemDictionary();
 
-	[SerializeField] private ItemTable itemTable;
+    [System.Serializable]
+    public class ItemSpriteDictionary : SerializableDictionary<ENUM_ITEM_TYPE, Sprite> { }
+    [SerializeField] private ItemSpriteDictionary itemSpriteDictionary = new ItemSpriteDictionary();
+
+    [SerializeField] private ItemTable itemTable;
 
 	/// <summary>
-	/// 아래 둘을 동기화 할 예정입니다.
+	/// 아래 목록을 동기화 할 예정입니다.
 	/// 1. 살아있는 필드 아이템 목록
-	/// 2. 유저가 획득하여 사용 중인 아이템의 현재 정보 
+	/// 2. 유저가 획득하여 사용 중인 아이템의 현재 정보
+	/// 3. 유저가 보유한 Item Slot 정보
 	/// </summary>
 	private Dictionary<int, FieldItemComponent> fieldItemComponentDictionary = new Dictionary<int, FieldItemComponent>();
 	private Dictionary<int, ItemData> dynamicItemDataDictionary = new Dictionary<int, ItemData>();
-
 	private Dictionary<int, PlayerItemSlot> playerItemSlotDictionary = new Dictionary<int, PlayerItemSlot>();
 
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
 	{
 		base.OnEnter(sceneModuleParam);
 
-		fieldItemComponentDictionary.Clear();
+		if (sceneModuleParam is BattleSceneModule.Param battleParam)
+		{
+			playerItemSlotDictionary.Clear();
+
+            foreach (var playerInfo in battleParam.playerInfoList)
+			{
+				playerItemSlotDictionary.Add(playerInfo.playerId, new PlayerItemSlot());
+            }
+        }
+
+        fieldItemComponentDictionary.Clear();
 		dynamicItemDataDictionary.Clear();
 
 		foreach (var itemId in itemTable.GetAllItemIds())
@@ -117,29 +138,68 @@ public class ItemSystem : MonoSystem
 			var fieldItemObj = CreateFieldItem(itemId, itemData.key);
 			fieldItemComponentDictionary.Add(itemId, fieldItemObj);
 		}
-	}
 
-	private IEnumerable<int> GetItemIds()
+		// 테스트용
+		SpawnFieldItem(1);
+    }
+
+	private void SpawnFieldItem(int itemId)
 	{
-		for (int i = 0; i < 10; i++)
+		if (fieldItemComponentDictionary.TryGetValue(itemId, out var fieldItemObj))
 		{
-			yield return i;
-		}
-	}
+            fieldItemObj.gameObject.SetActive(true);
+        }
+    }
 
-	private FieldItemComponent CreateFieldItem(int itemId, ENUM_ITEM_TYPE itemType)
+    public override void OnUpdate(int deltaFrameCount, float deltaTime)
+    {
+        base.OnUpdate(deltaFrameCount, deltaTime);
+
+		// 순서 등에 따른 스폰 로직
+    }
+
+    private FieldItemComponent CreateFieldItem(int itemId, ENUM_ITEM_TYPE itemType)
 	{
 		if (fieldItemPrefabDictionary.TryGetValue(itemType, out var prefab))
 		{
 			var fieldItemObj = Instantiate(prefab, transform);
-			fieldItemObj.transform.SetParent(transform, false);
-			fieldItemObj.gameObject.SetActive(false);
+			fieldItemObj.SetItemId(itemId);
+
+			fieldItemObj.transform.SetParent(transform, true);
+			fieldItemObj.transform.localPosition = new Vector3(0, 0, 0);
+
+            fieldItemObj.gameObject.SetActive(false);
 
 			return fieldItemObj;
 		}
 
 		return null;
 	}
+
+	public IEnumerable<Sprite> GetPlayerItemSprites(int playerId)
+	{
+		return GetPlayerItemTypes(playerId).Select(type =>
+		{
+			if (itemSpriteDictionary.TryGetValue(type, out var sprite))
+			{
+				return sprite;
+			}
+
+			Debug.LogError($"{type}에 해당하는 스프라이트가 없습니다.");
+			return null;
+		});
+	}
+
+	public IEnumerable<ENUM_ITEM_TYPE> GetPlayerItemTypes(int playerId)
+	{
+        if (playerItemSlotDictionary.TryGetValue(playerId, out var slot))
+        {
+            foreach (int itemId in slot.itemSlots)
+			{
+				yield return GetItemType(itemId);
+			}
+        }
+    }
 
 	public ENUM_ITEM_TYPE GetItemType(int itemId)
 	{

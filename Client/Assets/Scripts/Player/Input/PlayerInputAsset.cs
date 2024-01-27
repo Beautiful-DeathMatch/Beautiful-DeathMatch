@@ -63,14 +63,6 @@ public class PlayerInputAsset : MonoBehaviour
 	public void OnInteract(InputValue value)
 	{
 		isInteract = value.isPressed;
-		if (isInteract)
-		{
-			Debug.Log("상호 작용 시작");
-		}
-		else
-		{
-			Debug.Log("상호 작용 종료");
-		}
 	}
 
 	public void OnNumber1(InputValue value)

@@ -22,7 +22,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 	private bool isInteracting = false;
 
 	private float currentInteractionTime = 0.0f;
-	private const float MaxInteractionTime = 5.0f;
+	private const float MaxInteractionTime = 2.0f;
 
 	private int playerId = -1;
 
@@ -68,11 +68,8 @@ public class PlayerInteractionComponent : MonoBehaviour
 		}
 		else
 		{
-			if (currentInteractableObject != null)
-			{
-				currentInteractableObject.EndInteract();
-			}
-		}
+			currentInteractableObject = null;
+        }
 
 		if (currentInteractableObject == null)
 		{
@@ -82,18 +79,18 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private void OnHoldInteract()
 	{
-		if (currentInteractableObject == null || currentInteractableObject.IsInteractable() == false)
+		if (currentInteractableObject == null || currentInteractableObject.IsInteractable(playerId) == false)
 			return;
 
 		isInteracting = true;
-		currentInteractionTime += Time.deltaTime;
 
 		if (currentInteractionTime == 0.0f)
 		{
 			currentInteractableObject.TryStartInteract(playerId);
 		}
 
-		onHoldInteract?.Invoke(currentInteractableObject);
+        currentInteractionTime += Time.deltaTime;
+        onHoldInteract?.Invoke(currentInteractableObject);
 
 		if (currentInteractionTime >= MaxInteractionTime)
 		{
@@ -109,7 +106,8 @@ public class PlayerInteractionComponent : MonoBehaviour
 		if (currentInteractableObject != null)
 		{
 			currentInteractableObject.EndInteract();
-		}
+			currentInteractableObject = null;
+        }
 
 		onCancelInteract?.Invoke();
 	}
@@ -124,7 +122,9 @@ public class PlayerInteractionComponent : MonoBehaviour
 			currentInteractableObject.SuccessInteract(playerId);
 			currentInteractableObject.EndInteract();
 
-			onSuccessInteract?.Invoke(currentInteractableObject);
+            onSuccessInteract?.Invoke(currentInteractableObject);
+
+            currentInteractableObject = null;
 		}
 	}
 

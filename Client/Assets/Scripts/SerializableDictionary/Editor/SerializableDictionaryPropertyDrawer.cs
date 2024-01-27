@@ -13,6 +13,11 @@ using static ItemSystem;
 [CustomPropertyDrawer(typeof(FieldItemDictionary))]
 public class FieldItemDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
 
+[CustomPropertyDrawer(typeof(ItemSpriteDictionary))]
+public class ItemSpriteDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
+
+
+
 
 public class SerializableDictionaryPropertyDrawer : PropertyDrawer
 {

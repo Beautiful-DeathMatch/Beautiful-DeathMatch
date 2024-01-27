@@ -28,14 +28,12 @@ public class UIWindow : MonoBehaviour
 
 	private void Awake()
 	{
-		canvas.worldCamera = Camera.main;
-
 		uiSystem = FindObjectOfType<PrefabLinkedUISystem>();
 	}
 
 	private void SetCanvas()
 	{
-		canvas.renderMode = RenderMode.ScreenSpaceCamera;
+		canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 	}
 
 	private void SetScaler()
