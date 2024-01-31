@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "5BLUsc3P0eZcdgFhIOWJKTEeYQS1Hgg0DSmRppbJAA3b33k+5cl4JFYjoLSG3uT4RqnkFAaQ0DI3ApTEGiPPpw==",
+  "success": true,
+  "projectFilePath": "C:\\Beautiful-DeathMatch\\Server\\ServerCore\\ServerCore.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\parky\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\parky\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\parky\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512"
+  ],
+  "logs": []
+}

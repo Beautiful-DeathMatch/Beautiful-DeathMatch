@@ -16,7 +16,7 @@ namespace StarterAssets
         int _animIDFreeFall = Animator.StringToHash("FreeFall");
 
         int _animIDItemOffset = Animator.StringToHash("ItemOffset");
-        int _animIDAttack = Animator.StringToHash("Attack");
+        int _animIDUseItem = Animator.StringToHash("UseItem");
         int _animIDSwim = Animator.StringToHash("Swim");
 
 		private PlayerInputAsset inputAsset;
@@ -72,7 +72,7 @@ namespace StarterAssets
 		{
 			if (inputAsset != null)
 			{
-				inputAsset.onAttack -= OnInputAttack;
+				inputAsset.onUseItem -= OnUseItem;
 				inputAsset.onJump -= OnJump;
 				inputAsset.onClickNumber -= OnInputNumber;
 			}
@@ -84,7 +84,7 @@ namespace StarterAssets
 
 			if (inputAsset != null)
 			{
-				inputAsset.onAttack += OnInputAttack;
+				inputAsset.onUseItem += OnUseItem;
 				inputAsset.onJump += OnJump;
 				inputAsset.onClickNumber += OnInputNumber;
 			}			
@@ -200,9 +200,10 @@ namespace StarterAssets
 		/// Left Click은 기획상 공격이 아니라 '아이템 사용' 입니다.
 		/// Gun, Knife를 장착하고 있을 때 해당 아이템을 사용한다면 총알이 나가는 형태로 로직을 구성합니다.
 		/// </summary>
-		private void OnInputAttack()
+		private void OnUseItem()
         {
 			onClickUse?.Invoke();
+			Debug.Log("테스트");
 			// _animator.SetBool(_animIDAttack, true);
 		}
 	}

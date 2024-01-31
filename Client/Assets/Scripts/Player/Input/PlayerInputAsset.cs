@@ -19,7 +19,7 @@ public class PlayerInputAsset : MonoBehaviour
 
 	public event Action onJump = null;
 	public event Action onSprint = null;
-	public event Action onAttack = null;
+	public event Action onUseItem = null;
 	public event Action<int> onClickNumber = null;
 
 	public void OnMove(InputValue value)
@@ -54,9 +54,9 @@ public class PlayerInputAsset : MonoBehaviour
 		}
 	}
 
-	public void OnAttack(InputValue value)
+	public void OnUseItem(InputValue value)
 	{
-		onAttack?.Invoke();
+		onUseItem?.Invoke();
 		Debug.Log("공격 키 눌림");
 	}
 

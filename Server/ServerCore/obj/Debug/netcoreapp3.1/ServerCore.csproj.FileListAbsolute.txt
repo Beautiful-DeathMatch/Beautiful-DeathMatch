@@ -1,0 +1,10 @@
+C:\Beautiful-DeathMatch\Server\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.deps.json
+C:\Beautiful-DeathMatch\Server\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.dll
+C:\Beautiful-DeathMatch\Server\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.pdb
+C:\Beautiful-DeathMatch\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Beautiful-DeathMatch\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.AssemblyInfoInputs.cache
+C:\Beautiful-DeathMatch\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.AssemblyInfo.cs
+C:\Beautiful-DeathMatch\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.csproj.CoreCompileInputs.cache
+C:\Beautiful-DeathMatch\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.sourcelink.json
+C:\Beautiful-DeathMatch\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.dll
+C:\Beautiful-DeathMatch\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.pdb
