@@ -178,6 +178,7 @@ namespace StarterAssets
 			}
 		}
 
+		// InputSystem에서 Jump 버튼이 입력되면 함수가 실행된다.
 		private void OnJump()
 		{
 			if (IsGrounded())
@@ -189,7 +190,6 @@ namespace StarterAssets
 				}
 			}
 		}
-
 
 		private void OnInputNumber(int number)
         {
@@ -203,7 +203,6 @@ namespace StarterAssets
 		private void OnUseItem()
         {
 			onClickUse?.Invoke();
-			Debug.Log("테스트");
 			// _animator.SetBool(_animIDAttack, true);
 		}
 	}
