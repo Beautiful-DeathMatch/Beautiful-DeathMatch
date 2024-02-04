@@ -41,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Caustic_Texture:
-        m_Texture: {fileID: 2800000, guid: d7e4664a947a4be478b0091344061f5d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 64169439381a5e14f8d333cec79a1296, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -103,9 +103,9 @@ Material:
     - _Caustic_Brightness: 0.5
     - _Caustic_Distortion_Factor: 3
     - _Caustic_Distortion_Speed: 0.1
-    - _Caustic_Speed: 0.1
+    - _Caustic_Speed: 0.05
     - _Caustic_Texture_Rotation: 90
-    - _Caustic_Tile: 0.03
+    - _Caustic_Tile: 0.02
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
