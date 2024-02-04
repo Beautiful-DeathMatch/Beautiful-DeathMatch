@@ -11,8 +11,17 @@ public class BattleMainWindow : UIMainWindow
     [SerializeField] private ItemSystem itemSystem;
     [SerializeField] private MissionSystem missionSystem;
     [SerializeField] private StatusSystem statusSystem;
+    private PlayerComponent myPlayerComponent = null;
+	private PlayerItemComponent myPlayerItemComponent = null;
+	private PlayerAttackComponent myPlayerAttackComponent = null;
+	private PlayerMissionComponent myPlayerMissionComponent = null;
+	private PlayerInteractionComponent myPlayerInteractionComponent = null;
+	
 
-    [SerializeField] private Image[] itemImages = null; 
+    [SerializeField] private Image[] itemImages = null;
+    [SerializeField] private TextMeshProUGUI[] currentItemTexts = null;
+
+    [SerializeField] private ItemTable itemTable;
 
     private int myPlayerId = -1;
     
@@ -21,6 +30,19 @@ public class BattleMainWindow : UIMainWindow
 		if (param is BattleSceneModule.Param battleParam)
         {
             myPlayerId = battleParam.myPlayerId;
+
+            foreach(var player in FindObjectsOfType<PlayerComponent>())
+            {
+                if (player.playerId == myPlayerId)
+                {
+                    myPlayerComponent = player;
+                    myPlayerItemComponent = player.transform.GetComponent<PlayerItemComponent>();
+                    myPlayerAttackComponent = player.transform.GetComponent<PlayerAttackComponent>();
+                    myPlayerMissionComponent = player.transform.GetComponent<PlayerMissionComponent>();
+                    myPlayerInteractionComponent = player.transform.GetComponent<PlayerInteractionComponent>();
+                    break;
+                }
+            }
         }
 	}
 
@@ -44,9 +66,18 @@ public class BattleMainWindow : UIMainWindow
             else
             {
                 itemImages[i].sprite = playerItemSprites[i];
-                itemImages[i].color = new Color(0, 0, 0, 1);
+                itemImages[i].color = new Color(0, 0, 0, 0.5f);
             }
         }
+    }
+
+    public void PrintCurrentItemData()
+    {
+        itemImages[myPlayerItemComponent.currentItemSlotIndex].color = new Color(0, 0, 0, 1f);
+        var data = itemSystem.GetPlayerItemData(myPlayerId, myPlayerItemComponent.currentItemSlotIndex);
+        currentItemTexts[0].text = itemTable.LoadStringByKey(data.tableData.nameKey);
+        currentItemTexts[1].text = data.currentUsableCount.ToString();
+        currentItemTexts[2].text = data.tableData.maxUsableCount.ToString();
     }
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
@@ -54,5 +85,6 @@ public class BattleMainWindow : UIMainWindow
         base.OnUpdate(deltaFrameCount, deltaTime);
 
         PrintPlayerItemSlot();
+        PrintCurrentItemData();
     }
 }

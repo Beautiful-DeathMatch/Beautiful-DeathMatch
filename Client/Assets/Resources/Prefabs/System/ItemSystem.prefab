@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4813921168711522420}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 246.28, y: 14, z: 447.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -45,13 +45,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fieldItemPrefabDictionary:
-    m_keys: 0000000001000000
+    m_keys: 0000000001000000ffffffff
     m_values:
     - {fileID: 8926065188582669634, guid: cd4483b9aa7e7e84e8e56dc398bcdc07, type: 3}
     - {fileID: 8239023402443528403, guid: 5b7055d4156592b4b98ddc489c35f593, type: 3}
+    - {fileID: 8239023402443528403, guid: e465d7fcd6a126b45a83df1e564076bd, type: 3}
   itemSpriteDictionary:
-    m_keys: 0000000001000000
+    m_keys: 0000000001000000020000000300000004000000
     m_values:
     - {fileID: 21300002, guid: 0bd96f6f4899f644ea1ffd9b4735a5e6, type: 3}
     - {fileID: 21300048, guid: 309ac3eb4cc441349b63128366ca98b6, type: 3}
+    - {fileID: 21300050, guid: 309ac3eb4cc441349b63128366ca98b6, type: 3}
+    - {fileID: 21300028, guid: 309ac3eb4cc441349b63128366ca98b6, type: 3}
+    - {fileID: 21300042, guid: 309ac3eb4cc441349b63128366ca98b6, type: 3}
   itemTable: {fileID: 11400000, guid: 50ae4908748b4e140be81a7d1d0b6f6d, type: 2}

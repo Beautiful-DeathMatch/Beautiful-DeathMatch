@@ -62,6 +62,7 @@ public class PlayerInputAsset : MonoBehaviour
 
 	public void OnInteract(InputValue value)
 	{
+		Debug.Log(value);
 		isInteract = value.isPressed;
 	}
 

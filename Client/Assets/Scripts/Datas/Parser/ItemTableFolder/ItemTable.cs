@@ -21,6 +21,21 @@ public partial class ItemTable : ScriptParser
 		{
 			itemTypeDictionary.Add(value.key, value);
 		}
+		itemPositionDictionary.Clear();
+		foreach(var value in itemPositionList)
+		{
+			itemPositionDictionary.Add(value.key, value);
+		}
+		itemStartingPlayerDictionary.Clear();
+		foreach(var value in itemStartingPlayerList)
+		{
+			itemStartingPlayerDictionary.Add(value.key, value);
+		}
+		stringKeyDictionary.Clear();
+		foreach(var value in stringKeyList)
+		{
+			stringKeyDictionary.Add(value.key, value);
+		}
 	}
 
 	[Serializable]
@@ -30,6 +45,7 @@ public partial class ItemTable : ScriptParser
 		public int maxUsableCount;
 		public int hpAmount;
 		public int attackDistance;
+		public string nameKey;
 	}
 
 	public List<ItemData> itemDataList = new List<ItemData>();
@@ -48,6 +64,45 @@ public partial class ItemTable : ScriptParser
 	[System.Serializable]
 	public class ItemTypeDictionary : SerializableDictionary<int, ItemType> {}
 	public ItemTypeDictionary itemTypeDictionary = new ItemTypeDictionary();
+
+	[Serializable]
+	public class ItemPosition
+	{
+		public int key;
+		public float x;
+		public float y;
+		public float z;
+	}
+
+	public List<ItemPosition> itemPositionList = new List<ItemPosition>();
+	[System.Serializable]
+	public class ItemPositionDictionary : SerializableDictionary<int, ItemPosition> {}
+	public ItemPositionDictionary itemPositionDictionary = new ItemPositionDictionary();
+
+	[Serializable]
+	public class ItemStartingPlayer
+	{
+		public int key;
+		public int playerIndex;
+	}
+
+	public List<ItemStartingPlayer> itemStartingPlayerList = new List<ItemStartingPlayer>();
+	[System.Serializable]
+	public class ItemStartingPlayerDictionary : SerializableDictionary<int, ItemStartingPlayer> {}
+	public ItemStartingPlayerDictionary itemStartingPlayerDictionary = new ItemStartingPlayerDictionary();
+
+	[Serializable]
+	public class StringKey
+	{
+		public string key;
+		public string KR;
+		public string EN;
+	}
+
+	public List<StringKey> stringKeyList = new List<StringKey>();
+	[System.Serializable]
+	public class StringKeyDictionary : SerializableDictionary<string, StringKey> {}
+	public StringKeyDictionary stringKeyDictionary = new StringKeyDictionary();
 
 
 }

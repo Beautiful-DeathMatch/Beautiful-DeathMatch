@@ -13,7 +13,7 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 
 	private int playerId = -1;
 
-	public int currentItemSlotIndex { get; private set; }
+	public int currentItemSlotIndex { get; private set; } = 0;
 
 	private void OnEnable()
 	{		
@@ -36,10 +36,11 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 	{
 		int slotIndex = number - 1;
 		
+		Debug.Log(number);
 		int slotItemId = System.GetItemId(playerId, slotIndex);
 		if (slotItemId == -1)
 			return;
-
+		Debug.Log(slotItemId);
 		// 교체가 가능하다면 설정함
 		currentItemSlotIndex = slotIndex;
 

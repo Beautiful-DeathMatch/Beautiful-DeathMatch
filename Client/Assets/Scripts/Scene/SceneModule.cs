@@ -10,7 +10,6 @@ using UnityEngine;
 
 public abstract class SceneModule : MonoBehaviour
 {
-    [SerializeField] private PrefabLinkedUISystem uiSystem = null;
 
 	[SerializeField] protected SceneType mySceneType = SceneType.Title;
 	protected float sceneOpenDeltaTime = 0.0f;
@@ -52,8 +51,6 @@ public abstract class SceneModule : MonoBehaviour
 	{
 		sceneOpenDeltaTime = 0.0f;
 
-        uiSystem.OnEnter(param);
-
 	}
 
     public async virtual UniTask OnPrepareEnterRoutine(SceneModuleParam param)
@@ -63,7 +60,7 @@ public abstract class SceneModule : MonoBehaviour
 
 	public virtual void OnExit()
 	{
-		uiSystem.OnExit();
+		
 	}
 
 	public async virtual UniTask OnPrepareExitRoutine()
@@ -79,8 +76,6 @@ public abstract class SceneModule : MonoBehaviour
     public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		sceneOpenDeltaTime += deltaTime;
-
-		uiSystem.OnUpdate(deltaFrameCount, deltaTime);
 
 	}
 
