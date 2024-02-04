@@ -8,6 +8,10 @@ public enum ENUM_INTERACT_TYPE
 {
 	NORMAL = 0,
 	ITEM = 1,
+	MISSION = 2,
+	CALL = 3,
+	HELICOPTER = 4,
+	ETC = 5
 }
 
 
@@ -34,6 +38,12 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 		this.itemId = itemId;
 	}
 
+	public void SetItemType(ENUM_ITEM_TYPE itemType)
+	{
+		if(itemType == ENUM_ITEM_TYPE.None)
+			this.itemType = itemType;
+	}
+
 	public void EndInteract()
 	{
         Debug.Log($"{currentInteractingPlayerId}와 {itemId} : {itemType}가 상호 작용 중도 종료");
@@ -53,7 +63,7 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 		else
         {
             Debug.Log($"{playerId}와 {itemId} : {itemType}가 상호 작용에 성공하였습니다.");
-			System.TryDestroyFieldItem(itemId);
+			Debug.Log(System.TryDestroyFieldItem(itemId));
         }
 
 		EndInteract();

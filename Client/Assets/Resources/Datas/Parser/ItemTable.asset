@@ -17,21 +17,65 @@ MonoBehaviour:
     maxUsableCount: -1
     hpAmount: 20
     attackDistance: 10
+    nameKey: sys.item.knife
   - key: 0
     maxUsableCount: 5
     hpAmount: 30
     attackDistance: 30
+    nameKey: sys.item.gun
+  - key: 2
+    maxUsableCount: 1
+    hpAmount: 0
+    attackDistance: 0
+    nameKey: sys.item.armor
+  - key: 3
+    maxUsableCount: 3
+    hpAmount: 0
+    attackDistance: 0
+    nameKey: sys.item.smoke
+  - key: 4
+    maxUsableCount: 1
+    hpAmount: 0
+    attackDistance: 0
+    nameKey: sys.item.rader
+  - key: 5
+    maxUsableCount: 1
+    hpAmount: 0
+    attackDistance: 0
+    nameKey: sys.item.teleport
   itemDataDictionary:
-    m_keys: 0100000000000000
+    m_keys: 010000000000000002000000030000000400000005000000
     m_values:
     - key: 1
       maxUsableCount: -1
       hpAmount: 20
       attackDistance: 10
+      nameKey: sys.item.knife
     - key: 0
       maxUsableCount: 5
       hpAmount: 30
       attackDistance: 30
+      nameKey: sys.item.gun
+    - key: 2
+      maxUsableCount: 1
+      hpAmount: 0
+      attackDistance: 0
+      nameKey: sys.item.armor
+    - key: 3
+      maxUsableCount: 3
+      hpAmount: 0
+      attackDistance: 0
+      nameKey: sys.item.smoke
+    - key: 4
+      maxUsableCount: 1
+      hpAmount: 0
+      attackDistance: 0
+      nameKey: sys.item.rader
+    - key: 5
+      maxUsableCount: 1
+      hpAmount: 0
+      attackDistance: 0
+      nameKey: sys.item.teleport
   itemTypeList:
   - key: 1
     itemType: 1
@@ -53,8 +97,16 @@ MonoBehaviour:
     itemType: 1
   - key: 10
     itemType: 0
+  - key: 101
+    itemType: 2
+  - key: 111
+    itemType: 3
+  - key: 121
+    itemType: 4
+  - key: 131
+    itemType: 5
   itemTypeDictionary:
-    m_keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000
+    m_keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000650000006f0000007900000083000000
     m_values:
     - key: 1
       itemType: 1
@@ -76,3 +128,217 @@ MonoBehaviour:
       itemType: 1
     - key: 10
       itemType: 0
+    - key: 101
+      itemType: 2
+    - key: 111
+      itemType: 3
+    - key: 121
+      itemType: 4
+    - key: 131
+      itemType: 5
+  itemPositionList:
+  - key: 1
+    x: 0
+    y: 0
+    z: 0
+  - key: 2
+    x: 0
+    y: 0
+    z: 0
+  - key: 3
+    x: 0
+    y: 0
+    z: 0
+  - key: 4
+    x: 0
+    y: 0
+    z: 0
+  - key: 5
+    x: 0
+    y: 0
+    z: 0
+  - key: 6
+    x: 0
+    y: 0
+    z: 0
+  - key: 7
+    x: 0
+    y: 0
+    z: 0
+  - key: 8
+    x: 0
+    y: 0
+    z: 0
+  - key: 9
+    x: 0
+    y: 0
+    z: 0
+  - key: 10
+    x: 0
+    y: 0
+    z: 0
+  - key: 101
+    x: 2
+    y: 0
+    z: 0
+  - key: 111
+    x: 0
+    y: 0
+    z: 2
+  - key: 121
+    x: 4
+    y: 0
+    z: 0
+  - key: 131
+    x: 0
+    y: 0
+    z: 4
+  itemPositionDictionary:
+    m_keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000650000006f0000007900000083000000
+    m_values:
+    - key: 1
+      x: 0
+      y: 0
+      z: 0
+    - key: 2
+      x: 0
+      y: 0
+      z: 0
+    - key: 3
+      x: 0
+      y: 0
+      z: 0
+    - key: 4
+      x: 0
+      y: 0
+      z: 0
+    - key: 5
+      x: 0
+      y: 0
+      z: 0
+    - key: 6
+      x: 0
+      y: 0
+      z: 0
+    - key: 7
+      x: 0
+      y: 0
+      z: 0
+    - key: 8
+      x: 0
+      y: 0
+      z: 0
+    - key: 9
+      x: 0
+      y: 0
+      z: 0
+    - key: 10
+      x: 0
+      y: 0
+      z: 0
+    - key: 101
+      x: 2
+      y: 0
+      z: 0
+    - key: 111
+      x: 0
+      y: 0
+      z: 2
+    - key: 121
+      x: 4
+      y: 0
+      z: 0
+    - key: 131
+      x: 0
+      y: 0
+      z: 4
+  itemStartingPlayerList:
+  - key: 1
+    playerIndex: 0
+  - key: 2
+    playerIndex: 0
+  - key: 3
+    playerIndex: 1
+  - key: 4
+    playerIndex: 1
+  - key: 5
+    playerIndex: 2
+  - key: 6
+    playerIndex: 2
+  - key: 7
+    playerIndex: 3
+  - key: 8
+    playerIndex: 3
+  - key: 9
+    playerIndex: -1
+  - key: 10
+    playerIndex: -1
+  itemStartingPlayerDictionary:
+    m_keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000
+    m_values:
+    - key: 1
+      playerIndex: 0
+    - key: 2
+      playerIndex: 0
+    - key: 3
+      playerIndex: 1
+    - key: 4
+      playerIndex: 1
+    - key: 5
+      playerIndex: 2
+    - key: 6
+      playerIndex: 2
+    - key: 7
+      playerIndex: 3
+    - key: 8
+      playerIndex: 3
+    - key: 9
+      playerIndex: -1
+    - key: 10
+      playerIndex: -1
+  stringKeyList:
+  - key: sys.item.knife
+    KR: "\uCE7C"
+    EN: en1
+  - key: sys.item.gun
+    KR: "\uAD8C\uCD1D"
+    EN: en2
+  - key: sys.item.armor
+    KR: "\uBC29\uD0C4\uBCF5"
+    EN: en3
+  - key: sys.item.smoke
+    KR: "\uC5F0\uB9C9\uD0C4"
+    EN: en4
+  - key: sys.item.rader
+    KR: "\uCC9C\uB9AC\uC548"
+    EN: en5
+  - key: sys.item.teleport
+    KR: "\uC218\uC0C1\uD55C \uBC84\uD2BC"
+    EN: en6
+  stringKeyDictionary:
+    m_keys:
+    - sys.item.knife
+    - sys.item.gun
+    - sys.item.armor
+    - sys.item.smoke
+    - sys.item.rader
+    - sys.item.teleport
+    m_values:
+    - key: sys.item.knife
+      KR: "\uCE7C"
+      EN: en1
+    - key: sys.item.gun
+      KR: "\uAD8C\uCD1D"
+      EN: en2
+    - key: sys.item.armor
+      KR: "\uBC29\uD0C4\uBCF5"
+      EN: en3
+    - key: sys.item.smoke
+      KR: "\uC5F0\uB9C9\uD0C4"
+      EN: en4
+    - key: sys.item.rader
+      KR: "\uCC9C\uB9AC\uC548"
+      EN: en5
+    - key: sys.item.teleport
+      KR: "\uC218\uC0C1\uD55C \uBC84\uD2BC"
+      EN: en6

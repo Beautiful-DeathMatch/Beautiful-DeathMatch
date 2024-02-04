@@ -24,6 +24,7 @@ public class BattleSceneModule : NetworkSceneModule
 
 	[SerializeField] private SpawnSystem spawnSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
+    [SerializeField] private PrefabLinkedUISystem uiSystem = null;
 	// 시스템 추가
 
 #if UNITY_EDITOR
@@ -62,6 +63,7 @@ public class BattleSceneModule : NetworkSceneModule
 
 		spawnSystem.OnEnter(param);
 		itemSystem.OnEnter(param);
+		uiSystem.OnEnter(param);
 	}
 
 	public override void OnExit()
@@ -87,6 +89,8 @@ public class BattleSceneModule : NetworkSceneModule
 	{
 		base.OnUpdate(deltaFrameCount, deltaTime);
 
+		uiSystem.OnUpdate(deltaFrameCount, deltaTime);
+		
 		// 로직 추가
 	}
 

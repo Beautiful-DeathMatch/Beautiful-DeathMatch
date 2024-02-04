@@ -20,7 +20,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 	public event Action onCancelInteract = null;
 
 	private float currentInteractionTime = 0.0f;
-	private const float MaxInteractionTime = 2.0f; // 상호 작용 오브젝트 쪽으로 뺄 수 있다면
+	private const float MaxInteractionTime = 0.01f; // 상호 작용 오브젝트 쪽으로 뺄 수 있다면
 
 	private int playerId = -1;
 
@@ -56,7 +56,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 	{
 		Debug.DrawRay(cameraTransform.position, cameraTransform.forward * interactionMaxDistance, Color.blue, 0.3f);
 
-		if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, interactionMaxDistance, interactionLayerMask)) // 충돌 감지 시
+		if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, interactionMaxDistance, interactionLayerMask)) // Ray 충돌 감지 시
 		{
 			currentInteractableObject = hit.transform.GetComponent<IInteractable>();
 		}
