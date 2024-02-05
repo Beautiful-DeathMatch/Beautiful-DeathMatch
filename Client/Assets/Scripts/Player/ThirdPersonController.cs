@@ -194,6 +194,7 @@ namespace StarterAssets
 		private void OnInputNumber(int number)
         {
 			_animator.SetInteger(_animIDItemOffset, number);
+			onClickNumber?.Invoke(number);
 		}
 
 		/// <summary>

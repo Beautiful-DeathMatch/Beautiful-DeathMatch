@@ -31,6 +31,16 @@ public partial class ItemTable : ScriptParser
 		{
 			itemStartingPlayerDictionary.Add(value.key, value);
 		}
+		boxDataDictionary.Clear();
+		foreach(var value in boxDataList)
+		{
+			boxDataDictionary.Add(value.key, value);
+		}
+		boxStartingDictionary.Clear();
+		foreach(var value in boxStartingList)
+		{
+			boxStartingDictionary.Add(value.key, value);
+		}
 		stringKeyDictionary.Clear();
 		foreach(var value in stringKeyList)
 		{
@@ -90,6 +100,30 @@ public partial class ItemTable : ScriptParser
 	[System.Serializable]
 	public class ItemStartingPlayerDictionary : SerializableDictionary<int, ItemStartingPlayer> {}
 	public ItemStartingPlayerDictionary itemStartingPlayerDictionary = new ItemStartingPlayerDictionary();
+
+	[Serializable]
+	public class BoxData
+	{
+		public int key;
+		public int boxId;
+	}
+
+	public List<BoxData> boxDataList = new List<BoxData>();
+	[System.Serializable]
+	public class BoxDataDictionary : SerializableDictionary<int, BoxData> {}
+	public BoxDataDictionary boxDataDictionary = new BoxDataDictionary();
+
+	[Serializable]
+	public class BoxStarting
+	{
+		public int key;
+		public int areaIndex;
+	}
+
+	public List<BoxStarting> boxStartingList = new List<BoxStarting>();
+	[System.Serializable]
+	public class BoxStartingDictionary : SerializableDictionary<int, BoxStarting> {}
+	public BoxStartingDictionary boxStartingDictionary = new BoxStartingDictionary();
 
 	[Serializable]
 	public class StringKey

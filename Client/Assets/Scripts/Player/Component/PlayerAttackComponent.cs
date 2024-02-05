@@ -19,7 +19,7 @@ public class PlayerAttackComponent : MonoBehaviour
 		attackLayerMask = ~LayerMask.GetMask("Player") & ~LayerMask.GetMask("Interaction");
 	}
 
-	public void Attack(ItemData itemData)
+	public void Attack(DynamicItemData itemData)
     {
 		Debug.DrawRay(cameraTransform.position, cameraTransform.forward * itemData.tableData.attackDistance, Color.red, 1f);
 		

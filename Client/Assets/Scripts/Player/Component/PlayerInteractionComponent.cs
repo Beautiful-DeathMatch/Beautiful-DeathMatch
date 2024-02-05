@@ -2,6 +2,7 @@ using StarterAssets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerInteractionComponent : MonoBehaviour
@@ -19,8 +20,8 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	public event Action onCancelInteract = null;
 
-	private float currentInteractionTime = 0.0f;
-	private const float MaxInteractionTime = 0.01f; // 상호 작용 오브젝트 쪽으로 뺄 수 있다면
+	public float currentInteractionTime { get; private set; } = 0.0f;
+	public float objectMaxInteractionTime { get; private set; } = 0.01f; // 상호 작용 오브젝트 쪽으로 뺄 수 있다면 -> 뺐음
 
 	private int playerId = -1;
 
@@ -68,8 +69,9 @@ public class PlayerInteractionComponent : MonoBehaviour
 
 	private void OnHoldInteract()
 	{
-		if (currentInteractableObject == null || currentInteractableObject.IsInteractable(playerId) == false)
+		if (currentInteractableObject == null || currentInteractableObject.IsInteractable(playerId) == false) 
 			return;
+		// 상호작용 도중 상호작용 물체가 바뀔 경우 새 Start 되도록 예외 필요할듯 -> 이때 Cancel 로직이 동작하지 않을 듯 하므로 새 로직 필요
 
 		if (currentInteractionTime == 0.0f)
 		{
@@ -79,13 +81,14 @@ public class PlayerInteractionComponent : MonoBehaviour
         currentInteractionTime += Time.deltaTime;
         onHoldInteract?.Invoke(currentInteractableObject);
 
-		if (currentInteractionTime >= MaxInteractionTime)
+		objectMaxInteractionTime = currentInteractableObject.maxInteractionTime;
+		if (currentInteractionTime >= objectMaxInteractionTime)
 		{
 			OnSuccessInteract();
 		}
 	}
 
-	private void OnCancelInteract()
+	private void OnCancelInteract() // F키를 떼야만 동작함, F 누르고 있는 상태에서 인터랙션 물체를 벗어나도 동작해야 함 <= 수정 필요
 	{
 		currentInteractionTime = 0.0f;
 
@@ -110,4 +113,10 @@ public class PlayerInteractionComponent : MonoBehaviour
             currentInteractableObject = null;
 		}
 	}
+
+	public IInteractable GetCurrentInteractableObject()
+	{
+		return currentInteractableObject;
+	}
+
 }

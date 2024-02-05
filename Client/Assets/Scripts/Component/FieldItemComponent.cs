@@ -2,22 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum ENUM_INTERACT_TYPE
 {
 	NORMAL = 0,
 	ITEM = 1,
-	MISSION = 2,
-	CALL = 3,
-	HELICOPTER = 4,
-	ETC = 5
+	BOX = 2,
+	MISSION = 3,
+	CALL = 4,
+	HELICOPTER = 5,
+	ETC = 6
 }
 
 
 public interface IInteractable
 {
 	ENUM_INTERACT_TYPE Type { get; }
+	float maxInteractionTime { get; }
 
 	bool IsInteractable(int playerId);
 	bool TryStartInteract(int playerId);
@@ -29,6 +32,7 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 {
 	[SerializeField] private ENUM_ITEM_TYPE itemType = ENUM_ITEM_TYPE.None;
 	public ENUM_INTERACT_TYPE Type => ENUM_INTERACT_TYPE.ITEM;
+	public float maxInteractionTime => 0.01f;
 
 	private int itemId = -1;
 	private int currentInteractingPlayerId = -1;
@@ -63,7 +67,7 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 		else
         {
             Debug.Log($"{playerId}와 {itemId} : {itemType}가 상호 작용에 성공하였습니다.");
-			Debug.Log(System.TryDestroyFieldItem(itemId));
+			System.TryDestroyFieldItem(itemId);
         }
 
 		EndInteract();
@@ -82,6 +86,11 @@ public class FieldItemComponent : MonoComponent<ItemSystem>, IInteractable
 
 	public bool IsInteractable(int playerId)
 	{
-		return currentInteractingPlayerId == -1 || currentInteractingPlayerId == playerId;
+		return (currentInteractingPlayerId == -1 || currentInteractingPlayerId == playerId) && !this.IsDestroyed();
+	}
+
+	public int GetItemId()
+	{
+		return itemId;
 	}
 }

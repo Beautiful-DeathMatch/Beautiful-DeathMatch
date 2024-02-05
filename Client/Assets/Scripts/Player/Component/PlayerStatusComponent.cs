@@ -10,7 +10,7 @@ public interface IDamageable
 /// <summary>
 /// 데미지 및 회복을 관리합니다.
 /// </summary>
-public class StatusComponent : MonoComponent<StatusSystem>, IDamageable
+public class PlayerStatusComponent : MonoComponent<StatusSystem>, IDamageable
 {
 	public bool TryTakeDamage(int attackerPlayerId, int damage)
 	{

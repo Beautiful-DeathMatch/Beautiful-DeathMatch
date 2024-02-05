@@ -16,6 +16,9 @@ public class FieldItemDictionaryPropertyDrawer : SerializableDictionaryPropertyD
 [CustomPropertyDrawer(typeof(ItemSpriteDictionary))]
 public class ItemSpriteDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
 
+[CustomPropertyDrawer(typeof(BoxSpawnAreaDictionary))]
+public class BoxSpawnAreaDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
+
 
 
 

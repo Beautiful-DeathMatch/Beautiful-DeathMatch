@@ -19,7 +19,7 @@ public enum CharacterType
 [RequireComponent(typeof(PlayerMissionComponent))]
 [RequireComponent(typeof(PlayerAttackComponent))]
 [RequireComponent(typeof(PlayerSwimComponent))]
-[RequireComponent(typeof(StatusComponent))]
+[RequireComponent(typeof(PlayerStatusComponent))]
 public class PlayerComponent : MonoBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;

@@ -105,8 +105,32 @@ MonoBehaviour:
     itemType: 4
   - key: 131
     itemType: 5
+  - key: 201
+    itemType: 2
+  - key: 202
+    itemType: 2
+  - key: 203
+    itemType: 3
+  - key: 204
+    itemType: 3
+  - key: 205
+    itemType: 4
+  - key: 206
+    itemType: 4
+  - key: 301
+    itemType: 2
+  - key: 302
+    itemType: 2
+  - key: 303
+    itemType: 5
+  - key: 304
+    itemType: 5
+  - key: 305
+    itemType: 5
+  - key: 306
+    itemType: 5
   itemTypeDictionary:
-    m_keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000650000006f0000007900000083000000
+    m_keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000650000006f0000007900000083000000c9000000ca000000cb000000cc000000cd000000ce0000002d0100002e0100002f010000300100003101000032010000
     m_values:
     - key: 1
       itemType: 1
@@ -135,6 +159,30 @@ MonoBehaviour:
     - key: 121
       itemType: 4
     - key: 131
+      itemType: 5
+    - key: 201
+      itemType: 2
+    - key: 202
+      itemType: 2
+    - key: 203
+      itemType: 3
+    - key: 204
+      itemType: 3
+    - key: 205
+      itemType: 4
+    - key: 206
+      itemType: 4
+    - key: 301
+      itemType: 2
+    - key: 302
+      itemType: 2
+    - key: 303
+      itemType: 5
+    - key: 304
+      itemType: 5
+    - key: 305
+      itemType: 5
+    - key: 306
       itemType: 5
   itemPositionList:
   - key: 1
@@ -296,6 +344,70 @@ MonoBehaviour:
       playerIndex: -1
     - key: 10
       playerIndex: -1
+  boxDataList:
+  - key: 201
+    boxId: 1
+  - key: 202
+    boxId: 1
+  - key: 203
+    boxId: 1
+  - key: 204
+    boxId: 1
+  - key: 205
+    boxId: 1
+  - key: 206
+    boxId: 1
+  - key: 301
+    boxId: 2
+  - key: 302
+    boxId: 2
+  - key: 303
+    boxId: 2
+  - key: 304
+    boxId: 2
+  - key: 305
+    boxId: 2
+  - key: 306
+    boxId: 2
+  boxDataDictionary:
+    m_keys: c9000000ca000000cb000000cc000000cd000000ce0000002d0100002e0100002f010000300100003101000032010000
+    m_values:
+    - key: 201
+      boxId: 1
+    - key: 202
+      boxId: 1
+    - key: 203
+      boxId: 1
+    - key: 204
+      boxId: 1
+    - key: 205
+      boxId: 1
+    - key: 206
+      boxId: 1
+    - key: 301
+      boxId: 2
+    - key: 302
+      boxId: 2
+    - key: 303
+      boxId: 2
+    - key: 304
+      boxId: 2
+    - key: 305
+      boxId: 2
+    - key: 306
+      boxId: 2
+  boxStartingList:
+  - key: 1
+    areaIndex: 1
+  - key: 2
+    areaIndex: 2
+  boxStartingDictionary:
+    m_keys: 0100000002000000
+    m_values:
+    - key: 1
+      areaIndex: 1
+    - key: 2
+      areaIndex: 2
   stringKeyList:
   - key: sys.item.knife
     KR: "\uCE7C"

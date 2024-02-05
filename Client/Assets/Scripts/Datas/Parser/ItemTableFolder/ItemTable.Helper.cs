@@ -65,4 +65,33 @@ public partial class ItemTable
 		else
 			return null;
 	}
+
+	public IEnumerable<int> GetAllBoxIds()
+	{
+		return boxStartingDictionary.Keys;
+	}
+
+	public List<int> GetItemListInBox(int boxId)
+	{
+		List<int> itemList = new();
+		foreach(var data in boxDataDictionary.Values)
+		{
+			if(data.boxId == boxId)
+			{
+				itemList.Add(data.key);
+			}
+		}
+		return itemList;
+	}
+
+	public int GetBoxSpawnAreaIndex(int boxId)
+	{
+		if (boxStartingDictionary.TryGetValue(boxId, out var data))
+		{
+			return data.areaIndex;
+		}
+
+		return -1;
+	}
+
 }

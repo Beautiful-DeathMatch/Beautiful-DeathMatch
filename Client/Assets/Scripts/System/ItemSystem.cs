@@ -1,8 +1,10 @@
 using Mono.CecilX;
+using NPOI.HSSF.Record.Chart;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using static ItemTable;
@@ -22,14 +24,14 @@ public enum ENUM_ITEM_TYPE
 /// <summary>
 /// 실제 사용 가능한 아이템
 /// </summary>
-public class ItemData
+public class DynamicItemData
 {
 	public readonly int itemId;
 	public readonly ItemTable.ItemData tableData;
 
 	public int currentUsableCount { get; private set; }
 
-	public ItemData(int itemId, ItemTable.ItemData tableData)
+	public DynamicItemData(int itemId, ItemTable.ItemData tableData)
 	{
 		this.itemId = itemId;
 		this.currentUsableCount = tableData.maxUsableCount;
@@ -105,6 +107,12 @@ public class ItemSystem : MonoSystem
 
     [SerializeField] private ItemTable itemTable;
 
+    [System.Serializable]
+    public class BoxSpawnAreaDictionary : SerializableDictionary<int, GameObject> { }
+	[SerializeField] private BoxSpawnAreaDictionary boxSpawnAreaDictionary = new BoxSpawnAreaDictionary();
+
+	[SerializeField] BoxComponent boxPrefab;
+
 	/// <summary>
 	/// 아래 목록을 동기화 할 예정입니다.
 	/// 1. 관리 중인 필드 아이템 목록 : itemId - 필드 아이템
@@ -112,8 +120,11 @@ public class ItemSystem : MonoSystem
 	/// 3. 유저가 보유한 Item Slot 정보 : playerId - 슬롯 정보
 	/// </summary>
 	private Dictionary<int, FieldItemComponent> fieldItemComponentDictionary = new Dictionary<int, FieldItemComponent>();
-	private Dictionary<int, ItemData> itemDataDictionary = new Dictionary<int, ItemData>();
+	private Dictionary<int, DynamicItemData> itemDataDictionary = new Dictionary<int, DynamicItemData>();
 	private Dictionary<int, PlayerItemSlot> playerItemSlotDictionary = new Dictionary<int, PlayerItemSlot>();
+	
+	// 4. Box 목록
+	private Dictionary<int, BoxComponent> boxComponentDictionary = new ();
 
 
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
@@ -144,7 +155,7 @@ public class ItemSystem : MonoSystem
 			if (itemData == null)
 				continue;
 
-			var dynamicItemData = new ItemData(itemId, itemData);
+			var dynamicItemData = new DynamicItemData(itemId, itemData);
 			itemDataDictionary.Add(itemId, dynamicItemData);			// DataDictionary
 
 			var fieldItemObj = CreateFieldItem(itemId, itemData.key);	// Instantiate
@@ -152,13 +163,26 @@ public class ItemSystem : MonoSystem
 
 			var startingPlayerIndex = itemTable.GetItemStartingPlayer(itemId);
 			if(startingPlayerIndex >= 0 && startingPlayerIndex < playerIdList.Count)
-				GivePlayerStartingItem(playerIdList[startingPlayerIndex], itemId);
+				TryGivePlayerFieldItem(playerIdList[startingPlayerIndex], itemId);
+
+		}
+
+		foreach (var boxId in itemTable.GetAllBoxIds())
+		{
+			var spawnAreaIndex = itemTable.GetBoxSpawnAreaIndex(boxId);
+			if (spawnAreaIndex == -1)
+				continue;
+
+			var boxObj = CreateBox(boxId, spawnAreaIndex);
+			boxComponentDictionary.Add(boxId, boxObj);     // FieldDictionary
 
 		}
 
 		// 테스트용
 		SpawnFieldItem(101);
 		SpawnFieldItem(111);
+		SpawnBox(1);
+		SpawnBox(2);
     }
 
 	// ID 조회해서 있으면 오브젝트 SetActive
@@ -208,18 +232,19 @@ public class ItemSystem : MonoSystem
 			return null;
 	}
 
-	// 스타팅 플레이어가 있는 경우 아이템 제공, 필드에선 삭제
-	private void GivePlayerStartingItem(int playerId, int itemId)
+	// 필드 아이템을 유저에게 제공, 필드에선 삭제
+	private bool TryGivePlayerFieldItem(int playerId, int itemId)
 	{
 		var itemType = itemTable.GetItemType(itemId);
 		if (TryGiveItem(playerId, itemId, itemType) == false)
 		{
 			Debug.LogError($"플레이어 {playerId}가 {itemId}, {itemType} 획득에 실패");
+			return false;
 		}
 		else
         {
-            Debug.Log($"{playerId}와 {itemId} : {itemType}가 시작 아이템 제공에 성공하였습니다.");
-			TryDestroyFieldItem(itemId);
+            Debug.Log($"{playerId}와 {itemId} : {itemType}가 아이템 제공에 성공하였습니다.");
+			return TryDestroyFieldItem(itemId);
         }
 	}
 
@@ -249,7 +274,7 @@ public class ItemSystem : MonoSystem
     }
 
 	// 특정 플레이어가 가지고 있는 Item Data 출력
-	public ItemData GetPlayerItemData(int playerId, int slotIndex)
+	public DynamicItemData GetPlayerItemData(int playerId, int slotIndex)
 	{
 		int itemId = GetItemId(playerId, slotIndex);
 		return GetItemData(itemId);
@@ -266,7 +291,7 @@ public class ItemSystem : MonoSystem
 	}
 
 	// item ID로 Item Data 찾기 
-	public ItemData GetItemData(int itemId)
+	public DynamicItemData GetItemData(int itemId)
 	{
 		if (itemDataDictionary.TryGetValue(itemId, out  var itemData))
 		{
@@ -309,7 +334,7 @@ public class ItemSystem : MonoSystem
 	}
 
 	// Player(ID)의 Slot(Index)에 있는 아이템 사용 횟수 차감
-	public bool TryUseItem(int playerId, int slotIndex, Action<int, ItemData> onUseItem = null)
+	public bool TryUseItem(int playerId, int slotIndex, Action<int, DynamicItemData> onUseItem = null)
 	{
 		int itemId = GetItemId(playerId, slotIndex);
 		if (itemId == -1)
@@ -326,4 +351,57 @@ public class ItemSystem : MonoSystem
 		onUseItem?.Invoke(itemId, itemData);
 		return true;
 	}
+
+	// box
+	private BoxComponent CreateBox(int boxId, int areaIndex)
+	{
+		if (boxSpawnAreaDictionary.TryGetValue(areaIndex, out var area))
+		{
+			var boxObj = Instantiate(boxPrefab, transform);
+			boxObj.SetBoxId(boxId);
+			boxObj.transform.SetParent(transform, true);
+
+			boxObj.transform.position = area.transform.position;
+
+			boxObj.gameObject.SetActive(false);
+
+			return boxObj;
+		}
+
+		return null;
+	}
+
+	// ID 조회해서 있으면 오브젝트 SetActive
+	private void SpawnBox(int boxId)
+	{
+		if (boxComponentDictionary.TryGetValue(boxId, out var boxObj))
+		{
+            boxObj.gameObject.SetActive(true);
+        }
+    }
+
+	// box 랜덤 돌려서 아이템 제공
+	public bool TryGetRandomItemInBox(int playerId, int boxId)
+	{
+		List<int> itemIds = itemTable.GetItemListInBox(boxId);
+		if (itemIds.Count == 0)
+			return false;
+		int randomIndex = UnityEngine.Random.Range(0, itemIds.Count);
+		int itemId = itemIds[randomIndex];
+		Debug.Log($"랜덤 결과 {itemId}");
+		return TryGivePlayerFieldItem(playerId, itemId);
+	}
+
+	// Box(ID) 필드에서만 삭제 (Object Destroy 및 Field Dictionary 삭제)
+	public bool TryDestroyBox(int boxId)
+	{
+		if (boxComponentDictionary.TryGetValue(boxId, out var box) == false)
+			return false;
+
+		Destroy(box.gameObject);
+		boxComponentDictionary.Remove(boxId);
+
+		return true;
+	}
+
 }

@@ -20,10 +20,17 @@ public class BattleMainWindow : UIMainWindow
 
     [SerializeField] private Image[] itemImages = null;
     [SerializeField] private TextMeshProUGUI[] currentItemTexts = null;
+    [SerializeField] private TextMeshProUGUI aimText = null;
+    [SerializeField] private TextMeshProUGUI interactionTimeText = null;
 
     [SerializeField] private ItemTable itemTable;
 
     private int myPlayerId = -1;
+
+    private readonly StringBuilder stringBuilder = new();
+    private float currentInteractionTime;
+    private float maxInteractionTime;
+    private float remainedInteractionTime;
     
     public override void OnEnter(SceneModuleParam param)
     {
@@ -80,11 +87,46 @@ public class BattleMainWindow : UIMainWindow
         currentItemTexts[2].text = data.tableData.maxUsableCount.ToString();
     }
 
+    public void PrintAimText()
+    {
+        var interactionObject = myPlayerInteractionComponent.GetCurrentInteractableObject();
+        stringBuilder.Clear();
+
+        if (interactionObject != null)
+        {
+            if (interactionObject is FieldItemComponent fieldItem)
+            {
+                DynamicItemData itemData = itemSystem.GetItemData(fieldItem.GetItemId());
+                stringBuilder.AppendFormat("F를 눌러 아이템 획득: {0} ({1})", itemTable.LoadStringByKey(itemData.tableData.nameKey), itemData.currentUsableCount);
+            }
+            else if (interactionObject is BoxComponent box)
+            {
+                stringBuilder.AppendFormat("F를 눌러 상자 열기");
+            }
+        }
+        aimText.text = stringBuilder.ToString();
+    }
+
+    public void PrintPlayerInteractionTime()
+    {
+        currentInteractionTime = myPlayerInteractionComponent.currentInteractionTime;
+        maxInteractionTime = myPlayerInteractionComponent.objectMaxInteractionTime;
+        if (currentInteractionTime == 0f)
+            interactionTimeText.text = "";
+        else
+        {
+            remainedInteractionTime = maxInteractionTime - currentInteractionTime;
+            interactionTimeText.text = $"{(int)remainedInteractionTime}.{(int)(remainedInteractionTime * 10) % 10}";
+        }
+    }
+
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
     {
         base.OnUpdate(deltaFrameCount, deltaTime);
 
         PrintPlayerItemSlot();
         PrintCurrentItemData();
+        PrintAimText();
+        PrintPlayerInteractionTime();
     }
 }
