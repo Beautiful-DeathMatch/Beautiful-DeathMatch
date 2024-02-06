@@ -22,6 +22,8 @@ public class BattleMainWindow : UIMainWindow
     [SerializeField] private TextMeshProUGUI[] currentItemTexts = null;
     [SerializeField] private TextMeshProUGUI aimText = null;
     [SerializeField] private TextMeshProUGUI interactionTimeText = null;
+    [SerializeField] private TextMeshProUGUI healthText = null;
+    [SerializeField] private TextMeshProUGUI stateText = null;
 
     [SerializeField] private ItemTable itemTable;
     [SerializeField] private StringTable stringTable;
@@ -122,6 +124,12 @@ public class BattleMainWindow : UIMainWindow
         }
     }
 
+    public void PrintStatus()
+    {
+        healthText.text = statusSystem.GetHealth(myPlayerId).ToString();
+        stateText.text = statusSystem.GetState(myPlayerId).ToString();
+    }
+
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
     {
         base.OnUpdate(deltaFrameCount, deltaTime);
@@ -130,5 +138,6 @@ public class BattleMainWindow : UIMainWindow
         PrintCurrentItemData();
         PrintAimText();
         PrintPlayerInteractionTime();
+        PrintStatus();
     }
 }

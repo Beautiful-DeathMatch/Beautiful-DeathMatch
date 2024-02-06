@@ -14,6 +14,7 @@ public class PlayerInteractionComponent : MonoBehaviour
 	private float interactionMaxDistance = 8.0f;
 
 	private IInteractable currentInteractableObject = null;
+	private IInteractable currentInteractingObject = null;
 
 	public event Action<IInteractable> onHoldInteract = null;
 	public event Action<IInteractable> onSuccessInteract = null;
@@ -70,32 +71,39 @@ public class PlayerInteractionComponent : MonoBehaviour
 	private void OnHoldInteract()
 	{
 		if (currentInteractableObject == null || currentInteractableObject.IsInteractable(playerId) == false) 
-			return;
-		// 상호작용 도중 상호작용 물체가 바뀔 경우 새 Start 되도록 예외 필요할듯 -> 이때 Cancel 로직이 동작하지 않을 듯 하므로 새 로직 필요
-
-		if (currentInteractionTime == 0.0f)
 		{
-			currentInteractableObject.TryStartInteract(playerId);
+			if (currentInteractingObject != null)
+				OnCancelInteract();
+			return;
+		}
+
+		if (currentInteractingObject != currentInteractableObject)
+		{
+			if (currentInteractingObject != null)
+				OnCancelInteract();
+				
+			currentInteractingObject = currentInteractableObject;
+			currentInteractingObject.TryStartInteract(playerId);
+			objectMaxInteractionTime = currentInteractingObject.maxInteractionTime;
 		}
 
         currentInteractionTime += Time.deltaTime;
-        onHoldInteract?.Invoke(currentInteractableObject);
+        onHoldInteract?.Invoke(currentInteractingObject);
 
-		objectMaxInteractionTime = currentInteractableObject.maxInteractionTime;
 		if (currentInteractionTime >= objectMaxInteractionTime)
 		{
 			OnSuccessInteract();
 		}
 	}
 
-	private void OnCancelInteract() // F키를 떼야만 동작함, F 누르고 있는 상태에서 인터랙션 물체를 벗어나도 동작해야 함 <= 수정 필요
+	private void OnCancelInteract()
 	{
 		currentInteractionTime = 0.0f;
 
-		if (currentInteractableObject != null)
+		if (currentInteractingObject != null)
 		{
-			currentInteractableObject.EndInteract();
-			currentInteractableObject = null;
+			currentInteractingObject.EndInteract();
+			currentInteractingObject = null;
         }
 
 		onCancelInteract?.Invoke();
@@ -105,12 +113,12 @@ public class PlayerInteractionComponent : MonoBehaviour
 	{
 		currentInteractionTime = 0.0f;
 
-		if (currentInteractableObject != null)
+		if (currentInteractingObject != null)
 		{
-			currentInteractableObject.SuccessInteract(playerId);
-            onSuccessInteract?.Invoke(currentInteractableObject);
+			currentInteractingObject.SuccessInteract(playerId);
+            onSuccessInteract?.Invoke(currentInteractingObject);
 
-            currentInteractableObject = null;
+            currentInteractingObject = null;
 		}
 	}
 
