@@ -24,6 +24,7 @@ public class BattleMainWindow : UIMainWindow
     [SerializeField] private TextMeshProUGUI interactionTimeText = null;
 
     [SerializeField] private ItemTable itemTable;
+    [SerializeField] private StringTable stringTable;
 
     private int myPlayerId = -1;
 
@@ -82,7 +83,7 @@ public class BattleMainWindow : UIMainWindow
     {
         itemImages[myPlayerItemComponent.currentItemSlotIndex].color = new Color(0, 0, 0, 1f);
         var data = itemSystem.GetPlayerItemData(myPlayerId, myPlayerItemComponent.currentItemSlotIndex);
-        currentItemTexts[0].text = itemTable.LoadStringByKey(data.tableData.nameKey);
+        currentItemTexts[0].text = stringTable.GetStringByKey(data.tableData.nameKey);
         currentItemTexts[1].text = data.currentUsableCount.ToString();
         currentItemTexts[2].text = data.tableData.maxUsableCount.ToString();
     }
@@ -97,11 +98,12 @@ public class BattleMainWindow : UIMainWindow
             if (interactionObject is FieldItemComponent fieldItem)
             {
                 DynamicItemData itemData = itemSystem.GetItemData(fieldItem.GetItemId());
-                stringBuilder.AppendFormat("F를 눌러 아이템 획득: {0} ({1})", itemTable.LoadStringByKey(itemData.tableData.nameKey), itemData.currentUsableCount);
+                string itemName = stringTable.GetStringByKey(itemData.tableData.nameKey);
+                stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.getItem"), itemName, itemData.currentUsableCount);
             }
             else if (interactionObject is BoxComponent box)
             {
-                stringBuilder.AppendFormat("F를 눌러 상자 열기");
+                stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.openBox"));
             }
         }
         aimText.text = stringBuilder.ToString();

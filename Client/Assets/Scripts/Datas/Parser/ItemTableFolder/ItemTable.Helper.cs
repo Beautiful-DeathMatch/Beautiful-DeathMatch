@@ -56,16 +56,6 @@ public partial class ItemTable
 			return new UnityEngine.Vector3(0f,0f,0f);
 	}
 
-	public string LoadStringByKey(string key)
-	{
-		if (stringKeyDictionary.TryGetValue(key, out var data))
-		{
-			return data.KR;
-		}
-		else
-			return null;
-	}
-
 	public IEnumerable<int> GetAllBoxIds()
 	{
 		return boxStartingDictionary.Keys;

@@ -41,11 +41,6 @@ public partial class ItemTable : ScriptParser
 		{
 			boxStartingDictionary.Add(value.key, value);
 		}
-		stringKeyDictionary.Clear();
-		foreach(var value in stringKeyList)
-		{
-			stringKeyDictionary.Add(value.key, value);
-		}
 	}
 
 	[Serializable]
@@ -124,19 +119,6 @@ public partial class ItemTable : ScriptParser
 	[System.Serializable]
 	public class BoxStartingDictionary : SerializableDictionary<int, BoxStarting> {}
 	public BoxStartingDictionary boxStartingDictionary = new BoxStartingDictionary();
-
-	[Serializable]
-	public class StringKey
-	{
-		public string key;
-		public string KR;
-		public string EN;
-	}
-
-	public List<StringKey> stringKeyList = new List<StringKey>();
-	[System.Serializable]
-	public class StringKeyDictionary : SerializableDictionary<string, StringKey> {}
-	public StringKeyDictionary stringKeyDictionary = new StringKeyDictionary();
 
 
 }

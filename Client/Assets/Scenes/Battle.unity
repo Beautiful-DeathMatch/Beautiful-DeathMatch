@@ -9867,6 +9867,7 @@ MonoBehaviour:
   aimText: {fileID: 1729161332}
   interactionTimeText: {fileID: 545314288}
   itemTable: {fileID: 11400000, guid: 50ae4908748b4e140be81a7d1d0b6f6d, type: 2}
+  stringTable: {fileID: 11400000, guid: e48470943df19244093d762838d728a4, type: 2}
 --- !u!1001 &601261914
 PrefabInstance:
   m_ObjectHideFlags: 0
