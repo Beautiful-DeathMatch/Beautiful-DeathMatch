@@ -158,8 +158,8 @@ namespace StarterAssets
 
         private void CheckSwim()
         {
-            if (IsInWater() == false)
-                return;
+			if (IsInWater() == false)
+				return;
 
 			_animator.SetBool(_animIDSwim, true);
 		}
