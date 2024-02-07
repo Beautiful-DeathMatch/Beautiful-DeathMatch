@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
+using NPOI.SS.Formula.Functions;
 using UnityEngine;
 
 /// <summary>
@@ -12,25 +15,119 @@ using UnityEngine;
 public enum ENUM_MISSION_TYPE
 {
 	None = -1,
-	Interaction = 0,
+	Mission1 = 0,
+	Mission2 = 1,
+	Mission3 = 2,
+	Mission4 = 3,
+	Mission5 = 4,
 }
 
-public class MissionData
+public class DynamicMissionData
 {
-    public readonly ENUM_MISSION_TYPE missionType;     // 미션 타입
+	public MissionTable.MissionData tableData;
     public int currentProgression { get; private set; }
-    public readonly int maxProgression;  // 미션 최대 진행도
+
+	public DynamicMissionData(MissionTable.MissionData tableData)
+	{
+		this.tableData = tableData;
+		currentProgression = 0;
+	}
+
+	public void MissionComplete()
+	{
+		currentProgression = tableData.maxProgression;
+	}
+
+	public void MissionProgressionChange(int progress)
+	{
+		int newProgression = currentProgression + progress;
+		currentProgression = newProgression > tableData.maxProgression ? tableData.maxProgression : newProgression;
+	}
+
+}
+
+public class PlayerMissionSlot
+{
+	public readonly Dictionary<ENUM_MISSION_TYPE, DynamicMissionData> missions = new();
+
+	public void AddMission(ENUM_MISSION_TYPE missionType, DynamicMissionData dyunamicMissionData)
+	{
+		missions.Add(missionType, dyunamicMissionData);
+	}
 }
 
 public class MissionSystem : MonoSystem
 {    
-    private Dictionary<int, MissionData> missionDataDictionary = new Dictionary<int, MissionData>();
+	[SerializeField] private MissionTable missionTable;
+	private Dictionary<int, PlayerMissionSlot> playerMissionSlotDictionary = new ();
+
+    [SerializeField] private PrefabLinkedUISystem uiSystem = null;
 
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
 	{
 		base.OnEnter(sceneModuleParam);
 
 		// 미션 데이터 딕셔너리 생성
+		if (sceneModuleParam is BattleSceneModule.Param battleParam)
+		{
+			playerMissionSlotDictionary.Clear();
+
+            foreach (var playerInfo in battleParam.playerInfoList)
+			{
+				PlayerMissionSlot newPlayerMissionSlot = new ();
+				playerMissionSlotDictionary.Add(playerInfo.playerId, newPlayerMissionSlot);
+
+				foreach(ENUM_MISSION_TYPE missionType in Enum.GetValues(typeof(ENUM_MISSION_TYPE)))
+				{
+					if (missionType != ENUM_MISSION_TYPE.None)
+					{
+						var missionData = missionTable.GetMissionDataByType(missionType);
+						newPlayerMissionSlot.AddMission(missionType, new DynamicMissionData(missionData));
+					}
+				}
+
+            }
+        }
 
 	}
+
+	public DynamicMissionData GetMissionData(int playerId, ENUM_MISSION_TYPE missionType)
+	{
+		if (playerMissionSlotDictionary.TryGetValue(playerId, out var missionSlot) == false)
+			return null;
+
+		if (missionSlot.missions.TryGetValue(missionType, out var mission) == false)
+			return null;
+
+		return mission;
+	}
+
+	public bool TryMissionStart(int playerId, ENUM_MISSION_TYPE missionType)	// 개인 UI 호출을 시스템에서?? <= 이슈 없을 지 논의 필요
+	{
+		uiSystem.OpenPopup<MissionPopup>(new MissionUIParam(this, playerId, missionType));
+
+		return true;
+	}
+
+	public bool TryMissionComplete(int playerId, ENUM_MISSION_TYPE missionType)
+	{
+		if (playerMissionSlotDictionary.TryGetValue(playerId, out var missionSlot) == false)
+			return false;
+
+		if (missionSlot.missions.TryGetValue(missionType, out var mission) == false)
+			return false;
+
+		mission.MissionComplete();
+		return true;
+	}
+
+	public PlayerMissionSlot GetPlayerMissionSlot(int playerId)
+	{
+		if (playerMissionSlotDictionary.TryGetValue(playerId, out var missionSlot))
+			return missionSlot;
+
+		return null;
+	}
+
+
 }

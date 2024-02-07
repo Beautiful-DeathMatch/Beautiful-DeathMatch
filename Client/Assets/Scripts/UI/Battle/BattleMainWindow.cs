@@ -24,8 +24,10 @@ public class BattleMainWindow : UIMainWindow
     [SerializeField] private TextMeshProUGUI interactionTimeText = null;
     [SerializeField] private TextMeshProUGUI healthText = null;
     [SerializeField] private TextMeshProUGUI stateText = null;
+    [SerializeField] private TextMeshProUGUI missionText = null;
 
     [SerializeField] private ItemTable itemTable;
+    [SerializeField] private MissionTable missionTable;
     [SerializeField] private StringTable stringTable;
 
     private int myPlayerId = -1;
@@ -107,6 +109,12 @@ public class BattleMainWindow : UIMainWindow
             {
                 stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.openBox"));
             }
+            else if (interactionObject is MissionComponent mission)
+            {
+                MissionTable.MissionData missionData = missionTable.GetMissionDataByType(mission.missionType);
+                string missionName = stringTable.GetStringByKey(missionData.nameKey);
+                stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.mission"), missionName);
+            }
         }
         aimText.text = stringBuilder.ToString();
     }
@@ -130,6 +138,22 @@ public class BattleMainWindow : UIMainWindow
         stateText.text = statusSystem.GetState(myPlayerId).ToString();
     }
 
+    public void PrintMission()
+    {
+        stringBuilder.Clear();
+        PlayerMissionSlot playerMissionSlot = missionSystem.GetPlayerMissionSlot(myPlayerId);
+        foreach(DynamicMissionData mission in playerMissionSlot.missions.Values)
+        {
+            string missionName = stringTable.GetStringByKey(mission.tableData.nameKey);
+            stringBuilder.Append(missionName);
+            if(mission.currentProgression == mission.tableData.maxProgression)
+                stringBuilder.Append("(완료)");
+            stringBuilder.Append("\n");
+        }
+
+        missionText.text = stringBuilder.ToString();
+    }
+
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
     {
         base.OnUpdate(deltaFrameCount, deltaTime);
@@ -139,5 +163,6 @@ public class BattleMainWindow : UIMainWindow
         PrintAimText();
         PrintPlayerInteractionTime();
         PrintStatus();
+        PrintMission();
     }
 }

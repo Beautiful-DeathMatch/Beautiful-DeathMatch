@@ -37,6 +37,44 @@ MonoBehaviour:
   - key: sys.hud.interaction.openBox
     KR: "F\uB97C \uB20C\uB7EC \uC0C1\uC790 \uC5F4\uAE30"
     EN: en8
+  - key: sys.hud.interaction.mission
+    KR: "F\uB97C \uB20C\uB7EC \uBBF8\uC158 \uC2DC\uC791: {0}"
+    EN: en9
+  - key: sys.mission.name.1
+    KR: "\uBBF8\uC158 1 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+    EN: en10
+  - key: sys.mission.name.2
+    KR: "\uBBF8\uC158 2 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+    EN: en11
+  - key: sys.mission.name.3
+    KR: "\uBBF8\uC158 3 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+    EN: en12
+  - key: sys.mission.name.4
+    KR: "\uBBF8\uC158 4 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+    EN: en13
+  - key: sys.mission.name.5
+    KR: "\uBBF8\uC158 5 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+    EN: en14
+  - key: sys.mission.content.1
+    KR: "\uBBF8\uC158 1 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+      \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+    EN: en15
+  - key: sys.mission.content.2
+    KR: "\uBBF8\uC158 2 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+      \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+    EN: en16
+  - key: sys.mission.content.3
+    KR: "\uBBF8\uC158 3 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+      \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+    EN: en17
+  - key: sys.mission.content.4
+    KR: "\uBBF8\uC158 4 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+      \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+    EN: en18
+  - key: sys.mission.content.5
+    KR: "\uBBF8\uC158 5 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+      \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+    EN: en19
   stringKeyDictionary:
     m_keys:
     - sys.item.knife
@@ -47,6 +85,17 @@ MonoBehaviour:
     - sys.item.teleport
     - sys.hud.interaction.getItem
     - sys.hud.interaction.openBox
+    - sys.hud.interaction.mission
+    - sys.mission.name.1
+    - sys.mission.name.2
+    - sys.mission.name.3
+    - sys.mission.name.4
+    - sys.mission.name.5
+    - sys.mission.content.1
+    - sys.mission.content.2
+    - sys.mission.content.3
+    - sys.mission.content.4
+    - sys.mission.content.5
     m_values:
     - key: sys.item.knife
       KR: "\uCE7C"
@@ -72,3 +121,41 @@ MonoBehaviour:
     - key: sys.hud.interaction.openBox
       KR: "F\uB97C \uB20C\uB7EC \uC0C1\uC790 \uC5F4\uAE30"
       EN: en8
+    - key: sys.hud.interaction.mission
+      KR: "F\uB97C \uB20C\uB7EC \uBBF8\uC158 \uC2DC\uC791: {0}"
+      EN: en9
+    - key: sys.mission.name.1
+      KR: "\uBBF8\uC158 1 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+      EN: en10
+    - key: sys.mission.name.2
+      KR: "\uBBF8\uC158 2 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+      EN: en11
+    - key: sys.mission.name.3
+      KR: "\uBBF8\uC158 3 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+      EN: en12
+    - key: sys.mission.name.4
+      KR: "\uBBF8\uC158 4 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+      EN: en13
+    - key: sys.mission.name.5
+      KR: "\uBBF8\uC158 5 \uC774\uB984\uC785\uB2C8\uB2E4~~"
+      EN: en14
+    - key: sys.mission.content.1
+      KR: "\uBBF8\uC158 1 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+        \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+      EN: en15
+    - key: sys.mission.content.2
+      KR: "\uBBF8\uC158 2 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+        \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+      EN: en16
+    - key: sys.mission.content.3
+      KR: "\uBBF8\uC158 3 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+        \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+      EN: en17
+    - key: sys.mission.content.4
+      KR: "\uBBF8\uC158 4 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+        \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+      EN: en18
+    - key: sys.mission.content.5
+      KR: "\uBBF8\uC158 5 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
+        \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
+      EN: en19

@@ -25,6 +25,7 @@ public class BattleSceneModule : NetworkSceneModule
 	[SerializeField] private SpawnSystem spawnSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
 	[SerializeField] private StatusSystem statusSystem = null;
+	[SerializeField] private MissionSystem missionSystem = null;
     [SerializeField] private PrefabLinkedUISystem uiSystem = null;
 	// 시스템 추가
 
@@ -65,6 +66,7 @@ public class BattleSceneModule : NetworkSceneModule
 		spawnSystem.OnEnter(param);
 		itemSystem.OnEnter(param);
 		statusSystem.OnEnter(param);
+		missionSystem.OnEnter(param);
 		uiSystem.OnEnter(param);
 	}
 

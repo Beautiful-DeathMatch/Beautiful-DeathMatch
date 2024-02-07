@@ -31,8 +31,10 @@ public class PlayerMissionComponent : MonoComponent<MissionSystem>
 		interactionComponent.onSuccessInteract -= OnSuccessInteract;
 	}
 
+
 	private void OnSuccessInteract(IInteractable interactableObject)
 	{
+		/*
 		if (interactableObject == null)
 			return;
 
@@ -44,5 +46,7 @@ public class PlayerMissionComponent : MonoComponent<MissionSystem>
 
 			missionObj.TryCompleteMission(ENUM_MISSION_TYPE.Interaction, playerId);
 		}
+		*/
 	}
+	
 }
