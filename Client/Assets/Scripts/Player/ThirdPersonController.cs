@@ -204,7 +204,7 @@ namespace StarterAssets
 		private void OnUseItem()
         {
 			onClickUse?.Invoke();
-			// _animator.SetBool(_animIDAttack, true);
+			_animator.SetTrigger(_animIDUseItem);
 		}
 	}
-}
+} 
