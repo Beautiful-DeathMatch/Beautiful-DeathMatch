@@ -11,15 +11,16 @@ public class MissionUIParam : UIParam
     public int playerId { get; private set; } = 0;
     public ENUM_MISSION_TYPE missionType { get; private set; } = ENUM_MISSION_TYPE.None;
 
-    public MissionUIParam(MonoSystem system = null, int playerId = 0, ENUM_MISSION_TYPE missionType = ENUM_MISSION_TYPE.None)
+    public MissionUIParam(MissionSystem missionSystem = null, int playerId = 0, ENUM_MISSION_TYPE missionType = ENUM_MISSION_TYPE.None)
     {
-        this.playerId = 0;
+        this.missionSystem = missionSystem;
+        this.playerId = playerId;
         this.missionType = missionType;
     }
 }
 
 
-[PopupAttribute("MissionPopup.prefab")]
+[PopupAttribute("MissionPopup")]
 public class MissionPopup : UIPopup
 {
     MissionSystem missionSystem;

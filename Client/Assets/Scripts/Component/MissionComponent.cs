@@ -48,7 +48,8 @@ public class MissionComponent : MonoComponent<MissionSystem>, IInteractable
 
 	public bool IsInteractable(int playerId)
 	{
-		return (currentInteractingPlayerId == -1 || currentInteractingPlayerId == playerId) && !this.IsDestroyed();
+		bool isMissionCompleted = System.IsMissionCompleted(playerId, missionType);
+		return (currentInteractingPlayerId == -1 || currentInteractingPlayerId == playerId) && !this.IsDestroyed() && !isMissionCompleted;
 	}
 
     public bool TryMissionComplete(ENUM_MISSION_TYPE missionType, int playerId)

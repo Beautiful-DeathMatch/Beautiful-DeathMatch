@@ -44,6 +44,11 @@ public class DynamicMissionData
 		currentProgression = newProgression > tableData.maxProgression ? tableData.maxProgression : newProgression;
 	}
 
+	public bool IsMissionCompleted()
+	{
+		return currentProgression == tableData.maxProgression;
+	}
+
 }
 
 public class PlayerMissionSlot
@@ -127,6 +132,14 @@ public class MissionSystem : MonoSystem
 			return missionSlot;
 
 		return null;
+	}
+
+	public bool IsMissionCompleted(int playerId, ENUM_MISSION_TYPE missionType)
+	{
+		if (GetPlayerMissionSlot(playerId).missions.TryGetValue(missionType, out var data) == false)
+			return false;
+
+		return data.IsMissionCompleted();
 	}
 
 

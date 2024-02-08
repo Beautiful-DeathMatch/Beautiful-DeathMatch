@@ -75,6 +75,9 @@ MonoBehaviour:
     KR: "\uBBF8\uC158 5 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
       \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
     EN: en19
+  - key: sys.hud.interaction.completedMission
+    KR: "\uC774\uBBF8 \uC644\uB8CC\uB41C \uBBF8\uC158\uC785\uB2C8\uB2E4"
+    EN: en20
   stringKeyDictionary:
     m_keys:
     - sys.item.knife
@@ -96,6 +99,7 @@ MonoBehaviour:
     - sys.mission.content.3
     - sys.mission.content.4
     - sys.mission.content.5
+    - sys.hud.interaction.completedMission
     m_values:
     - key: sys.item.knife
       KR: "\uCE7C"
@@ -159,3 +163,6 @@ MonoBehaviour:
       KR: "\uBBF8\uC158 5 \uB0B4\uC6A9\uC785\uB2C8\uB2E4~~ \uC784\uC2DC\uB85C \uB123\uC5B4\uB193\uC740
         \uAE34 \uB0B4\uC6A9\uC785\uB2C8\uB2E4."
       EN: en19
+    - key: sys.hud.interaction.completedMission
+      KR: "\uC774\uBBF8 \uC644\uB8CC\uB41C \uBBF8\uC158\uC785\uB2C8\uB2E4"
+      EN: en20

@@ -113,7 +113,10 @@ public class BattleMainWindow : UIMainWindow
             {
                 MissionTable.MissionData missionData = missionTable.GetMissionDataByType(mission.missionType);
                 string missionName = stringTable.GetStringByKey(missionData.nameKey);
-                stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.mission"), missionName);
+                if(missionSystem.IsMissionCompleted(myPlayerId,mission.missionType))
+                    stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.completedMission"), missionName);
+                else
+                    stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.mission"), missionName);
             }
         }
         aimText.text = stringBuilder.ToString();

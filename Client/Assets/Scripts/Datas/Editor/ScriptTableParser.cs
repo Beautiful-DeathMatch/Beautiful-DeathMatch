@@ -16,14 +16,15 @@ public class ScriptableObjectHelper
 {
 	public static ScriptableObject GenerateSO(string assetPath, Type assetType)
 	{
-		Directory.CreateDirectory(Path.GetDirectoryName(assetPath));
+		string fullAssetPath = $"Assets/Resources/{assetPath}";
+		Directory.CreateDirectory(Path.GetDirectoryName(fullAssetPath));
 
-		var asset = AssetDatabase.LoadAssetAtPath(assetPath, assetType) as ScriptableObject;
+		var asset = AssetDatabase.LoadAssetAtPath(fullAssetPath, assetType) as ScriptableObject;
 
 		if (asset == null)
 		{
 			asset = ScriptableObject.CreateInstance(assetType.Name);
-			AssetDatabase.CreateAsset(asset, assetPath);
+			AssetDatabase.CreateAsset(asset, fullAssetPath);
 		}
 
         asset.hideFlags = HideFlags.DontSaveInEditor;
