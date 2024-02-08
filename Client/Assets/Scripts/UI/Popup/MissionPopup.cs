@@ -52,13 +52,13 @@ public class MissionPopup : UIPopup
 
     protected override void OnClose()
     {
-        OnClickClose();
+        
     }
 
     public void OnClickComplete()
     {
         missionSystem.TryMissionComplete(playerId, missionType);
-        OnClose();
+        OnClickClose();
         return; 
     }
 

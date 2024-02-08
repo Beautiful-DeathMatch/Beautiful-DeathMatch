@@ -9,12 +9,14 @@ using UnityEngine.EventSystems;
 public class PrefabLinkedUISystem : MonoSystem
 {
 	[SerializeField] private ResourceSystem resourceSystem = null;
+	[SerializeField] private PlayerInputAsset playerInputAsset = null;
 
     private EventSystem eventSystem;
 	private Dictionary<Type, UIPopup> popupDictionary = new Dictionary<Type, UIPopup>();
 	private Stack<UIPopup> popupStack = new Stack<UIPopup>();
 
 	private UIMainWindow currentMainWindow = null;
+	private bool isBeforeCursorLocked;
 
 #if UNITY_EDITOR
 	protected override void OnReset()
@@ -104,6 +106,11 @@ public class PrefabLinkedUISystem : MonoSystem
 		{
 			this.SetChildObject(popup);
 
+			if (popupStack.Count == 0)
+				isBeforeCursorLocked = playerInputAsset.cursorLocked;
+
+			playerInputAsset.ChangeCursorStateAndLook(false);
+
 			popup.SetOrder(popupStack.Count + 1);
 			popupStack.Push(popup);
 		}
@@ -138,6 +145,9 @@ public class PrefabLinkedUISystem : MonoSystem
 		{
 			popupStack.Push(tempStack.Pop());
 		}
+
+		if (popupStack.Count == 0)
+			playerInputAsset.ChangeCursorStateAndLook(isBeforeCursorLocked);
 	}
 
 	public void ClosePopup(Type type)
@@ -166,6 +176,9 @@ public class PrefabLinkedUISystem : MonoSystem
 		{
 			popupStack.Push(tempStack.Pop());
 		}
+
+		if (popupStack.Count == 0)
+			playerInputAsset.ChangeCursorStateAndLook(isBeforeCursorLocked);
 	}
 
 	public T GetPopup<T>(bool includeDeactive = false) where T : UIPopup

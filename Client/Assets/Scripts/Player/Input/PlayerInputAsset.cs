@@ -104,4 +104,12 @@ public class PlayerInputAsset : MonoBehaviour
 	{
 		Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 	}
+
+	public void ChangeCursorStateAndLook(bool newCursorLocked)
+	{
+		cursorInputForLook = newCursorLocked;
+		cursorLocked = newCursorLocked;
+		SetCursorState(cursorLocked);
+	}
+
 }

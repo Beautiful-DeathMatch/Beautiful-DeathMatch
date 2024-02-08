@@ -5411,6 +5411,11 @@ PrefabInstance:
       propertyPath: resourceSystem
       value: 
       objectReference: {fileID: 1276887039}
+    - target: {fileID: 2115748689266406413, guid: 1ac37513e35265a42948be173494124c,
+        type: 3}
+      propertyPath: playerInputAsset
+      value: 
+      objectReference: {fileID: 1668304389}
     - target: {fileID: 4920803160231686420, guid: 1ac37513e35265a42948be173494124c,
         type: 3}
       propertyPath: m_Name

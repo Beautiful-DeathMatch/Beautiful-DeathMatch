@@ -21,8 +21,9 @@ public class DebugSystem : MonoSystem
 		}
 		else if (GUI.Button(new Rect(600, 0, 300, 150), "캐릭터 커서 제거 치트"))
 		{
-			starterAssetsInputs.cursorLocked = true;
-			starterAssetsInputs.cursorInputForLook = true;
+			//starterAssetsInputs.cursorLocked = true;
+			//starterAssetsInputs.cursorInputForLook = true;
+			starterAssetsInputs.ChangeCursorStateAndLook(true);
 		}
 	}
 }
