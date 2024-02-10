@@ -32,7 +32,14 @@ public class PrefabLinkedUISystem : MonoSystem
 		SetMainWindow(SceneModuleSystemManager.Instance.CurrentSceneType, sceneModuleParam);
 	}
 
-	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+    public override void OnClientConnected()
+    {
+        base.OnClientConnected();
+
+        currentMainWindow.OnClientConnected();
+    }
+
+    public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		base.OnUpdate(deltaFrameCount, deltaTime);
 

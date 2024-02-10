@@ -33,6 +33,8 @@ public class PlayerComponent : NetworkBehaviour
 	[SerializeField] private PlayerMissionComponent playerMissionComponent = null;
 	[SerializeField] private PlayerInteractionComponent playerInteractionComponent = null;
 
+	[SerializeField] private NetworkAnimator networkAnimator = null;
+
     public int playerId { get; private set; }
 
 	public void SetPlayerId(int playerId)
@@ -48,7 +50,8 @@ public class PlayerComponent : NetworkBehaviour
 	public void SetCharacter(CharacterType characterType)
 	{
 		characterViewComponent.SetCharacter(characterType, controller);
-	}
+		networkAnimator.Initialize();
+    }
 
 	public void SetInput(PlayerInputAsset inputAsset)
 	{

@@ -19,10 +19,15 @@ public interface IMonoSystem
 	public void OnExit();
 
 	public void OnUpdate(int deltaFrameCount, float deltaTime);
+
+	public void OnClientConnected();
+	public void OnClientDisconnected();
 }
 
 public abstract class NetworkSystem : NetworkBehaviour, IMonoSystem
 {
+	protected SceneModuleParam sceneModuleParam = null;
+
     protected override void OnValidate()
     {
         gameObject.GetOrAddComponent<NetworkIdentity>();
@@ -42,7 +47,7 @@ public abstract class NetworkSystem : NetworkBehaviour, IMonoSystem
 
     public virtual void OnEnter(SceneModuleParam sceneModuleParam)
     {
-
+		this.sceneModuleParam = sceneModuleParam;	
     }
 
     public virtual void OnExit()
@@ -68,7 +73,17 @@ public abstract class MonoSystem : MonoBehaviour, IMonoSystem
 
 	}
 
-	public virtual void OnEnter(SceneModuleParam sceneModuleParam)
+    public virtual void OnClientConnected()
+    {
+
+    }
+
+    public virtual void OnClientDisconnected()
+    {
+
+    }
+
+    public virtual void OnEnter(SceneModuleParam sceneModuleParam)
 	{
 
 	}
