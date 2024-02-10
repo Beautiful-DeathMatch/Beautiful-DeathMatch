@@ -16,7 +16,6 @@ public abstract class MonoComponent<TSystem> : MonoBehaviour where TSystem : Mon
                 var systems = FindObjectsOfType<TSystem>();
                 if (systems.Any() == false)
                 {
-                    Debug.LogError($"{typeof(TSystem)}가 현재 씬에 존재하지 않습니다.");
                     return null;
                 }
                 else if (systems.Length > 1)

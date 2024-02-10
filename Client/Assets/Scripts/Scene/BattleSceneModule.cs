@@ -61,16 +61,23 @@ public class BattleSceneModule : NetworkSceneModule
 
 	public override void OnEnter(SceneModuleParam param)
 	{
-		base.OnEnter(param);
+        spawnSystem.OnEnter(param);
+        itemSystem.OnEnter(param);
+        statusSystem.OnEnter(param);
+        missionSystem.OnEnter(param);
+        uiSystem.OnEnter(param);
 
-		spawnSystem.OnEnter(param);
-		itemSystem.OnEnter(param);
-		statusSystem.OnEnter(param);
-		missionSystem.OnEnter(param);
-		uiSystem.OnEnter(param);
+        base.OnEnter(param);
 	}
 
-	public override void OnExit()
+    public override void OnClientConnected()
+    {
+        base.OnClientConnected();
+
+		spawnSystem.OnClientConnected();
+    }
+
+    public override void OnExit()
 	{
 		base.OnExit();
 

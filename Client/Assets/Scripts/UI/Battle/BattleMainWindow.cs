@@ -161,6 +161,9 @@ public class BattleMainWindow : UIMainWindow
     {
         base.OnUpdate(deltaFrameCount, deltaTime);
 
+        if (myPlayerComponent == null)
+            return;
+
         PrintPlayerItemSlot();
         PrintCurrentItemData();
         PrintAimText();

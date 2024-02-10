@@ -23,7 +23,6 @@ public interface ISessionSubscriber
     void OnStopClient();
     void OnClientConnected();
     void OnClientDisconnected();
-    void OnServerConnected();
 }
 
 public interface IMatchSessionSubscriber

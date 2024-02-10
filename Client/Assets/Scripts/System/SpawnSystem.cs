@@ -1,12 +1,14 @@
+using Mirror;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SpawnSystem : NetworkSystem
+public partial class SpawnSystem : NetworkSystem
 {
 	[SerializeField] private Cinemachine.CinemachineVirtualCamera playerCamera = null;
 	[SerializeField] private PlayerInputAsset inputAsset = null;
@@ -14,44 +16,34 @@ public class SpawnSystem : NetworkSystem
 	[SerializeField] private CharacterType characterType = CharacterType.MAX;
 	[SerializeField] private PlayerComponent playerPrefab = null;
 
-	private Dictionary<int, PlayerComponent> playerDictionary = new Dictionary<int, PlayerComponent>();
+	private int myPlayerId = -1;
+	private List<PlayerInfo> playerInfoList = new List<PlayerInfo>();
 
+	/// <summary>
+	/// 클라, 서버 공통 로직
+	/// </summary>
+	/// <param name="sceneModuleParam"></param>
 	public override void OnEnter(SceneModuleParam sceneModuleParam)
 	{
 		base.OnEnter(sceneModuleParam);
 
-		playerDictionary.Clear();
-
 		if (sceneModuleParam is BattleSceneModule.Param battleParam)
 		{
-			foreach (var playerInfo in battleParam.playerInfoList)
-			{
-				var player = CreatePlayer(playerInfo.playerId, playerInfo.playerId == battleParam.myPlayerId, characterType, transform.position);
-				if (player == null)
-					continue;
-
-				playerDictionary.Add(playerInfo.playerId, player);
-			}
-		}
+			myPlayerId = battleParam.myPlayerId;
+			playerInfoList = battleParam.playerInfoList;
+        }
 	}
 
-	private PlayerComponent CreatePlayer(int playerId, bool isSelf, CharacterType characterType, Vector3 initialPos)
-	{
-		var playerComponent = Instantiate<PlayerComponent>(playerPrefab, transform);
-		if (playerComponent == null)
-			return null;
+	[Client]
+    public override void OnClientConnected()
+    {
+        base.OnClientConnected();
 
-		if (isSelf)
-		{
-			playerComponent.SetInput(inputAsset);
-			playerComponent.SetCamera(playerCamera);
-		}
+		var myPlayer = FindObjectsOfType<PlayerComponent>().FirstOrDefault(p => p.playerId == myPlayerId);
+		if (myPlayer == null)
+			return;
 
-		playerComponent.Initialize(playerId);
-
-		playerComponent.SetCharacter(characterType);
-		playerComponent.SetPosition(initialPos);
-
-		return playerComponent;
-	}
+        myPlayer.SetInput(inputAsset);
+        myPlayer.SetCamera(playerCamera);
+    }
 }
