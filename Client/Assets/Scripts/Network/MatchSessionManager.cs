@@ -21,6 +21,8 @@ public interface ISessionSubscriber
 {
     void OnStartClient();
     void OnStopClient();
+    void OnStartServer();
+    void OnStopServer();
     void OnClientConnected();
     void OnClientDisconnected();
 }
