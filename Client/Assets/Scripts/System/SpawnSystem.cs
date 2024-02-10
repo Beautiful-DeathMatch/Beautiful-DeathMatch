@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SpawnSystem : MonoSystem
+public class SpawnSystem : NetworkSystem
 {
 	[SerializeField] private Cinemachine.CinemachineVirtualCamera playerCamera = null;
 	[SerializeField] private PlayerInputAsset inputAsset = null;

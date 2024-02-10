@@ -12,25 +12,40 @@ public static class SystemHelper
 	}
 }
 
-public abstract class NetworkSystem : NetworkBehaviour
+public interface IMonoSystem
 {
-	public virtual void OnEnter(SceneModuleParam sceneModuleParam)
-	{
+	public void OnEnter(SceneModuleParam sceneModuleParam);
 
-	}
+	public void OnExit();
 
-	public virtual void OnExit()
-	{
-
-	}
-
-	public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
-	{
-
-	}
+	public void OnUpdate(int deltaFrameCount, float deltaTime);
 }
 
-public abstract class MonoSystem : MonoBehaviour
+public abstract class NetworkSystem : NetworkBehaviour, IMonoSystem
+{
+    protected override void OnValidate()
+    {
+        gameObject.GetOrAddComponent<NetworkIdentity>();
+        base.OnValidate();
+    }
+
+    public virtual void OnEnter(SceneModuleParam sceneModuleParam)
+    {
+
+    }
+
+    public virtual void OnExit()
+    {
+
+    }
+
+    public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
+    {
+
+    }
+}
+
+public abstract class MonoSystem : MonoBehaviour, IMonoSystem
 {
 	private void Reset()
 	{

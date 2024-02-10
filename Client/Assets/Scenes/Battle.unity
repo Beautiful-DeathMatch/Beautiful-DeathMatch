@@ -35814,6 +35814,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpawnSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 3749379003408275992, guid: f359efb61f3392b4c9349ca591ec4779,
+        type: 3}
+      propertyPath: sceneId
+      value: 3413121092
+      objectReference: {fileID: 0}
     - target: {fileID: 5334702996107620256, guid: f359efb61f3392b4c9349ca591ec4779,
         type: 3}
       propertyPath: m_RootOrder
@@ -41580,6 +41585,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 610973937}
     m_Modifications:
+    - target: {fileID: 3212117065701511269, guid: 3078a6d6eebae104687a2d32f1f256d5,
+        type: 3}
+      propertyPath: sceneId
+      value: 1750879607
+      objectReference: {fileID: 0}
     - target: {fileID: 4490838547699203766, guid: 3078a6d6eebae104687a2d32f1f256d5,
         type: 3}
       propertyPath: uiSystem
@@ -41736,6 +41746,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8668792448821048081, guid: 9e806b392592ddc4e80755ba5756d97d,
+        type: 3}
+      propertyPath: sceneId
+      value: 1241673225
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -41816,64 +41831,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3542696808230718766, guid: 6c03029b076401540bc365ddff4a8122,
+        type: 3}
+      propertyPath: sceneId
+      value: 1088477010
+      objectReference: {fileID: 0}
     - target: {fileID: 4813921168711522420, guid: 6c03029b076401540bc365ddff4a8122,
         type: 3}
       propertyPath: m_Name
       value: ItemSystem
       objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxPrefab
-      value: 
-      objectReference: {fileID: 8532556325966729548, guid: 360ae84f6052eb84bad2d947c9c42776,
-        type: 3}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_keys.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_keys.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_values.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_keys.Array.data[5]
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_values.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_keys.Array.data[0]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_keys.Array.data[1]
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_values.Array.data[4]
-      value: 
-      objectReference: {fileID: 21300046, guid: 309ac3eb4cc441349b63128366ca98b6,
-        type: 3}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_values.Array.data[5]
-      value: 
-      objectReference: {fileID: 21300048, guid: 309ac3eb4cc441349b63128366ca98b6,
-        type: 3}
     - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
         type: 3}
       propertyPath: boxSpawnAreaDictionary.m_values.Array.data[0]

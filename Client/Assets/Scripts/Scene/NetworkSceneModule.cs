@@ -66,7 +66,6 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
         }
 
         currentSession.Connect(param, this);
-        
     }
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
@@ -109,4 +108,12 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
 	{
 		
 	}
+    
+    public virtual void OnServerConnected()
+    {
+        foreach(var n in FindObjectsOfType<NetworkSystem>(true))
+        {
+            NetworkServer.Spawn(n.gameObject);
+        }
+    }
 }

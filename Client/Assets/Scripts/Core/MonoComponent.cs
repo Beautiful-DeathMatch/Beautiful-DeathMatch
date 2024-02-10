@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class MonoComponent<TSystem> : MonoBehaviour where TSystem : MonoSystem
+public abstract class MonoComponent<TSystem> : MonoBehaviour where TSystem : MonoBehaviour, IMonoSystem
 {
     protected TSystem cachedSystem = null;
 
@@ -14,7 +14,7 @@ public abstract class MonoComponent<TSystem> : MonoBehaviour where TSystem : Mon
             if (cachedSystem == null)
             {
                 var systems = FindObjectsOfType<TSystem>();
-                if (systems == null)
+                if (systems.Any() == false)
                 {
                     Debug.LogError($"{typeof(TSystem)}가 현재 씬에 존재하지 않습니다.");
                     return null;
