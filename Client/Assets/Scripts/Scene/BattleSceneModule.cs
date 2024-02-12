@@ -75,7 +75,6 @@ public class BattleSceneModule : NetworkSceneModule
         base.OnClientConnected();
 
 		spawnSystem.OnClientConnected();
-		uiSystem.OnClientConnected();
     }
 
     public override void OnExit()

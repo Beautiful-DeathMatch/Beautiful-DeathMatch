@@ -9,17 +9,7 @@ public class UIMainWindow : UIWindow
 
 	}
 
-	public virtual void OnClientConnected()
-	{
-
-	}
-
-	public virtual void OnClientDisconnected() 
-	{
-		
-	}
-
-    public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
+	public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 
 	}

@@ -11,12 +11,12 @@ public class BattleMainWindow : UIMainWindow
     [SerializeField] private ItemSystem itemSystem;
     [SerializeField] private MissionSystem missionSystem;
     [SerializeField] private StatusSystem statusSystem;
-
     private PlayerComponent myPlayerComponent = null;
 	private PlayerItemComponent myPlayerItemComponent = null;
 	private PlayerAttackComponent myPlayerAttackComponent = null;
 	private PlayerMissionComponent myPlayerMissionComponent = null;
 	private PlayerInteractionComponent myPlayerInteractionComponent = null;
+	
 
     [SerializeField] private Image[] itemImages = null;
     [SerializeField] private TextMeshProUGUI[] currentItemTexts = null;
@@ -42,27 +42,21 @@ public class BattleMainWindow : UIMainWindow
 		if (param is BattleSceneModule.Param battleParam)
         {
             myPlayerId = battleParam.myPlayerId;
-        }
-	}
 
-    public override void OnClientConnected()
-    {
-        base.OnClientConnected();
-
-        foreach (var player in FindObjectsOfType<PlayerComponent>())
-        {
-            if (player.playerId == myPlayerId)
+            foreach(var player in FindObjectsOfType<PlayerComponent>())
             {
-                myPlayerComponent = player;
-                myPlayerItemComponent = player.transform.GetComponent<PlayerItemComponent>();
-                myPlayerAttackComponent = player.transform.GetComponent<PlayerAttackComponent>();
-                myPlayerMissionComponent = player.transform.GetComponent<PlayerMissionComponent>();
-                myPlayerInteractionComponent = player.transform.GetComponent<PlayerInteractionComponent>();
-
-                break;
+                if (player.playerId == myPlayerId)
+                {
+                    myPlayerComponent = player;
+                    myPlayerItemComponent = player.transform.GetComponent<PlayerItemComponent>();
+                    myPlayerAttackComponent = player.transform.GetComponent<PlayerAttackComponent>();
+                    myPlayerMissionComponent = player.transform.GetComponent<PlayerMissionComponent>();
+                    myPlayerInteractionComponent = player.transform.GetComponent<PlayerInteractionComponent>();
+                    break;
+                }
             }
         }
-    }
+	}
 
     public void PrintPlayerItemSlot()
     {
