@@ -26,10 +26,13 @@ public class CharacterViewAsset
 
 	public void AttachRightHand(ENUM_ITEM_TYPE itemType)
 	{
-		currentItemObj.SetActive(false);
-		// 새 아이템 타입으로 찾아서 삽입
+		if (currentItemObj)
+		{
+			currentItemObj.SetActive(false);
+		}
 
-		currentItemObj.SetActive(true);
+		// 새 아이템 타입으로 찾아서 삽입
+		// currentItemObj.SetActive(true);
 	}
 }
 
