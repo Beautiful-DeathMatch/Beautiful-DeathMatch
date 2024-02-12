@@ -29,17 +29,6 @@ public abstract class NetworkSystem : NetworkBehaviour, IMonoSystem
         base.OnValidate();
     }
 
-	public virtual void OnClientConnected()
-	{
-
-	}
-
-	public virtual void OnClientDisconnected()
-	{
-
-	}
-
-
     public virtual void OnEnter(SceneModuleParam sceneModuleParam)
     {
 

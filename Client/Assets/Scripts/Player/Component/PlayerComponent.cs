@@ -1,4 +1,3 @@
-using Mirror;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ public enum CharacterType
 [RequireComponent(typeof(PlayerAttackComponent))]
 [RequireComponent(typeof(PlayerSwimComponent))]
 [RequireComponent(typeof(PlayerStatusComponent))]
-public class PlayerComponent : NetworkBehaviour
+public class PlayerComponent : MonoBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;
 	[SerializeField] private Transform cameraHead = null;
@@ -32,10 +31,10 @@ public class PlayerComponent : NetworkBehaviour
 	[SerializeField] private PlayerAttackComponent playerAttackComponent = null;
 	[SerializeField] private PlayerMissionComponent playerMissionComponent = null;
 	[SerializeField] private PlayerInteractionComponent playerInteractionComponent = null;
+	
+	public int playerId { get; private set; }
 
-    public int playerId { get; private set; }
-
-	public void SetPlayerId(int playerId)
+	public void Initialize(int playerId)
 	{
 		this.playerId = playerId;
 
@@ -52,15 +51,15 @@ public class PlayerComponent : NetworkBehaviour
 
 	public void SetInput(PlayerInputAsset inputAsset)
 	{
-        controller.SetInput(inputAsset);
-    }
+		controller.SetInput(inputAsset);	
+	}
 
 	public void SetCamera(Cinemachine.CinemachineVirtualCamera virtualCamera)
 	{
-        virtualCamera.Follow = cameraHead;
-    }
+		virtualCamera.Follow = cameraHead;
+	}
 
-    public void SetPosition(Vector3 pos)
+	public void SetPosition(Vector3 pos)
     {
         transform.position = pos;
     }

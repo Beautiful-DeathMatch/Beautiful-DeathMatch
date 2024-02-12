@@ -118,11 +118,12 @@ public class ItemSystem : NetworkSystem
 	/// 1. 관리 중인 필드 아이템 목록 : itemId - 필드 아이템
 	/// 2. 모든 아이템들의 현재 상태 : itemId - 아이템
 	/// 3. 유저가 보유한 Item Slot 정보 : playerId - 슬롯 정보
-	/// 4. Box 목록
 	/// </summary>
-	private Dictionary<int, FieldItemComponent> fieldItemComponentDictionary = new ();
-	private Dictionary<int, DynamicItemData> itemDataDictionary = new ();
-	private Dictionary<int, PlayerItemSlot> playerItemSlotDictionary = new ();
+	private Dictionary<int, FieldItemComponent> fieldItemComponentDictionary = new Dictionary<int, FieldItemComponent>();
+	private Dictionary<int, DynamicItemData> itemDataDictionary = new Dictionary<int, DynamicItemData>();
+	private Dictionary<int, PlayerItemSlot> playerItemSlotDictionary = new Dictionary<int, PlayerItemSlot>();
+	
+	// 4. Box 목록
 	private Dictionary<int, BoxComponent> boxComponentDictionary = new ();
 
 
