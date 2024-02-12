@@ -109,7 +109,7 @@ public class PlayerMoveComponent : MonoBehaviour
 		characterController.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
 						 new Vector3(0.0f, groundCheckComponent._verticalVelocity, 0.0f) * Time.deltaTime);
 
-		
+
 		animator.SetFloat(_animIDSpeed, _animationBlend);
 		animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
 	}

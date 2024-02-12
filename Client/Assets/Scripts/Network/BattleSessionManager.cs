@@ -69,4 +69,11 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 		subscriber?.OnClientDisconnected();	
 	}
+
+	public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+	{
+		base.OnServerAddPlayer(conn);
+
+		subscriber?.OnServerAddPlayer(conn);
+	}
 }

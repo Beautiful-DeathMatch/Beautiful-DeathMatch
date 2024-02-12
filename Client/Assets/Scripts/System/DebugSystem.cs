@@ -7,6 +7,7 @@ using UnityEngine.InputSystem; // For Debug
 public class DebugSystem : MonoSystem   
 {
     [SerializeField] PlayerInputAsset starterAssetsInputs;
+	[SerializeField] CharacterType characterType;
 
 	private void OnGUI()
 	{
@@ -15,6 +16,7 @@ public class DebugSystem : MonoSystem
 			var infos = new PlayerInfo[1];
 			infos[0] = new PlayerInfo();
 			infos[0].playerId = 0;
+			infos[0].selectedCharacterType = (int)characterType;
 
 			var dummyParam = new BattleSceneModule.Param(true, 0, infos);
 			SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Battle, dummyParam);

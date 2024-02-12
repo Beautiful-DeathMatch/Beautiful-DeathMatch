@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Mirror;
 using System;
 using System.Collections;
@@ -40,6 +41,11 @@ public abstract class MonoSystem : MonoBehaviour
 	protected virtual void OnReset()
 	{
 
+	}
+
+	public async virtual UniTask OnPrepareEnterRoutine(SceneModuleParam param)
+	{
+		await UniTask.Yield();
 	}
 
 	public virtual void OnEnter(SceneModuleParam sceneModuleParam)

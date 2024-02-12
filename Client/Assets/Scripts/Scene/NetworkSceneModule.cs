@@ -7,6 +7,8 @@ using kcp2k;
 using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine.UIElements;
+using Cysharp.Threading.Tasks;
+
 
 
 #if UNITY_EDITOR
@@ -49,25 +51,29 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
 
     public override void OnEnter(SceneModuleParam param)
     {
-        base.OnEnter(param);
-
-        currentTransport = FindObjectOfType<Transport>();
-        currentSession = FindObjectOfType<NetworkManager>() as ISessionComponent;
-
-        try
-        {
-            currentTransport.Initialize();
-            currentSession.Initialize();
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"{e} : {mySceneType}에 네트워크 매니저 혹은 트랜스포트가 존재하지 않습니다.");
-            return;
-        }
-
-        currentSession.Connect(param, this);
-        
+        base.OnEnter(param); 
     }
+
+    public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
+	{
+        await base.OnPrepareEnterRoutine(param);
+
+		currentTransport = FindObjectOfType<Transport>();
+		currentSession = FindObjectOfType<NetworkManager>() as ISessionComponent;
+
+		try
+		{
+			currentTransport.Initialize();
+			currentSession.Initialize();
+		}
+		catch (Exception e)
+		{
+			Debug.LogError($"{e} : {mySceneType}에 네트워크 매니저 혹은 트랜스포트가 존재하지 않습니다.");
+			return;
+		}
+
+		currentSession.Connect(param, this);
+	}
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
@@ -87,7 +93,6 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
             Debug.LogError($"{e} : {mySceneType}의 네트워크 세션이 이미 종료되었습니다.");
             return;
         }
-
     }
 
 	public virtual void OnStartClient()
@@ -109,4 +114,9 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
 	{
 		
 	}
+
+    public virtual void OnServerAddPlayer(NetworkConnectionToClient conn)
+    {
+
+    }
 }

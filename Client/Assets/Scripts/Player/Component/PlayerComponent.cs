@@ -1,3 +1,4 @@
+using Mirror;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +21,8 @@ public enum CharacterType
 [RequireComponent(typeof(PlayerAttackComponent))]
 [RequireComponent(typeof(PlayerSwimComponent))]
 [RequireComponent(typeof(PlayerStatusComponent))]
-public class PlayerComponent : MonoBehaviour
+[RequireComponent(typeof(NetworkAnimator))]
+public class PlayerComponent : NetworkBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;
 	[SerializeField] private Transform cameraHead = null;
@@ -31,7 +33,9 @@ public class PlayerComponent : MonoBehaviour
 	[SerializeField] private PlayerAttackComponent playerAttackComponent = null;
 	[SerializeField] private PlayerMissionComponent playerMissionComponent = null;
 	[SerializeField] private PlayerInteractionComponent playerInteractionComponent = null;
-	
+
+	[SerializeField] private NetworkAnimator networkAnimator = null;
+
 	public int playerId { get; private set; }
 
 	public void Initialize(int playerId)
@@ -47,6 +51,7 @@ public class PlayerComponent : MonoBehaviour
 	public void SetCharacter(CharacterType characterType)
 	{
 		characterViewComponent.SetCharacter(characterType, controller);
+		networkAnimator.Initialize();
 	}
 
 	public void SetInput(PlayerInputAsset inputAsset)
@@ -61,6 +66,6 @@ public class PlayerComponent : MonoBehaviour
 
 	public void SetPosition(Vector3 pos)
     {
-        transform.position = pos;
+		transform.position = pos;
     }
 }

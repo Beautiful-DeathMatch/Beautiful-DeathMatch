@@ -23,6 +23,7 @@ public interface ISessionSubscriber
     void OnStopClient();
     void OnClientConnected();
     void OnClientDisconnected();
+    void OnServerAddPlayer(NetworkConnectionToClient conn);
 }
 
 public interface IMatchSessionSubscriber
