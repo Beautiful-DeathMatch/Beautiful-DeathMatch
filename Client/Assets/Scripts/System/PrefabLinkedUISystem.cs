@@ -197,4 +197,9 @@ public class PrefabLinkedUISystem : MonoSystem
 
 		return null;
     }
+
+	public int GetPopupStack()
+	{
+		return popupStack.Count;
+	}
 }

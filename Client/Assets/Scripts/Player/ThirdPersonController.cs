@@ -39,6 +39,7 @@ namespace StarterAssets
         public event Func<bool> IsNotYetJump;
         public event Func<bool> IsFallTimeout;
         public event Func<bool> IsGrounded;
+        public event Func<bool> IsUIOpened;
 
 		private bool isInteracting = false;
 
@@ -142,6 +143,9 @@ namespace StarterAssets
 
         private void CheckMove()
         {
+			if (IsUIOpened())
+				return;
+
             onMove?.Invoke(inputAsset.isSprint, inputAsset.analogMovement, inputAsset.moveDir);
         }
 
@@ -169,7 +173,7 @@ namespace StarterAssets
 
 		private void CheckInteract()
 		{
-			if (inputAsset.isInteract)
+			if (inputAsset.isInteract && !IsUIOpened())
 			{
                 onHoldInteract?.Invoke();
                 isInteracting = true;
@@ -184,6 +188,9 @@ namespace StarterAssets
 		// InputSystem에서 Jump 버튼이 입력되면 함수가 실행된다.
 		private void OnJump()
 		{
+			if (IsUIOpened())
+				return;
+
 			if (IsGrounded())
 			{
 				if (IsNotYetJump())
@@ -196,6 +203,9 @@ namespace StarterAssets
 
 		private void OnInputNumber(int number)
         {
+			if (IsUIOpened())
+				return;
+
 			_animator.SetInteger(_animIDItemOffset, number);
 			onClickNumber?.Invoke(number);
 		}
@@ -206,6 +216,9 @@ namespace StarterAssets
 		/// </summary>
 		private void OnUseItem()
         {
+			if (IsUIOpened())
+				return;
+
 			onClickUse?.Invoke();
 			_animator.SetTrigger(_animIDUseItem);
 		}
