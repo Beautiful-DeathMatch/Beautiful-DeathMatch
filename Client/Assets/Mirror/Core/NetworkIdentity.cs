@@ -184,20 +184,8 @@ namespace Mirror
         }
         NetworkConnectionToClient _connectionToClient;
 
-
-        private NetworkBehaviour[] networkBehaviours = null;
-        public NetworkBehaviour[] NetworkBehaviours
-        {
-            get
-            {
-                if (networkBehaviours == null)
-                {
-                    networkBehaviours = GetComponentsInChildren<NetworkBehaviour>(true);
-                }
-
-                return networkBehaviours;
-            }
-        }
+        // get all NetworkBehaviour components
+        public NetworkBehaviour[] NetworkBehaviours { get; private set; }
 
         // to save bandwidth, we send one 64 bit dirty mask
         // instead of 1 byte index per dirty component.
@@ -309,7 +297,7 @@ namespace Mirror
             // => Deterministic: https://forum.unity.com/threads/getcomponentsinchildren.4582/#post-33983
             // => Never null. GetComponents returns [] if none found.
             // => Include inactive. We need all child components.
-            networkBehaviours = GetComponentsInChildren<NetworkBehaviour>(true);
+            NetworkBehaviours = GetComponentsInChildren<NetworkBehaviour>(true);
             ValidateComponents();
 
             // initialize each one

@@ -69,18 +69,4 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 		subscriber?.OnClientDisconnected();	
 	}
-
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-
-		subscriber?.OnStartServer();
-    }
-
-    public override void OnStopServer()
-    {
-        base.OnStopServer();
-
-		subscriber?.OnStopServer();
-    }
 }

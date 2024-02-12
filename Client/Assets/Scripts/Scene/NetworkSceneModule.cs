@@ -104,20 +104,6 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
 		
 	}
 
-    public virtual void OnStartServer()
-    {
-        foreach(var n in FindObjectsOfType<NetworkSystem>(true))
-        {
-            n.gameObject.SetActive(true);
-            NetworkServer.Spawn(n.gameObject);
-        }
-    }
-
-    public virtual void OnStopServer()
-    {
-
-    }
-
 	public virtual void OnClientDisconnected()
 	{
 		
