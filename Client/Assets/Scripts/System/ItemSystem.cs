@@ -95,7 +95,7 @@ public class PlayerItemSlot
 	}
 }
 
-public class ItemSystem : NetworkSystem
+public class ItemSystem : MonoSystem
 {
 	[System.Serializable]
 	public class FieldItemDictionary : SerializableDictionary<ENUM_ITEM_TYPE, FieldItemComponent> { }

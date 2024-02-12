@@ -69,7 +69,7 @@ public class DynamicStatusData : StatusData			// 이거 상속 안해도 될거�
 
 }
 
-public class StatusSystem : NetworkSystem
+public class StatusSystem : MonoSystem
 {
 	/// <summary>
 	/// 동기화 필요!

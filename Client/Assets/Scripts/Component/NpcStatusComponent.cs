@@ -30,9 +30,6 @@ public class NpcStatusComponent : MonoComponent<StatusSystem>, IDamageable
 
     private void Update() 
     {
-        if (System == null)
-            return;
-
         HpText.text = System.GetNpcHealth(npcId).ToString();
     }
 
