@@ -49,6 +49,8 @@ namespace Mirror
         float[] layerWeight;
         double nextSendTime;
 
+        bool isInitialized = false;
+
         bool SendMessagesAllowed
         {
             get
@@ -85,10 +87,15 @@ namespace Mirror
             animationHash = new int[animator.layerCount];
             transitionHash = new int[animator.layerCount];
             layerWeight = new float[animator.layerCount];
-        }
+
+            isInitialized = true;
+		}
 
         void FixedUpdate()
         {
+            if (isInitialized == false)
+                return;
+
             if (!SendMessagesAllowed)
                 return;
 
@@ -364,6 +371,9 @@ namespace Mirror
 
         public override void OnSerialize(NetworkWriter writer, bool initialState)
         {
+            if (isInitialized == false)
+                return;
+
             base.OnSerialize(writer, initialState);
             if (initialState)
             {
@@ -389,7 +399,10 @@ namespace Mirror
 
         public override void OnDeserialize(NetworkReader reader, bool initialState)
         {
-            base.OnDeserialize(reader, initialState);
+			if (isInitialized == false)
+				return;
+
+			base.OnDeserialize(reader, initialState);
             if (initialState)
             {
                 for (int i = 0; i < animator.layerCount; i++)

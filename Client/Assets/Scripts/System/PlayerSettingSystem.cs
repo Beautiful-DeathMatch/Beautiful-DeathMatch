@@ -26,6 +26,7 @@ public class PlayerSettingSystem : MonoSystem
 			await base.OnPrepareEnterRoutine(param);
 			await UniTask.Yield();
 
+			myPlayer.SetAnimator();
 			myPlayer.SetCamera(playerCamera);
 			myPlayer.SetInput(inputAsset);
 		}

@@ -51,6 +51,10 @@ public class PlayerComponent : NetworkBehaviour
 	public void SetCharacter(CharacterType characterType)
 	{
 		characterViewComponent.SetCharacter(characterType, controller);
+	}
+
+	public void SetAnimator()
+	{
 		networkAnimator.Initialize();
 	}
 

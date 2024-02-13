@@ -56,13 +56,7 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	public override void OnStartClient() 
 	{
-		var playerInfo = battleParam.GetMyPlayerInfo();
-
-		var message = new PlayerReadyMessage();
-		message.playerId = playerInfo.playerId;
-		message.selectedCharacterType = playerInfo.selectedCharacterType;
-
-		NetworkClient.Send(message);
+		
 
 		subscriber?.OnStartClient();
 	}
@@ -75,6 +69,18 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 	public override void OnClientConnect()
 	{
 		base.OnClientConnect();
+
+		NetworkClient.RegisterPrefab(playerComponent.gameObject);
+		NetworkClient.RegisterPrefab(blackboard.gameObject);
+
+
+		var playerInfo = battleParam.GetMyPlayerInfo();
+
+		var message = new PlayerReadyMessage();
+		message.playerId = playerInfo.playerId;
+		message.selectedCharacterType = playerInfo.selectedCharacterType;
+
+		NetworkClient.Send(message);
 
 		subscriber?.OnClientConnected();
 	}

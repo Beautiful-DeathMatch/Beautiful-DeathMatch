@@ -33,6 +33,7 @@ public class BattleSceneModule : NetworkSceneModule
 	}
 
 	private BattleNetworkBlackBoard networkBlackBoard;
+	private PlayerComponent myPlayerComponent;
 
 	[SerializeField] private PlayerSettingSystem playerSettingSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
@@ -109,18 +110,27 @@ public class BattleSceneModule : NetworkSceneModule
 	{
 		await base.OnPrepareEnterRoutine(param); // 네트워크 연결 시도
 
-		while (currentSession.IsReady == false)
+		if (param is BattleSceneModule.Param battleParam)
 		{
-			await UniTask.Yield();
-		}
+			while (currentSession.IsReady == false)
+			{
+				await UniTask.Yield();
+			}
 
-		while (networkBlackBoard == null)
-		{
-			networkBlackBoard = FindObjectOfType<BattleNetworkBlackBoard>();
-			await UniTask.Yield();
-		}
+			while (networkBlackBoard == null)
+			{
+				networkBlackBoard = FindObjectOfType<BattleNetworkBlackBoard>();
+				await UniTask.Yield();
+			}
 
-		await playerSettingSystem.OnPrepareEnterRoutine(param);
+			while (myPlayerComponent == null)
+			{
+				myPlayerComponent = FindObjectsOfType<PlayerComponent>().FirstOrDefault(p => p.playerId == battleParam.myPlayerId);
+				await UniTask.Yield();
+			}
+
+			await playerSettingSystem.OnPrepareEnterRoutine(param);
+		}
 	}
 
 	public override UniTask OnPrepareExitRoutine()
