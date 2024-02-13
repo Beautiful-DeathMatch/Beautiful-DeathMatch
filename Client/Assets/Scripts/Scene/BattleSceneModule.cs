@@ -22,8 +22,6 @@ public class BattleSceneModule : NetworkSceneModule
 		}
 	}
 
-	private List<NetworkConnectionToClient> connectedPlayerInfos = new List<NetworkConnectionToClient>();
-
 	[SerializeField] private PlayerSettingSystem spawnSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
 	[SerializeField] private StatusSystem statusSystem = null;
@@ -83,13 +81,12 @@ public class BattleSceneModule : NetworkSceneModule
 	{
 		await base.OnPrepareEnterRoutine(param); // 네트워크 연결 시도
 
-		if (param is BattleSceneModule.Param battleParam)
+		while (currentSession.IsReady == false)
 		{
-			while (battleParam.playerInfoList.Count > connectedPlayerInfos.Count)
-			{
-				await spawnSystem.OnPrepareEnterRoutine(param);
-			}
+			await UniTask.Yield();
 		}
+
+		await spawnSystem.OnPrepareEnterRoutine(param);
 	}
 
 	public override UniTask OnPrepareExitRoutine()
@@ -105,15 +102,5 @@ public class BattleSceneModule : NetworkSceneModule
 		uiSystem.OnUpdate(deltaFrameCount, deltaTime);
 		
 		// 로직 추가
-	}
-
-	public override void OnServerAddPlayer(NetworkConnectionToClient conn)
-	{
-		base.OnServerAddPlayer(conn);
-
-		if (connectedPlayerInfos.Contains(conn) == false)
-		{
-			connectedPlayerInfos.Add(conn);
-		}
 	}
 }

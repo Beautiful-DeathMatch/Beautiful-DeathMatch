@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 public interface ISessionComponent
 {
+    public bool IsReady { get; }
     void Initialize();
 
 	void Connect(SceneModuleParam param, ISessionSubscriber subscriber);
@@ -23,7 +24,6 @@ public interface ISessionSubscriber
     void OnStopClient();
     void OnClientConnected();
     void OnClientDisconnected();
-    void OnServerAddPlayer(NetworkConnectionToClient conn);
 }
 
 public interface IMatchSessionSubscriber
@@ -48,6 +48,8 @@ public interface IMatchSessionSubscriber
 
 public partial class MatchSessionManager : NetworkManager<MatchSessionManager>, ISessionComponent
 {
+    public bool IsReady => true;
+
     private Dictionary<Guid, MatchInfo> openMatches = new Dictionary<Guid, MatchInfo>();
     private PlayerInfo[] playerInfos = null;
 

@@ -114,9 +114,4 @@ public abstract class NetworkSceneModule : SceneModule, ISessionSubscriber
 	{
 		
 	}
-
-    public virtual void OnServerAddPlayer(NetworkConnectionToClient conn)
-    {
-
-    }
 }

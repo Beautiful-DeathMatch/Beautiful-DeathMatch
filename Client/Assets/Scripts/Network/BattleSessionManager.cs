@@ -11,9 +11,16 @@ using UnityEngine;
 
 public partial class BattleSessionManager : NetworkManager<BattleSessionManager>, ISessionComponent
 {
-	private BattleSceneModule.Param battleParam = null;
+	[SerializeField] private PlayerComponent playerComponent;
 
+	private Dictionary<int, NetworkConnectionToClient> connectedPlayerInfos = new Dictionary<int, NetworkConnectionToClient>();
+
+	private BattleSceneModule.Param battleParam = null;
 	private ISessionSubscriber subscriber = null;
+
+	public bool IsReady => isReady;
+
+	private bool isReady = false;
 
 	public void Connect(SceneModuleParam param, ISessionSubscriber subscriber)
 	{
@@ -48,6 +55,11 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	public override void OnStartClient() 
 	{
+		var message = new PlayerReadyMessage();
+		message.playerId = battleParam.myPlayerId;
+
+		NetworkClient.Send(message);
+
 		subscriber?.OnStartClient();
 	}
 
@@ -70,10 +82,29 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 		subscriber?.OnClientDisconnected();	
 	}
 
-	public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+	protected override void RegisterServerMessages()
 	{
-		base.OnServerAddPlayer(conn);
+		base.RegisterServerMessages();
 
-		subscriber?.OnServerAddPlayer(conn);
+		NetworkServer.RegisterHandler<PlayerReadyMessage>(OnPlayerReadyMessage);
+	}
+
+	private void OnPlayerReadyMessage(NetworkConnectionToClient conn, PlayerReadyMessage message)
+	{
+		connectedPlayerInfos[message.playerId] = conn;
+
+		var player = Instantiate(playerComponent);
+
+		player.Initialize(message.playerId);
+		player.SetCharacter((CharacterType)message.selectedCharacterType);
+
+		NetworkServer.Spawn(player.gameObject, conn);
+
+		isReady = connectedPlayerInfos.Count == battleParam.playerInfoList.Count;
+	}
+
+	protected override void RegisterClientMessages()
+	{
+		base.RegisterClientMessages();
 	}
 }

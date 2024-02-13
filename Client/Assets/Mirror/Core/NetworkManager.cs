@@ -761,7 +761,7 @@ namespace Mirror
             return true;
         }
 
-        void RegisterServerMessages()
+        protected virtual void RegisterServerMessages()
         {
             NetworkServer.OnConnectedEvent = OnServerConnectInternal;
             NetworkServer.OnDisconnectedEvent = OnServerDisconnect;
@@ -772,7 +772,7 @@ namespace Mirror
             NetworkServer.ReplaceHandler<ReadyMessage>(OnServerReadyMessageInternal);
         }
 
-        void RegisterClientMessages()
+		protected virtual void RegisterClientMessages()
         {
             NetworkClient.OnConnectedEvent = OnClientConnectInternal;
             NetworkClient.OnDisconnectedEvent = OnClientDisconnectInternal;
