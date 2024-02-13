@@ -26361,7 +26361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mySceneType: 2
-  playerSettingSystem: {fileID: 0}
+  playerSettingSystem: {fileID: 1848405416}
   itemSystem: {fileID: 1487653534}
   statusSystem: {fileID: 580053518368750837}
   missionSystem: {fileID: 432824213496361243}
@@ -35883,6 +35883,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f359efb61f3392b4c9349ca591ec4779, type: 3}
+--- !u!114 &1848405416 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8288618667882937985, guid: f359efb61f3392b4c9349ca591ec4779,
+    type: 3}
+  m_PrefabInstance: {fileID: 1848405415}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdffb995756d2374cbc2e350b0e42f17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1848405417 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5334702996107620256, guid: f359efb61f3392b4c9349ca591ec4779,
