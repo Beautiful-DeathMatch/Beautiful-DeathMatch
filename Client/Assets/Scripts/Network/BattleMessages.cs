@@ -11,5 +11,5 @@ public struct PlayerReadyMessage : NetworkMessage
 
 public struct PlayerAllReadyMessage : NetworkMessage
 {
-
+	
 }

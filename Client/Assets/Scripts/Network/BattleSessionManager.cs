@@ -14,7 +14,7 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 	[SerializeField] private PlayerComponent playerComponent;
 	[SerializeField] private BattleNetworkBlackBoard blackboard;
 
-	private List<NetworkConnectionToClient> connectedPlayerInfos = new List<NetworkConnectionToClient>();
+	private Dictionary<NetworkConnectionToClient, int> connectedPlayerInfos = new Dictionary<NetworkConnectionToClient, int>();
 
 	private BattleSceneModule.Param battleParam = null;
 	private ISessionSubscriber subscriber = null;
@@ -56,9 +56,15 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	public override void OnStartClient() 
 	{
-		
+		NetworkClient.RegisterPrefab(playerComponent.gameObject);
+		NetworkClient.RegisterPrefab(blackboard.gameObject);
 
 		subscriber?.OnStartClient();
+	}
+
+	public override void OnStartServer()
+	{
+		base.OnStartServer();
 	}
 
 	public override void OnStopClient()
@@ -69,10 +75,6 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 	public override void OnClientConnect()
 	{
 		base.OnClientConnect();
-
-		NetworkClient.RegisterPrefab(playerComponent.gameObject);
-		NetworkClient.RegisterPrefab(blackboard.gameObject);
-
 
 		var playerInfo = battleParam.GetMyPlayerInfo();
 
@@ -104,20 +106,16 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 		if (isReady)
 			return;
 
-		if (connectedPlayerInfos.Contains(conn))
-			return;
-
-		connectedPlayerInfos.Add(conn);
-
-		var player = Instantiate(playerComponent);
-
-		player.Initialize(message.playerId);
-		player.SetCharacter((CharacterType)message.selectedCharacterType);
-
-		NetworkServer.Spawn(player.gameObject, conn);
+		connectedPlayerInfos[conn] = message.playerId;
 
 		if (connectedPlayerInfos.Count == battleParam.playerInfoList.Count)
 		{
+			foreach (var playerConn in connectedPlayerInfos.Keys)
+			{
+				var player = Instantiate(playerComponent);
+				NetworkServer.Spawn(player.gameObject, playerConn);
+			}
+
 			var blackBoardObj = Instantiate(blackboard);
 			blackBoardObj.Initialize(battleParam);
 
@@ -132,7 +130,7 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 		isReady = false;
 
-		if (connectedPlayerInfos.Contains(conn))
+		if (connectedPlayerInfos.ContainsKey(conn))
 		{
 			connectedPlayerInfos.Remove(conn);
 		}

@@ -58,6 +58,11 @@ public class PlayerComponent : NetworkBehaviour
 		networkAnimator.Initialize();
 	}
 
+	public void UnsetAnimator()
+	{
+		networkAnimator.Clear();
+	}
+
 	public void SetInput(PlayerInputAsset inputAsset)
 	{
 		controller.SetInput(inputAsset);	

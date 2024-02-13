@@ -21,6 +21,17 @@ public class BattleSceneModule : NetworkSceneModule
 			this.playerInfoList = playerInfos.ToList();
 		}
 
+		public int GetMyIndex()
+		{
+			for (int i = 0; i < playerInfoList.Count; i++)
+			{
+				if (myPlayerId == playerInfoList[i].playerId)
+					return i;
+			}
+
+			return -1;
+		}
+
 		public PlayerInfo GetMyPlayerInfo()
 		{
 			return GetPlayerInfo(myPlayerId);
@@ -120,12 +131,6 @@ public class BattleSceneModule : NetworkSceneModule
 			while (networkBlackBoard == null)
 			{
 				networkBlackBoard = FindObjectOfType<BattleNetworkBlackBoard>();
-				await UniTask.Yield();
-			}
-
-			while (myPlayerComponent == null)
-			{
-				myPlayerComponent = FindObjectsOfType<PlayerComponent>().FirstOrDefault(p => p.playerId == battleParam.myPlayerId);
 				await UniTask.Yield();
 			}
 

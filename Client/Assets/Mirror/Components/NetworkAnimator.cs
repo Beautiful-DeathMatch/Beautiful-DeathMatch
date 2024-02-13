@@ -91,6 +91,11 @@ namespace Mirror
             isInitialized = true;
 		}
 
+        public void Clear()
+        {
+            isInitialized = false;
+		}
+
         void FixedUpdate()
         {
             if (isInitialized == false)
@@ -236,6 +241,7 @@ namespace Mirror
         {
             if (isOwned && clientAuthority)
                 return;
+
 
             // usually transitions will be triggered by parameters, if not, play anims directly.
             // NOTE: this plays "animations", not transitions, so any transitions will be skipped.
