@@ -20,9 +20,21 @@ public class BattleSceneModule : NetworkSceneModule
 			this.myPlayerId = myPlayerId;
 			this.playerInfoList = playerInfos.ToList();
 		}
+
+		public PlayerInfo GetMyPlayerInfo()
+		{
+			return GetPlayerInfo(myPlayerId);
+		}
+
+		public PlayerInfo GetPlayerInfo(int playerId)
+		{
+			return playerInfoList.FirstOrDefault(p => p.playerId == playerId);
+		}
 	}
 
-	[SerializeField] private PlayerSettingSystem spawnSystem = null;
+	private BattleNetworkBlackBoard networkBlackBoard;
+
+	[SerializeField] private PlayerSettingSystem playerSettingSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
 	[SerializeField] private StatusSystem statusSystem = null;
 	[SerializeField] private MissionSystem missionSystem = null;
@@ -61,9 +73,18 @@ public class BattleSceneModule : NetworkSceneModule
 
 	public override void OnEnter(SceneModuleParam param)
 	{
+		if (networkBlackBoard == null)
+			return;
+
+		networkBlackBoard.OnStartClient();
+
+		itemSystem.OnStartSync(networkBlackBoard);
+		statusSystem.OnStartSync(networkBlackBoard);
+		missionSystem.OnStartSync(networkBlackBoard);
+
 		base.OnEnter(param);
 
-		spawnSystem.OnEnter(param);
+		playerSettingSystem.OnEnter(param);
 		itemSystem.OnEnter(param);
 		statusSystem.OnEnter(param);
 		missionSystem.OnEnter(param);
@@ -73,6 +94,13 @@ public class BattleSceneModule : NetworkSceneModule
 	public override void OnExit()
 	{
 		base.OnExit();
+
+		if (networkBlackBoard != null)
+			networkBlackBoard.OnStopClient();
+
+		itemSystem.OnStopSync();
+		statusSystem.OnStopSync();
+		missionSystem.OnStopSync();
 
 		// 로직 추가
 	}
@@ -86,7 +114,13 @@ public class BattleSceneModule : NetworkSceneModule
 			await UniTask.Yield();
 		}
 
-		await spawnSystem.OnPrepareEnterRoutine(param);
+		while (networkBlackBoard == null)
+		{
+			networkBlackBoard = FindObjectOfType<BattleNetworkBlackBoard>();
+			await UniTask.Yield();
+		}
+
+		await playerSettingSystem.OnPrepareEnterRoutine(param);
 	}
 
 	public override UniTask OnPrepareExitRoutine()

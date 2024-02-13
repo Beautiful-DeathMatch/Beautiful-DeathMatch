@@ -13,21 +13,18 @@ public static class SystemHelper
 	}
 }
 
-public abstract class NetworkSystem : NetworkBehaviour
+public abstract class NetworkSystem : MonoSystem
 {
-	public virtual void OnEnter(SceneModuleParam sceneModuleParam)
-	{
+	protected BattleNetworkBlackBoard blackBoard;
 
+	public void OnStartSync(BattleNetworkBlackBoard blackBoard)
+	{
+		this.blackBoard = blackBoard;
 	}
 
-	public virtual void OnExit()
+	public void OnStopSync()
 	{
-
-	}
-
-	public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
-	{
-
+		this.blackBoard = null;
 	}
 }
 

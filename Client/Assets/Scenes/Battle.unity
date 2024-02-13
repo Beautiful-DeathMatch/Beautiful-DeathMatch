@@ -27759,6 +27759,8 @@ MonoBehaviour:
   timeInterpolationGui: 0
   playerComponent: {fileID: 3172668859761069214, guid: 4a48d9982aaf9244a955d6dab20560a1,
     type: 3}
+  blackboard: {fileID: 4845379999670296763, guid: e9a8d173a66552444bc1757df5702c46,
+    type: 3}
 --- !u!1001 &1466563485
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41919,6 +41921,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 610973937}
     m_Modifications:
+    - target: {fileID: 3162293219175915642, guid: 5f64ed05a9a97a841aa0fdd3aa0a2c16,
+        type: 3}
+      propertyPath: characterType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3162293219175915642, guid: 5f64ed05a9a97a841aa0fdd3aa0a2c16,
         type: 3}
       propertyPath: starterAssetsInputs

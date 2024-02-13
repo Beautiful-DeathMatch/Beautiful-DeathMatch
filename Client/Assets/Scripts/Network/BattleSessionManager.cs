@@ -12,8 +12,9 @@ using UnityEngine;
 public partial class BattleSessionManager : NetworkManager<BattleSessionManager>, ISessionComponent
 {
 	[SerializeField] private PlayerComponent playerComponent;
+	[SerializeField] private BattleNetworkBlackBoard blackboard;
 
-	private Dictionary<int, NetworkConnectionToClient> connectedPlayerInfos = new Dictionary<int, NetworkConnectionToClient>();
+	private List<NetworkConnectionToClient> connectedPlayerInfos = new List<NetworkConnectionToClient>();
 
 	private BattleSceneModule.Param battleParam = null;
 	private ISessionSubscriber subscriber = null;
@@ -55,8 +56,11 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	public override void OnStartClient() 
 	{
+		var playerInfo = battleParam.GetMyPlayerInfo();
+
 		var message = new PlayerReadyMessage();
-		message.playerId = battleParam.myPlayerId;
+		message.playerId = playerInfo.playerId;
+		message.selectedCharacterType = playerInfo.selectedCharacterType;
 
 		NetworkClient.Send(message);
 
@@ -91,7 +95,13 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	private void OnPlayerReadyMessage(NetworkConnectionToClient conn, PlayerReadyMessage message)
 	{
-		connectedPlayerInfos[message.playerId] = conn;
+		if (isReady)
+			return;
+
+		if (connectedPlayerInfos.Contains(conn))
+			return;
+
+		connectedPlayerInfos.Add(conn);
 
 		var player = Instantiate(playerComponent);
 
@@ -100,11 +110,37 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 		NetworkServer.Spawn(player.gameObject, conn);
 
-		isReady = connectedPlayerInfos.Count == battleParam.playerInfoList.Count;
+		if (connectedPlayerInfos.Count == battleParam.playerInfoList.Count)
+		{
+			var blackBoardObj = Instantiate(blackboard);
+			blackBoardObj.Initialize(battleParam);
+
+			NetworkServer.Spawn(blackBoardObj.gameObject);
+			NetworkServer.SendToAll(new PlayerAllReadyMessage());
+		}
+	}
+
+	public override void OnServerDisconnect(NetworkConnectionToClient conn)
+	{
+		base.OnServerDisconnect(conn);
+
+		isReady = false;
+
+		if (connectedPlayerInfos.Contains(conn))
+		{
+			connectedPlayerInfos.Remove(conn);
+		}
 	}
 
 	protected override void RegisterClientMessages()
 	{
 		base.RegisterClientMessages();
+
+		NetworkClient.RegisterHandler<PlayerAllReadyMessage>(OnAllPlayerReadyMessage);
+	}
+
+	private void OnAllPlayerReadyMessage(PlayerAllReadyMessage message)
+	{
+		isReady = true;
 	}
 }

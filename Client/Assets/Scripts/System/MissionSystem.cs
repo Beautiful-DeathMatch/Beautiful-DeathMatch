@@ -61,7 +61,7 @@ public class PlayerMissionSlot
 	}
 }
 
-public class MissionSystem : MonoSystem
+public class MissionSystem : NetworkSystem
 {    
 	[SerializeField] private MissionTable missionTable;
 	private Dictionary<int, PlayerMissionSlot> playerMissionSlotDictionary = new ();

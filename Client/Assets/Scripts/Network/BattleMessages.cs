@@ -8,3 +8,8 @@ public struct PlayerReadyMessage : NetworkMessage
 	public int playerId;
 	public int selectedCharacterType;
 }
+
+public struct PlayerAllReadyMessage : NetworkMessage
+{
+
+}
