@@ -41,6 +41,13 @@ public class DynamicMissionData
 		currentProgression = 0;
 	}
 
+	public DynamicMissionData(DynamicMissionData newData)
+	{
+		id = newData.id;
+		tableData = newData.tableData;
+		currentProgression = newData.currentProgression;
+	}
+
 	public void MissionComplete()
 	{
 		currentProgression = tableData.maxProgression;

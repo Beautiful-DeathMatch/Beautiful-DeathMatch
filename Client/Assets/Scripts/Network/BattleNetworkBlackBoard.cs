@@ -24,7 +24,7 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	private readonly SyncDictionary<int, PlayerMissionSlot> playerMissionSlotDictionary = new ();
 	private readonly SyncDictionary<int, DynamicMissionData> missionDataDictionary = new ();
 	[SyncVar]
-	private int missionDataId = 0;
+	private int missionInitialId = 0;
 	[SerializeField] private MissionTable missionTable;
 
 	public event Action<IList<int>> onChangedTestList = null;
@@ -88,20 +88,25 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	/// </summary>
 	public override void OnStartClient()
 	{
+		Debug.Log("OnStartClient");
 		testList.Callback += OnUpdateTestList;
 		testDictionary.Callback += OnUpdateTestDictionary;
 		playerMissionSlotDictionary.Callback += OnUpdateTestDictionary;
+		missionDataDictionary.Callback += OnUpdateTestDictionary;
 	}
 
 	public override void OnStopClient()
 	{
+		Debug.Log("OnStopClient");
 		testList.Callback -= OnUpdateTestList;
 		testDictionary.Callback -= OnUpdateTestDictionary;
 		playerMissionSlotDictionary.Callback -= OnUpdateTestDictionary;
+		missionDataDictionary.Callback -= OnUpdateTestDictionary;
 	}
 
 	private void OnUpdateTestList(SyncList<int>.Operation op, int index, int oldItem, int newItem)
 	{
+		Debug.Log("OnUpdateTestList");
 		switch (op)
 		{
 			case SyncList<int>.Operation.OP_ADD:
@@ -128,6 +133,7 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 
 	private void OnUpdateTestDictionary(SyncDictionary<int, string>.Operation op, int key, string item)
 	{
+		Debug.Log("OnUpdateTestDictionary1");
 		switch (op)
 		{
 			case SyncIDictionary<int, string>.Operation.OP_ADD:
@@ -151,6 +157,7 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 
 	private void OnUpdateTestDictionary(SyncDictionary<int, PlayerMissionSlot>.Operation op, int key, PlayerMissionSlot item)
 	{
+		Debug.Log("OnUpdateTestDictionary2");
 		switch (op)
 		{
 			case SyncIDictionary<int, PlayerMissionSlot>.Operation.OP_ADD:
@@ -163,6 +170,30 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 				Debug.Log($"[OP_REMOVE] {key} : {item}");
 				break;
 			case SyncIDictionary<int, PlayerMissionSlot>.Operation.OP_CLEAR:
+				Debug.Log($"[OP_CLEAR]");
+				break;
+		}
+
+		// 딕셔너리가 업데이트될 때, 시스템이 이벤트를 받도록 설계하자
+		// 오퍼레이션 별로 처리할 필요없음
+		onChangedTestDictionary?.Invoke(testDictionary);
+	}
+
+	private void OnUpdateTestDictionary(SyncDictionary<int, DynamicMissionData>.Operation op, int key, DynamicMissionData item) 
+	{
+		Debug.Log("OnUpdateTestDictionary3");
+		switch (op)
+		{
+			case SyncIDictionary<int, DynamicMissionData>.Operation.OP_ADD:
+				Debug.Log($"[OP_ADD] {key} : {item}");
+				break;
+			case SyncIDictionary<int, DynamicMissionData>.Operation.OP_SET:
+				Debug.Log($"[OP_SET] {key} : {item}");
+				break;
+			case SyncIDictionary<int, DynamicMissionData>.Operation.OP_REMOVE:
+				Debug.Log($"[OP_REMOVE] {key} : {item}");
+				break;
+			case SyncIDictionary<int, DynamicMissionData>.Operation.OP_CLEAR:
 				Debug.Log($"[OP_CLEAR]");
 				break;
 		}
@@ -212,10 +243,13 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	[Command(requiresAuthority = false)]
 	public void MissionComplete(int missionId)
 	{
-		if(TryGetMissionData(missionId, out var missionData))
+		if(missionDataDictionary.ContainsKey(missionId))
 		{
-			missionData.MissionComplete();
+			DynamicMissionData newData = new (missionDataDictionary[missionId]);
+			newData.MissionComplete();
+			missionDataDictionary[missionId] = newData;
 		}
+
 	}
 
 	public PlayerMissionSlot GetMissionDictionary(int key)
@@ -247,7 +281,7 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 
 	private int GetNewMissionId()
 	{
-		missionDataId++;
-		return missionDataId;
+		missionInitialId++;
+		return missionInitialId;
 	}
 }

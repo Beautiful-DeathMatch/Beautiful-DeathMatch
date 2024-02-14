@@ -157,7 +157,7 @@ public class BattleMainWindow : UIMainWindow
             playerMissionSlot = missionSystem.GetPlayerMissionSlot(playerIdList[index.Value]);
 
         if (playerMissionSlot == null)
-            return;
+            Debug.Log("NULL???");
 
         foreach(int id in playerMissionSlot.missionIds)
         {
