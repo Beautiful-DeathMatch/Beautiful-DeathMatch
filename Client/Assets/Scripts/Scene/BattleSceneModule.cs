@@ -44,7 +44,6 @@ public class BattleSceneModule : NetworkSceneModule
 	}
 
 	private BattleNetworkBlackBoard networkBlackBoard;
-	private PlayerComponent myPlayerComponent;
 
 	[SerializeField] private PlayerSettingSystem playerSettingSystem = null;
 	[SerializeField] private ItemSystem itemSystem = null;
@@ -88,6 +87,7 @@ public class BattleSceneModule : NetworkSceneModule
 		if (networkBlackBoard == null)
 			return;
 
+		networkBlackBoard.Initialize(param as Param);
 		networkBlackBoard.OnStartClient();
 
 		itemSystem.OnStartSync(networkBlackBoard);

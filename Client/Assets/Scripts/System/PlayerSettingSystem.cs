@@ -14,26 +14,40 @@ public class PlayerSettingSystem : MonoSystem
 	[SerializeField] private PlayerInputAsset inputAsset = null;
 
 	private PlayerComponent myPlayerComponent;
+	private PlayerComponent[] playerComponents = null;
 
 	public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
 	{
 		if (param is BattleSceneModule.Param battleParam)
 		{
+			playerComponents = FindObjectsOfType<PlayerComponent>();
+			
+			while (playerComponents.Length < battleParam.playerInfoList.Count)
+			{
+				await UniTask.Yield();
+				playerComponents = FindObjectsOfType<PlayerComponent>();
+			}
+
+			foreach (var networkPlayerInfo in BattleSessionManager.Instance.NetworkPlayerInfos)
+			{
+				var player = GetPlayerComponent(networkPlayerInfo.netId);
+				if (player == null)
+					continue;
+
+				player.Initialize(networkPlayerInfo.playerId);
+				player.SetCharacter((CharacterType)battleParam.GetPlayerInfo(networkPlayerInfo.playerId).selectedCharacterType);
+
+				player.transform.SetParent(transform, false);
+				player.transform.position = transform.position;
+			}
+
+			await base.OnPrepareEnterRoutine(param);
+
 			while (myPlayerComponent == null)
 			{
 				myPlayerComponent = GetMyPlayerComponent();
 				await UniTask.Yield();
 			}
-
-			myPlayerComponent.Initialize(battleParam.myPlayerId);
-			myPlayerComponent.SetCharacter((CharacterType)battleParam.GetMyPlayerInfo().selectedCharacterType);
-
-			await UniTask.Yield();
-			myPlayerComponent.transform.SetParent(transform, false);
-			myPlayerComponent.transform.position = transform.position;
-
-			await base.OnPrepareEnterRoutine(param);
-			await UniTask.Yield();
 
 			myPlayerComponent.SetAnimator();
 			myPlayerComponent.SetCamera(playerCamera);
@@ -41,9 +55,14 @@ public class PlayerSettingSystem : MonoSystem
 		}
 	}
 
+	private PlayerComponent GetPlayerComponent(int netId)
+	{
+		return playerComponents.FirstOrDefault(p => p.netId == netId);
+	}
+
 	private PlayerComponent GetMyPlayerComponent()
 	{
-		foreach(var player in FindObjectsOfType<PlayerComponent>())
+		foreach(var player in playerComponents)
 		{
 			var identity = player.GetComponent<NetworkIdentity>();
 			if (identity == null)
@@ -56,15 +75,5 @@ public class PlayerSettingSystem : MonoSystem
 		}
 
 		return null;
-	}
-
-	public override void OnExit()
-	{
-		base.OnExit();
-
-		if (myPlayerComponent != null)
-		{
-			myPlayerComponent.UnsetAnimator();
-		}
 	}
 }

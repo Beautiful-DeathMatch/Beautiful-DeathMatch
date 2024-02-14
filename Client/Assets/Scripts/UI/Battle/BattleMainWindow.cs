@@ -156,6 +156,9 @@ public class BattleMainWindow : UIMainWindow
         else
             playerMissionSlot = missionSystem.GetPlayerMissionSlot(playerIdList[index.Value]);
 
+        if (playerMissionSlot == null)
+            return;
+
         foreach(int id in playerMissionSlot.missionIds)
         {
             DynamicMissionData mission = missionSystem.GetMissionData(id);

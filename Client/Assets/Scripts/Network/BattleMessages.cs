@@ -11,5 +11,12 @@ public struct PlayerReadyMessage : NetworkMessage
 
 public struct PlayerAllReadyMessage : NetworkMessage
 {
-	
+	public NetworkPlayerInfo[] playerInfos;
+}
+
+[System.Serializable]
+public struct NetworkPlayerInfo
+{
+	public int netId;
+	public int playerId;
 }

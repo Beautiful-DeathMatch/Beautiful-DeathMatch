@@ -19,6 +19,8 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 	private BattleSceneModule.Param battleParam = null;
 	private ISessionSubscriber subscriber = null;
 
+	public NetworkPlayerInfo[] NetworkPlayerInfos { get; private set; }
+
 	public bool IsReady => isReady;
 
 	private bool isReady = false;
@@ -110,18 +112,43 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 		if (connectedPlayerInfos.Count == battleParam.playerInfoList.Count)
 		{
+			List<NetworkPlayerInfo> networkPlayerInfos = new List<NetworkPlayerInfo>();
+
 			foreach (var playerConn in connectedPlayerInfos.Keys)
 			{
 				var player = Instantiate(playerComponent);
 				NetworkServer.Spawn(player.gameObject, playerConn);
+
+				var networkPlayerInfo = MakeNetworkPlayerInfo(player, playerConn);
+				networkPlayerInfos.Add(networkPlayerInfo);
 			}
 
 			var blackBoardObj = Instantiate(blackboard);
-			blackBoardObj.Initialize(battleParam);
-
 			NetworkServer.Spawn(blackBoardObj.gameObject);
-			NetworkServer.SendToAll(new PlayerAllReadyMessage());
+
+			var allReadyMessage = new PlayerAllReadyMessage();
+			allReadyMessage.playerInfos = networkPlayerInfos.ToArray();
+			NetworkServer.SendToAll(allReadyMessage);
 		}
+	}
+
+	private NetworkPlayerInfo MakeNetworkPlayerInfo(PlayerComponent playerComponent, NetworkConnectionToClient conn)
+	{
+		var info = new NetworkPlayerInfo();
+
+		info.playerId = connectedPlayerInfos[conn];
+		info.netId = GetPlayerNetworkId(playerComponent);
+
+		return info;
+	}
+
+	private int GetPlayerNetworkId(PlayerComponent playerComponent)
+	{
+		var identity = playerComponent.GetComponent<NetworkIdentity>();
+		if (identity == null)
+			return -1;
+
+		return (int)identity.netId;
 	}
 
 	public override void OnServerDisconnect(NetworkConnectionToClient conn)
@@ -145,6 +172,7 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	private void OnAllPlayerReadyMessage(PlayerAllReadyMessage message)
 	{
+		NetworkPlayerInfos = message.playerInfos;
 		isReady = true;
 	}
 }

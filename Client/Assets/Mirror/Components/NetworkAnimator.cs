@@ -49,7 +49,16 @@ namespace Mirror
         float[] layerWeight;
         double nextSendTime;
 
-        bool isInitialized = false;
+        bool IsInitialized
+        {
+            get
+            {
+                bool b = parameters != null;
+                b &= animator.layerCount > 0;
+
+                return b;
+			}
+        }
 
         bool SendMessagesAllowed
         {
@@ -87,18 +96,11 @@ namespace Mirror
             animationHash = new int[animator.layerCount];
             transitionHash = new int[animator.layerCount];
             layerWeight = new float[animator.layerCount];
-
-            isInitialized = true;
-		}
-
-        public void Clear()
-        {
-            isInitialized = false;
 		}
 
         void FixedUpdate()
         {
-            if (isInitialized == false)
+            if (IsInitialized == false)
                 return;
 
             if (!SendMessagesAllowed)
@@ -315,7 +317,10 @@ namespace Mirror
 
         bool WriteParameters(NetworkWriter writer, bool forceAll = false)
         {
-            ulong dirtyBits = forceAll ? (~0ul) : NextDirtyBits();
+			if (IsInitialized == false)
+				return false;
+
+			ulong dirtyBits = forceAll ? (~0ul) : NextDirtyBits();
             writer.WriteULong(dirtyBits);
             for (int i = 0; i < parameters.Length; i++)
             {
@@ -344,6 +349,9 @@ namespace Mirror
 
         void ReadParameters(NetworkReader reader)
         {
+            if (IsInitialized == false)
+                return;
+
             bool animatorEnabled = animator.enabled;
             // need to read values from NetworkReader even if animator is disabled
 
@@ -377,7 +385,7 @@ namespace Mirror
 
         public override void OnSerialize(NetworkWriter writer, bool initialState)
         {
-            if (isInitialized == false)
+            if (IsInitialized == false)
                 return;
 
             base.OnSerialize(writer, initialState);
@@ -405,7 +413,7 @@ namespace Mirror
 
         public override void OnDeserialize(NetworkReader reader, bool initialState)
         {
-			if (isInitialized == false)
+			if (IsInitialized == false)
 				return;
 
 			base.OnDeserialize(reader, initialState);
