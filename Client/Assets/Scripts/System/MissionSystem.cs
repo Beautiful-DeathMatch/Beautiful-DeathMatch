@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using NPOI.SS.Formula.Functions;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 /// <summary>
@@ -24,12 +25,19 @@ public enum ENUM_MISSION_TYPE
 
 public class DynamicMissionData
 {
-	public MissionTable.MissionData tableData;
-    public int currentProgression { get; private set; }
+	public readonly int id = -1;
+	public MissionTable.MissionData tableData = null;
+	public int currentProgression { get; private set; } = 0;
 
-	public DynamicMissionData(MissionTable.MissionData tableData)
+	public DynamicMissionData(int id = -1, MissionTable.MissionData tableData = null)
 	{
+		this.id = id;
 		this.tableData = tableData;
+		currentProgression = 0;
+	}
+
+	public DynamicMissionData()
+	{
 		currentProgression = 0;
 	}
 
@@ -53,18 +61,17 @@ public class DynamicMissionData
 
 public class PlayerMissionSlot
 {
-	public readonly Dictionary<ENUM_MISSION_TYPE, DynamicMissionData> missions = new();
+	public readonly List<int> missionIds = new();
 
-	public void AddMission(ENUM_MISSION_TYPE missionType, DynamicMissionData dyunamicMissionData)
+	public void AddMission(int missionId)
 	{
-		missions.Add(missionType, dyunamicMissionData);
+		missionIds.Add(missionId);
 	}
 }
 
 public class MissionSystem : NetworkSystem
 {    
 	[SerializeField] private MissionTable missionTable;
-	private Dictionary<int, PlayerMissionSlot> playerMissionSlotDictionary = new ();
 
     [SerializeField] private PrefabLinkedUISystem uiSystem = null;
 
@@ -73,35 +80,30 @@ public class MissionSystem : NetworkSystem
 		base.OnEnter(sceneModuleParam);
 
 		// 미션 데이터 딕셔너리 생성
-		if (sceneModuleParam is BattleSceneModule.Param battleParam)
-		{
-			playerMissionSlotDictionary.Clear();
-
-            foreach (var playerInfo in battleParam.playerInfoList)
-			{
-				PlayerMissionSlot newPlayerMissionSlot = new ();
-				playerMissionSlotDictionary.Add(playerInfo.playerId, newPlayerMissionSlot);
-
-				foreach(ENUM_MISSION_TYPE missionType in Enum.GetValues(typeof(ENUM_MISSION_TYPE)))
-				{
-					if (missionType != ENUM_MISSION_TYPE.None)
-					{
-						var missionData = missionTable.GetMissionDataByType(missionType);
-						newPlayerMissionSlot.AddMission(missionType, new DynamicMissionData(missionData));
-					}
-				}
-
-            }
-        }
+		// -> BlackBoard에서
 
 	}
 
 	public DynamicMissionData GetMissionData(int playerId, ENUM_MISSION_TYPE missionType)
 	{
-		if (playerMissionSlotDictionary.TryGetValue(playerId, out var missionSlot) == false)
+		if (blackBoard.TryGetMissionSlot(playerId, out var missionSlot) == false)
 			return null;
 
-		if (missionSlot.missions.TryGetValue(missionType, out var mission) == false)
+		foreach(int id in missionSlot.missionIds)
+		{
+			if (blackBoard.TryGetMissionData(id, out var missionData))
+				if (missionData.tableData.key == missionType)
+					return missionData;
+				else
+					continue;
+		}
+
+		return null;
+	}
+
+	public DynamicMissionData GetMissionData(int missionId)
+	{
+		if (blackBoard.TryGetMissionData(missionId, out var mission) == false)
 			return null;
 
 		return mission;
@@ -116,19 +118,27 @@ public class MissionSystem : NetworkSystem
 
 	public bool TryMissionComplete(int playerId, ENUM_MISSION_TYPE missionType)
 	{
-		if (playerMissionSlotDictionary.TryGetValue(playerId, out var missionSlot) == false)
+		if (blackBoard.TryGetMissionSlot(playerId, out var missionSlot) == false)
 			return false;
 
-		if (missionSlot.missions.TryGetValue(missionType, out var mission) == false)
-			return false;
+		foreach(int id in missionSlot.missionIds)
+		{
+			if (blackBoard.TryGetMissionData(id, out var missionData))
+				if (missionData.tableData.key == missionType)
+				{
+					blackBoard.MissionComplete(missionData.id);
+					return true;
+				}
+				else
+					continue;
+		}
 
-		mission.MissionComplete();
-		return true;
+		return false;
 	}
 
 	public PlayerMissionSlot GetPlayerMissionSlot(int playerId)
 	{
-		if (playerMissionSlotDictionary.TryGetValue(playerId, out var missionSlot))
+		if (blackBoard.TryGetMissionSlot(playerId, out var missionSlot))
 			return missionSlot;
 
 		return null;
@@ -136,10 +146,21 @@ public class MissionSystem : NetworkSystem
 
 	public bool IsMissionCompleted(int playerId, ENUM_MISSION_TYPE missionType)
 	{
-		if (GetPlayerMissionSlot(playerId).missions.TryGetValue(missionType, out var data) == false)
+		if (blackBoard.TryGetMissionSlot(playerId, out var missionSlot) == false)
 			return false;
 
-		return data.IsMissionCompleted();
+		foreach(int id in missionSlot.missionIds)
+		{
+			if (blackBoard.TryGetMissionData(id, out var missionData))
+				if (missionData.tableData.key == missionType)
+				{
+					return missionData.IsMissionCompleted();
+				}
+				else
+					continue;
+		}
+
+		return false;
 	}
 
 

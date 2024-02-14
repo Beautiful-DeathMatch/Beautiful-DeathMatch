@@ -25,12 +25,14 @@ public class BattleMainWindow : UIMainWindow
     [SerializeField] private TextMeshProUGUI healthText = null;
     [SerializeField] private TextMeshProUGUI stateText = null;
     [SerializeField] private TextMeshProUGUI missionText = null;
+    [SerializeField] private TextMeshProUGUI[] debug_missionText = null;
 
     [SerializeField] private ItemTable itemTable;
     [SerializeField] private MissionTable missionTable;
     [SerializeField] private StringTable stringTable;
 
     private int myPlayerId = -1;
+    private List<int> playerIdList = new(); // debug
 
     private readonly StringBuilder stringBuilder = new();
     private float currentInteractionTime;
@@ -42,6 +44,10 @@ public class BattleMainWindow : UIMainWindow
 		if (param is BattleSceneModule.Param battleParam)
         {
             myPlayerId = battleParam.myPlayerId;
+            foreach (var playerInfo in battleParam.playerInfoList) // debug
+            {
+                playerIdList.Add(playerInfo.playerId);
+            }
 
             foreach(var player in FindObjectsOfType<PlayerComponent>())
             {
@@ -141,12 +147,18 @@ public class BattleMainWindow : UIMainWindow
         stateText.text = statusSystem.GetState(myPlayerId).ToString();
     }
 
-    public void PrintMission()
+    public void PrintMission(int? index = null)
     {
         stringBuilder.Clear();
-        PlayerMissionSlot playerMissionSlot = missionSystem.GetPlayerMissionSlot(myPlayerId);
-        foreach(DynamicMissionData mission in playerMissionSlot.missions.Values)
+        PlayerMissionSlot playerMissionSlot = null;
+        if(index == null)
+            playerMissionSlot = missionSystem.GetPlayerMissionSlot(myPlayerId);
+        else
+            playerMissionSlot = missionSystem.GetPlayerMissionSlot(playerIdList[index.Value]);
+
+        foreach(int id in playerMissionSlot.missionIds)
         {
+            DynamicMissionData mission = missionSystem.GetMissionData(id);
             string missionName = stringTable.GetStringByKey(mission.tableData.nameKey);
             stringBuilder.Append(missionName);
             if(mission.currentProgression == mission.tableData.maxProgression)
@@ -154,7 +166,13 @@ public class BattleMainWindow : UIMainWindow
             stringBuilder.Append("\n");
         }
 
-        missionText.text = stringBuilder.ToString();
+        if (index == null)
+            missionText.text = stringBuilder.ToString();
+        else
+        {
+            stringBuilder.Append(playerIdList[index.Value].ToString());
+            debug_missionText[index.Value].text = stringBuilder.ToString();
+        }
     }
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
@@ -167,5 +185,9 @@ public class BattleMainWindow : UIMainWindow
         PrintPlayerInteractionTime();
         PrintStatus();
         PrintMission();
+        for (int i = 0; i < playerIdList.Count; i++)
+        {
+            PrintMission(i);
+        }
     }
 }

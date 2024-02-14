@@ -65,3 +65,4 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  missionTable: {fileID: 11400000, guid: 642de6032657a814ba11987d74cd9d85, type: 2}

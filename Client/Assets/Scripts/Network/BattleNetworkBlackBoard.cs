@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -19,6 +20,12 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	// Sync들은 무조건 readonly 처리
 	private readonly SyncList<int> testList = new SyncList<int>();
 	private readonly SyncDictionary<int, string> testDictionary = new SyncDictionary<int, string>();
+
+	private readonly SyncDictionary<int, PlayerMissionSlot> playerMissionSlotDictionary = new ();
+	private readonly SyncDictionary<int, DynamicMissionData> missionDataDictionary = new ();
+	[SyncVar]
+	private int missionDataId = 0;
+	[SerializeField] private MissionTable missionTable;
 
 	public event Action<IList<int>> onChangedTestList = null;
 	public event Action<IDictionary<int, string>> onChangedTestDictionary = null;	
@@ -42,6 +49,28 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 		testDictionary.Add(0, "솔휘");
 		testDictionary.Add(1, "정훈");
 		testDictionary.Add(2, "지수");
+
+		foreach (var playerInfo in currentParam.playerInfoList)
+		{
+			PlayerMissionSlot newPlayerMissionSlot = new();
+
+			foreach (ENUM_MISSION_TYPE missionType in Enum.GetValues(typeof(ENUM_MISSION_TYPE)))
+			{
+				if (missionType != ENUM_MISSION_TYPE.None)
+				{
+					int newId = GetNewMissionId();
+					var missionData = missionTable.GetMissionDataByType(missionType);
+					DynamicMissionData dynamicMissionData = new DynamicMissionData(newId, missionData);
+					
+					AddMissionData(newId, dynamicMissionData);
+					newPlayerMissionSlot.AddMission(newId);
+				}
+			}
+
+			AddMissionSlot(playerInfo.playerId, newPlayerMissionSlot);
+			
+		}
+
 	}
 
 	public override void OnStopServer()
@@ -50,6 +79,8 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 
 		testList.Clear();
 		testDictionary.Clear();
+		playerMissionSlotDictionary.Clear();
+		missionDataDictionary.Clear();
 	}
 
 	/// <summary>
@@ -59,12 +90,14 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	{
 		testList.Callback += OnUpdateTestList;
 		testDictionary.Callback += OnUpdateTestDictionary;
+		playerMissionSlotDictionary.Callback += OnUpdateTestDictionary;
 	}
 
 	public override void OnStopClient()
 	{
 		testList.Callback -= OnUpdateTestList;
 		testDictionary.Callback -= OnUpdateTestDictionary;
+		playerMissionSlotDictionary.Callback -= OnUpdateTestDictionary;
 	}
 
 	private void OnUpdateTestList(SyncList<int>.Operation op, int index, int oldItem, int newItem)
@@ -116,6 +149,30 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 		onChangedTestDictionary?.Invoke(testDictionary);
 	}
 
+	private void OnUpdateTestDictionary(SyncDictionary<int, PlayerMissionSlot>.Operation op, int key, PlayerMissionSlot item)
+	{
+		switch (op)
+		{
+			case SyncIDictionary<int, PlayerMissionSlot>.Operation.OP_ADD:
+				Debug.Log($"[OP_ADD] {key} : {item}");
+				break;
+			case SyncIDictionary<int, PlayerMissionSlot>.Operation.OP_SET:
+				Debug.Log($"[OP_SET] {key} : {item}");
+				break;
+			case SyncIDictionary<int, PlayerMissionSlot>.Operation.OP_REMOVE:
+				Debug.Log($"[OP_REMOVE] {key} : {item}");
+				break;
+			case SyncIDictionary<int, PlayerMissionSlot>.Operation.OP_CLEAR:
+				Debug.Log($"[OP_CLEAR]");
+				break;
+		}
+
+		// 딕셔너리가 업데이트될 때, 시스템이 이벤트를 받도록 설계하자
+		// 오퍼레이션 별로 처리할 필요없음
+		onChangedTestDictionary?.Invoke(testDictionary);
+	}
+
+
 	[Command(requiresAuthority = false)] // Sync Write 계열 함수엔 이걸 달아야 함
 	public void AddTestList(int el)
 	{
@@ -136,5 +193,61 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	public string GetTestDictionary(int key)
 	{
 		return testDictionary[key];
+	}
+
+	//==============Mission System=================//
+
+	[Command(requiresAuthority = false)]
+	public void AddMissionSlot(int key, PlayerMissionSlot value)
+	{
+		playerMissionSlotDictionary.Add(key, value);
+	}
+
+	[Command(requiresAuthority = false)]
+	public void AddMissionData(int key, DynamicMissionData value)
+	{
+		missionDataDictionary.Add(key, value);
+	}
+
+	[Command(requiresAuthority = false)]
+	public void MissionComplete(int missionId)
+	{
+		if(TryGetMissionData(missionId, out var missionData))
+		{
+			missionData.MissionComplete();
+		}
+	}
+
+	public PlayerMissionSlot GetMissionDictionary(int key)
+	{
+		return playerMissionSlotDictionary[key];
+	}
+
+	public bool TryGetMissionSlot(int key, out PlayerMissionSlot playerMissionSlot)
+	{
+		if(playerMissionSlotDictionary.ContainsKey(key))
+		{
+			playerMissionSlot = playerMissionSlotDictionary[key];
+			return true;
+		}
+		playerMissionSlot = null;
+		return false;
+	}
+
+	public bool TryGetMissionData(int key, out DynamicMissionData missionData)
+	{
+		if(missionDataDictionary.ContainsKey(key))
+		{
+			missionData = missionDataDictionary[key];
+			return true;
+		}
+		missionData = null;
+		return false;
+	}
+
+	private int GetNewMissionId()
+	{
+		missionDataId++;
+		return missionDataId;
 	}
 }
