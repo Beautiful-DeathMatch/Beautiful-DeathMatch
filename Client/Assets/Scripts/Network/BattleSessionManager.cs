@@ -124,6 +124,8 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 			}
 
 			var blackBoardObj = Instantiate(blackboard);
+			blackBoardObj.Initialize(battleParam);
+
 			NetworkServer.Spawn(blackBoardObj.gameObject);
 
 			var allReadyMessage = new PlayerAllReadyMessage();
