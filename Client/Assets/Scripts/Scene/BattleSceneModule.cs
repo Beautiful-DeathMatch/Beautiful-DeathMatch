@@ -87,7 +87,7 @@ public class BattleSceneModule : NetworkSceneModule
 		if (networkBlackBoard == null)
 			return;
 
-		networkBlackBoard.OnStartClient();
+		networkBlackBoard.OnStartSync();
 
 		itemSystem.OnStartSync(networkBlackBoard);
 		statusSystem.OnStartSync(networkBlackBoard);

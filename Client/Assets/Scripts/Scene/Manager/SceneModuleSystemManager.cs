@@ -40,6 +40,7 @@ public class SceneModuleSystemManager : Singleton<SceneModuleSystemManager>
         behaviour.onFixedUpdate += FixedUpdate;
         behaviour.onUpdate += Update;
         behaviour.onLateUpdate += LateUpdate;
+        behaviour.onExit += OnExit;
 
 		UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -51,8 +52,9 @@ public class SceneModuleSystemManager : Singleton<SceneModuleSystemManager>
         behaviour.onFixedUpdate -= FixedUpdate;
         behaviour.onUpdate -= Update;
         behaviour.onLateUpdate -= LateUpdate;
+		behaviour.onExit -= OnExit;
 
-        if (cancellationSource != null)
+		if (cancellationSource != null)
 			cancellationSource.Cancel();
 	}
 
@@ -85,6 +87,12 @@ public class SceneModuleSystemManager : Singleton<SceneModuleSystemManager>
         if (currentSceneModule != null)
             currentSceneModule.OnLateUpdate(Time.frameCount, Time.deltaTime);
     }
+
+    private void OnExit()
+    {
+		if (currentSceneModule != null)
+			currentSceneModule.OnExit();
+	}
 
     public void TryEnterSceneModule(SceneType sceneType, SceneModuleParam param = null)
     {

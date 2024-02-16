@@ -29,6 +29,7 @@ public class SingletonBehaviour : MonoBehaviour
     public event Action onFixedUpdate;
     public event Action onUpdate;
     public event Action onLateUpdate;
+    public event Action onExit;
 
     private WaitForEndOfFrame endOfFrameWait = new WaitForEndOfFrame();
     private Coroutine lateUpdateCoroutine = null;
@@ -38,11 +39,13 @@ public class SingletonBehaviour : MonoBehaviour
         lateUpdateCoroutine = StartCoroutine(OnLateUpdate());
     }
 
-    private void OnDestroy()
+    private void OnApplicationQuit()
     {
         if(lateUpdateCoroutine != null)
             StopCoroutine(lateUpdateCoroutine);
-    }
+
+		onExit?.Invoke();
+	}
 
     public void RegisterSingleton(Singleton singleton)
     {

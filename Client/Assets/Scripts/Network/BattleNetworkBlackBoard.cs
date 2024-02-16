@@ -86,9 +86,8 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	/// <summary>
 	/// 클라이언트의 시작점, 이 곳에서 값이 변경될 때 받을 콜백을 등록합니다.
 	/// </summary>
-	public override void OnStartClient()
+	public void OnStartSync()
 	{
-		Debug.Log("OnStartClient");
 		testList.Callback += OnUpdateTestList;
 		testDictionary.Callback += OnUpdateTestDictionary;
 		playerMissionSlotDictionary.Callback += OnUpdateTestDictionary;
@@ -97,7 +96,6 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 
 	public override void OnStopClient()
 	{
-		Debug.Log("OnStopClient");
 		testList.Callback -= OnUpdateTestList;
 		testDictionary.Callback -= OnUpdateTestDictionary;
 		playerMissionSlotDictionary.Callback -= OnUpdateTestDictionary;
