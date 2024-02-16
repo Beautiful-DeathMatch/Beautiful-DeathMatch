@@ -27,19 +27,21 @@ public class DynamicMissionData
 {
 	public readonly int id = -1;
 	public MissionTable.MissionData tableData = null;
-	public int currentProgression { get; private set; } = 0;
+	// public int currentProgression { get; private set; } = 0;
+	public readonly int currentProgression  = 0;
 
-	public DynamicMissionData(int id = -1, MissionTable.MissionData tableData = null)
+	public DynamicMissionData(int id = -1, MissionTable.MissionData tableData = null, int currentProgression = 0)
 	{
 		this.id = id;
 		this.tableData = tableData;
-		currentProgression = 0;
+		this.currentProgression = currentProgression;
 	}
 
 	public DynamicMissionData()
 	{
-		currentProgression = 0;
+		//currentProgression = 0;
 	}
+	
 
 	public DynamicMissionData(DynamicMissionData newData)
 	{
@@ -47,7 +49,7 @@ public class DynamicMissionData
 		tableData = newData.tableData;
 		currentProgression = newData.currentProgression;
 	}
-
+/*
 	public void MissionComplete()
 	{
 		currentProgression = tableData.maxProgression;
@@ -58,10 +60,15 @@ public class DynamicMissionData
 		int newProgression = currentProgression + progress;
 		currentProgression = newProgression > tableData.maxProgression ? tableData.maxProgression : newProgression;
 	}
-
+*/
 	public bool IsMissionCompleted()
 	{
 		return currentProgression == tableData.maxProgression;
+	}
+
+	public override string ToString()
+	{
+    	return "(id: " + id + ", current: " + currentProgression + ", table: "+tableData.key+")";
 	}
 
 }

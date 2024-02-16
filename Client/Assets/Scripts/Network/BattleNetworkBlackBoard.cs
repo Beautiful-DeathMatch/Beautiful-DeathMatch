@@ -245,8 +245,14 @@ public class BattleNetworkBlackBoard : NetworkBehaviour
 	{
 		if(missionDataDictionary.ContainsKey(missionId))
 		{
-			DynamicMissionData newData = new (missionDataDictionary[missionId]);
-			newData.MissionComplete();
+			// DynamicMissionData newData = new (missionDataDictionary[missionId]);
+			// newData.MissionComplete();
+			// missionDataDictionary[missionId] = newData;
+			// -> 안됨 (Master 는 정상 동작, Slave에서만 인식을 못함)
+
+			// 해결: DynamicMissionData Class 의 currentProgress 변수를 {get; private set;} 에서 readonly로 변경
+
+			DynamicMissionData newData = new (missionDataDictionary[missionId].id, missionDataDictionary[missionId].tableData, 1);
 			missionDataDictionary[missionId] = newData;
 		}
 
