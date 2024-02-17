@@ -1,22 +1,20 @@
 using System;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM 
-using UnityEngine.InputSystem;
+#if ENABLE_INPUT_SYSTEM
 #endif
 
 namespace StarterAssets
 {
-    public class ThirdPersonController : MonoBehaviour
+	public class ThirdPersonController : MonoBehaviour
     {
 		// animation IDs
-        int _animIDGrounded = Animator.StringToHash("Grounded");
-        int _animIDJump = Animator.StringToHash("Jump");
-        int _animIDFreeFall = Animator.StringToHash("FreeFall");
+        int GroundedHash = Animator.StringToHash("Grounded");
+        int JumpHash = Animator.StringToHash("Jump");
+        int FreeFallHash = Animator.StringToHash("FreeFall");
+		int CurrentItemIndexHash = Animator.StringToHash("CurrentItemIndex");
 
 		private PlayerInputAsset inputAsset;
-		private Animator _animator;
+		private Animator animator;
 
         private const float _threshold = 0.01f;
 
@@ -41,11 +39,11 @@ namespace StarterAssets
 
         public void SetAnimatorController(RuntimeAnimatorController controller, Avatar avatar)
 		{
-			_animator = GetComponent<Animator>();
-			_animator.runtimeAnimatorController = controller;
-            _animator.avatar = avatar;
+			animator = GetComponent<Animator>();
+			animator.runtimeAnimatorController = controller;
+            animator.avatar = avatar;
 
-			CharacterControllerState.Initialize(_animator);
+			CharacterControllerState.Initialize(animator);
 		}
 
 		public void SetInput(PlayerInputAsset inputAsset)
@@ -116,11 +114,11 @@ namespace StarterAssets
             bool isGrounded = IsGrounded();
             if (isGrounded)
             {
-				_animator.SetBool(_animIDFreeFall, false);
+				animator.SetBool(FreeFallHash, false);
 			}
 
-			_animator.SetBool(_animIDGrounded, isGrounded);
-			_animator.SetBool(_animIDJump, !isGrounded);
+			animator.SetBool(GroundedHash, isGrounded);
+			animator.SetBool(JumpHash, !isGrounded);
 		}
 
         private void CheckRotation()
@@ -151,7 +149,7 @@ namespace StarterAssets
 			{
 				if (IsFallTimeout())
 				{
-					_animator.SetBool(_animIDFreeFall, true);
+					animator.SetBool(FreeFallHash, true);
 				}
             }
         }
@@ -186,7 +184,7 @@ namespace StarterAssets
 				if (IsNotYetJump())
 				{
 					onJump?.Invoke();
-					_animator.SetBool(_animIDJump, true);
+					animator.SetBool(JumpHash, true);
 				}
 			}
 		}
@@ -197,6 +195,7 @@ namespace StarterAssets
 				return;
 
 			onClickNumber?.Invoke(number);
+			animator.SetInteger(CurrentItemIndexHash, number);
 		}
 
 		/// <summary>
