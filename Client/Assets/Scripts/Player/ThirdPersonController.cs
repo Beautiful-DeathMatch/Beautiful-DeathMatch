@@ -15,10 +15,6 @@ namespace StarterAssets
         int _animIDJump = Animator.StringToHash("Jump");
         int _animIDFreeFall = Animator.StringToHash("FreeFall");
 
-        int _animIDItemOffset = Animator.StringToHash("ItemOffset");
-        int _animIDUseItem = Animator.StringToHash("UseItem");
-        int _animIDSwim = Animator.StringToHash("Swim");
-
 		private PlayerInputAsset inputAsset;
 		private Animator _animator;
 
@@ -124,7 +120,7 @@ namespace StarterAssets
 			}
 
 			_animator.SetBool(_animIDGrounded, isGrounded);
-			_animator.SetBool(_animIDJump, false);
+			_animator.SetBool(_animIDJump, !isGrounded);
 		}
 
         private void CheckRotation()
@@ -162,13 +158,7 @@ namespace StarterAssets
 
         private void CheckSwim()
         {
-			if (IsInWater() == false) {
-                _animator.SetBool(_animIDSwim, false);
-				// 추후 수정
-            }
-			else if (IsInWater() == true) {
-                _animator.SetBool(_animIDSwim, true);
-            }
+
 		}
 
 		private void CheckInteract()
@@ -206,7 +196,6 @@ namespace StarterAssets
 			if (IsUIOpened())
 				return;
 
-			_animator.SetInteger(_animIDItemOffset, number);
 			onClickNumber?.Invoke(number);
 		}
 
@@ -220,7 +209,6 @@ namespace StarterAssets
 				return;
 
 			onClickUse?.Invoke();
-			_animator.SetTrigger(_animIDUseItem);
 		}
 	}
 } 
