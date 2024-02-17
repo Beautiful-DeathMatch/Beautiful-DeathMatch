@@ -39,8 +39,6 @@ namespace StarterAssets
 			animator = GetComponent<Animator>();
 			animator.runtimeAnimatorController = controller;
             animator.avatar = avatar;
-
-			CharacterControllerState.Initialize(animator);
 		}
 
 		public void SetInput(PlayerInputAsset inputAsset)
