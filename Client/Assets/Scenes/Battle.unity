@@ -10304,7 +10304,7 @@ MonoBehaviour:
   - {fileID: 656152288}
   - {fileID: 1915881937}
   - {fileID: 1795085460}
-  itemTable: {fileID: 11400000, guid: 50ae4908748b4e140be81a7d1d0b6f6d, type: 2}
+  itemTable: {fileID: 0}
   missionTable: {fileID: 11400000, guid: 642de6032657a814ba11987d74cd9d85, type: 2}
   stringTable: {fileID: 11400000, guid: e48470943df19244093d762838d728a4, type: 2}
 --- !u!1001 &601261914
@@ -42435,59 +42435,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ItemSystem
       objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxPrefab
-      value: 
-      objectReference: {fileID: 8532556325966729548, guid: 360ae84f6052eb84bad2d947c9c42776,
-        type: 3}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_keys.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_keys.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_values.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_keys.Array.data[5]
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_values.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_keys.Array.data[0]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: boxSpawnAreaDictionary.m_keys.Array.data[1]
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_values.Array.data[4]
-      value: 
-      objectReference: {fileID: 21300046, guid: 309ac3eb4cc441349b63128366ca98b6,
-        type: 3}
-    - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
-        type: 3}
-      propertyPath: itemSpriteDictionary.m_values.Array.data[5]
-      value: 
-      objectReference: {fileID: 21300048, guid: 309ac3eb4cc441349b63128366ca98b6,
-        type: 3}
     - target: {fileID: 5212765700107575931, guid: 6c03029b076401540bc365ddff4a8122,
         type: 3}
       propertyPath: boxSpawnAreaDictionary.m_values.Array.data[0]

@@ -167,6 +167,7 @@ MonoBehaviour:
   characterViewComponent: {fileID: 1070376234558942627}
   attackComponent: {fileID: 5318714989550188421}
   controller: {fileID: 5921198921731900175}
+  animator: {fileID: 3875929916425242375}
 --- !u!114 &6532361993978613561
 MonoBehaviour:
   m_ObjectHideFlags: 0

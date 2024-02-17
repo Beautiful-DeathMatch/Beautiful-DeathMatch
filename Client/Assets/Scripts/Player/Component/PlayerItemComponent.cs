@@ -6,10 +6,12 @@ using UnityEngine;
 public class PlayerItemComponent : MonoComponent<ItemSystem>
 {
 	[SerializeField] private CharacterViewComponent characterViewComponent = null;
-	
 	[SerializeField] private PlayerAttackComponent attackComponent = null;
-
 	[SerializeField] private ThirdPersonController controller = null;
+
+	[SerializeField] private Animator animator;
+
+	private int CurrentItemTypeHash = Animator.StringToHash("CurrentItemType");
 
 	private int playerId = -1;
 
@@ -45,6 +47,8 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 
 		var itemType = System.GetItemType(slotItemId);
 		characterViewComponent.TryAttachRightHand(itemType);
+
+		animator.SetInteger(CurrentItemTypeHash, (int)itemType);
 	}
 
 	private void OnClickUse()

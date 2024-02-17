@@ -13,177 +13,177 @@ MonoBehaviour:
   m_Name: ItemTable
   m_EditorClassIdentifier: 
   itemDataList:
-  - key: 1
+  - key: 2
     maxUsableCount: -1
     hpAmount: 20
     attackDistance: 10
     nameKey: sys.item.knife
-  - key: 0
+  - key: 1
     maxUsableCount: 5
     hpAmount: 30
     attackDistance: 30
     nameKey: sys.item.gun
-  - key: 2
+  - key: 3
     maxUsableCount: 1
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.armor
-  - key: 3
+  - key: 4
     maxUsableCount: 3
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.smoke
-  - key: 4
+  - key: 5
     maxUsableCount: 1
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.rader
-  - key: 5
+  - key: 6
     maxUsableCount: 1
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.teleport
   itemDataDictionary:
-    m_keys: 010000000000000002000000030000000400000005000000
+    m_keys: 020000000100000003000000040000000500000006000000
     m_values:
-    - key: 1
+    - key: 2
       maxUsableCount: -1
       hpAmount: 20
       attackDistance: 10
       nameKey: sys.item.knife
-    - key: 0
+    - key: 1
       maxUsableCount: 5
       hpAmount: 30
       attackDistance: 30
       nameKey: sys.item.gun
-    - key: 2
+    - key: 3
       maxUsableCount: 1
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.armor
-    - key: 3
+    - key: 4
       maxUsableCount: 3
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.smoke
-    - key: 4
+    - key: 5
       maxUsableCount: 1
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.rader
-    - key: 5
+    - key: 6
       maxUsableCount: 1
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.teleport
   itemTypeList:
   - key: 1
-    itemType: 1
+    itemType: 2
   - key: 2
-    itemType: 0
+    itemType: 1
   - key: 3
-    itemType: 1
+    itemType: 2
   - key: 4
-    itemType: 0
+    itemType: 1
   - key: 5
-    itemType: 1
+    itemType: 2
   - key: 6
-    itemType: 0
+    itemType: 1
   - key: 7
-    itemType: 1
+    itemType: 2
   - key: 8
-    itemType: 0
-  - key: 9
     itemType: 1
+  - key: 9
+    itemType: 2
   - key: 10
-    itemType: 0
+    itemType: 1
   - key: 101
-    itemType: 2
+    itemType: 3
   - key: 111
-    itemType: 3
+    itemType: 4
   - key: 121
-    itemType: 4
+    itemType: 5
   - key: 131
-    itemType: 5
+    itemType: 6
   - key: 201
-    itemType: 2
+    itemType: 3
   - key: 202
-    itemType: 2
+    itemType: 3
   - key: 203
-    itemType: 3
+    itemType: 4
   - key: 204
-    itemType: 3
+    itemType: 4
   - key: 205
-    itemType: 4
+    itemType: 5
   - key: 206
-    itemType: 4
+    itemType: 5
   - key: 301
-    itemType: 2
+    itemType: 3
   - key: 302
-    itemType: 2
+    itemType: 3
   - key: 303
-    itemType: 5
+    itemType: 6
   - key: 304
-    itemType: 5
+    itemType: 6
   - key: 305
-    itemType: 5
+    itemType: 6
   - key: 306
-    itemType: 5
+    itemType: 6
   itemTypeDictionary:
     m_keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000650000006f0000007900000083000000c9000000ca000000cb000000cc000000cd000000ce0000002d0100002e0100002f010000300100003101000032010000
     m_values:
     - key: 1
-      itemType: 1
+      itemType: 2
     - key: 2
-      itemType: 0
+      itemType: 1
     - key: 3
-      itemType: 1
+      itemType: 2
     - key: 4
-      itemType: 0
+      itemType: 1
     - key: 5
-      itemType: 1
+      itemType: 2
     - key: 6
-      itemType: 0
+      itemType: 1
     - key: 7
-      itemType: 1
+      itemType: 2
     - key: 8
-      itemType: 0
-    - key: 9
       itemType: 1
+    - key: 9
+      itemType: 2
     - key: 10
-      itemType: 0
+      itemType: 1
     - key: 101
-      itemType: 2
+      itemType: 3
     - key: 111
-      itemType: 3
+      itemType: 4
     - key: 121
-      itemType: 4
+      itemType: 5
     - key: 131
-      itemType: 5
+      itemType: 6
     - key: 201
-      itemType: 2
+      itemType: 3
     - key: 202
-      itemType: 2
+      itemType: 3
     - key: 203
-      itemType: 3
+      itemType: 4
     - key: 204
-      itemType: 3
+      itemType: 4
     - key: 205
-      itemType: 4
+      itemType: 5
     - key: 206
-      itemType: 4
+      itemType: 5
     - key: 301
-      itemType: 2
+      itemType: 3
     - key: 302
-      itemType: 2
+      itemType: 3
     - key: 303
-      itemType: 5
+      itemType: 6
     - key: 304
-      itemType: 5
+      itemType: 6
     - key: 305
-      itemType: 5
+      itemType: 6
     - key: 306
-      itemType: 5
+      itemType: 6
   itemPositionList:
   - key: 1
     x: 0

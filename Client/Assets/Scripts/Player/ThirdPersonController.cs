@@ -1,22 +1,19 @@
 using System;
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM
-#endif
 
 namespace StarterAssets
 {
 	public class ThirdPersonController : MonoBehaviour
     {
-		// animation IDs
         int GroundedHash = Animator.StringToHash("Grounded");
         int JumpHash = Animator.StringToHash("Jump");
         int FreeFallHash = Animator.StringToHash("FreeFall");
-		int CurrentItemIndexHash = Animator.StringToHash("CurrentItemIndex");
+		int ItemChangeTriggerHash = Animator.StringToHash("ItemChangeTrigger");
 
 		private PlayerInputAsset inputAsset;
 		private Animator animator;
 
-        private const float _threshold = 0.01f;
+        private const float threshold = 0.01f;
 
         public event Action onHoldInteract = null;
         public event Action onCancelInteract = null;
@@ -126,7 +123,7 @@ namespace StarterAssets
             float yaw = 0.0f;
             float pitch = 0.0f;
 
-            if (inputAsset.lookDir.sqrMagnitude >= _threshold)
+            if (inputAsset.lookDir.sqrMagnitude >= threshold)
             {
 				yaw += inputAsset.lookDir.x; // * Time.deltaTime;
 				pitch += inputAsset.lookDir.y; // * Time.deltaTime;
@@ -195,7 +192,7 @@ namespace StarterAssets
 				return;
 
 			onClickNumber?.Invoke(number);
-			animator.SetInteger(CurrentItemIndexHash, number);
+			animator.SetTrigger(ItemChangeTriggerHash);
 		}
 
 		/// <summary>

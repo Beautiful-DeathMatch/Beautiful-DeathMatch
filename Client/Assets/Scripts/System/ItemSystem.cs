@@ -13,8 +13,8 @@ using static UnityEditor.Progress;
 public enum ENUM_ITEM_TYPE
 {
 	None = -1,
-    Gun = 0,
-	Knife = 1,
+    Gun = 1,
+	Knife = 2,
 	Armor,
 	Smoke,
 	Rader,
@@ -58,7 +58,7 @@ public class PlayerItemSlot
 			case ENUM_ITEM_TYPE.Gun:
 			case ENUM_ITEM_TYPE.Knife:
 
-				int itemTypeInt = (int)itemType;
+				int itemTypeInt = (int)itemType - 1;
 
 				if (itemSlots[itemTypeInt] == -1)
 				{
