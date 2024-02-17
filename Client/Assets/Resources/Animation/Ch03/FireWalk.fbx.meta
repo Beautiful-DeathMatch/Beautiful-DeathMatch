@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e94a138d3789cd343b99403c3f92e6c7
+guid: 90066185d56b7f0429c8e9bbd530b54b
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,7 +33,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: WalkAndFire.com
+      name: FireWalk
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
@@ -44,7 +44,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
