@@ -15,10 +15,10 @@ public enum ENUM_ITEM_TYPE
 	None = -1,
     Gun = 1,
 	Knife = 2,
-	Armor,
-	Smoke,
-	Rader,
-	Teleport,
+	Armor = 3,
+	Smoke = 4,
+	Rader = 5,
+	Teleport = 6,
 }
 
 /// <summary>

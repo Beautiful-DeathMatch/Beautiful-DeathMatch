@@ -11,7 +11,9 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 
 	[SerializeField] private Animator animator;
 
-	private int CurrentItemTypeHash = Animator.StringToHash("CurrentItemType");
+	private int ItemTypeHash = Animator.StringToHash("ItemType");
+	private int ItemUseTriggerHash = Animator.StringToHash("ItemUseTrigger");
+	private int ItemChangeTriggerHash = Animator.StringToHash("ItemChangeTrigger");
 
 	private int playerId = -1;
 
@@ -48,7 +50,8 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		var itemType = System.GetItemType(slotItemId);
 		characterViewComponent.TryAttachRightHand(itemType);
 
-		animator.SetInteger(CurrentItemTypeHash, (int)itemType);
+		animator.SetTrigger(ItemChangeTriggerHash);
+		animator.SetInteger(ItemTypeHash, (int)itemType);
 	}
 
 	private void OnClickUse()
@@ -58,12 +61,15 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 
 	private void OnUseItem(int itemId, DynamicItemData usedItemData)
 	{
-		switch(usedItemData.tableData.key)
+		var itemType = usedItemData.tableData.key;
+		switch (itemType)
 		{
 			case ENUM_ITEM_TYPE.Knife:
 			case ENUM_ITEM_TYPE.Gun:
 				attackComponent.Attack(usedItemData);
 				break;
 		}
+
+		animator.SetTrigger(ItemUseTriggerHash);
 	}
 }

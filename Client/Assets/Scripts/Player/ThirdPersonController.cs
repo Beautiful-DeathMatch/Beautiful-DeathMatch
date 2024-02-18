@@ -8,7 +8,6 @@ namespace StarterAssets
         int GroundedHash = Animator.StringToHash("Grounded");
         int JumpHash = Animator.StringToHash("Jump");
         int FreeFallHash = Animator.StringToHash("FreeFall");
-		int ItemChangeTriggerHash = Animator.StringToHash("ItemChangeTrigger");
 
 		private PlayerInputAsset inputAsset;
 		private Animator animator;
@@ -190,7 +189,6 @@ namespace StarterAssets
 				return;
 
 			onClickNumber?.Invoke(number);
-			animator.SetTrigger(ItemChangeTriggerHash);
 		}
 
 		/// <summary>
