@@ -5,12 +5,7 @@ namespace StarterAssets
 {
 	public class ThirdPersonController : MonoBehaviour
     {
-        int GroundedHash = Animator.StringToHash("Grounded");
-        int JumpHash = Animator.StringToHash("Jump");
-        int FreeFallHash = Animator.StringToHash("FreeFall");
-
 		private PlayerInputAsset inputAsset;
-		private Animator animator;
 
         private const float threshold = 0.01f;
 
@@ -27,18 +22,10 @@ namespace StarterAssets
         public event Func<bool> IsInWater;
 
         public event Func<bool> IsNotYetJump;
-        public event Func<bool> IsFallTimeout;
         public event Func<bool> IsGrounded;
         public event Func<bool> IsUIOpened;
 
 		private bool isInteracting = false;
-
-        public void SetAnimatorController(RuntimeAnimatorController controller, Avatar avatar)
-		{
-			animator = GetComponent<Animator>();
-			animator.runtimeAnimatorController = controller;
-            animator.avatar = avatar;
-		}
 
 		public void SetInput(PlayerInputAsset inputAsset)
         {
@@ -83,11 +70,6 @@ namespace StarterAssets
         {
             if (inputAsset)
             {
-				// 상시 적용이라 얘넨 스테이트로 안 가도 됨
-				CheckGrounded();
-				CheckFall();
-
-                // 얘네 가도 됨
 				CheckMove();
 				CheckInteract();
 				CheckSwim();
@@ -101,18 +83,6 @@ namespace StarterAssets
                 // 얘도 가도 됨
 				CheckRotation();
 			}
-		}
-
-        private void CheckGrounded()
-        {
-            bool isGrounded = IsGrounded();
-            if (isGrounded)
-            {
-				animator.SetBool(FreeFallHash, false);
-			}
-
-			animator.SetBool(GroundedHash, isGrounded);
-			animator.SetBool(JumpHash, !isGrounded);
 		}
 
         private void CheckRotation()
@@ -137,16 +107,6 @@ namespace StarterAssets
             onMove?.Invoke(inputAsset.isSprint, inputAsset.analogMovement, inputAsset.moveDir);
         }
 
-        private void CheckFall()
-        {
-			if (IsGrounded() == false)
-			{
-				if (IsFallTimeout())
-				{
-					animator.SetBool(FreeFallHash, true);
-				}
-            }
-        }
 
         private void CheckSwim()
         {
@@ -178,7 +138,6 @@ namespace StarterAssets
 				if (IsNotYetJump())
 				{
 					onJump?.Invoke();
-					animator.SetBool(JumpHash, true);
 				}
 			}
 		}

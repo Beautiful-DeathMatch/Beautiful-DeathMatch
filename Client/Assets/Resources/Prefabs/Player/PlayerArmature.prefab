@@ -271,6 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 5921198921731900175}
+  animator: {fileID: 3875929916425242375}
   GroundedOffset: -0.14
   GroundedRadius: 0.28
   GroundLayers:

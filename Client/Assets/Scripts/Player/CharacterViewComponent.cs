@@ -16,7 +16,12 @@ public class CharacterViewAsset
 
 	public void SetController(ThirdPersonController controller)
 	{
-		controller.SetAnimatorController(animatorController, avatar);
+		var animator = controller.GetComponent<Animator>();
+		if (animator == null)
+			return;
+
+		animator.runtimeAnimatorController = animatorController;
+		animator.avatar = avatar;
 	}
 
 	public void SetActiveCharacter(bool isActive)

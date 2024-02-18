@@ -6,11 +6,17 @@ using UnityEngine;
 public class PlayerGroundCheckComponent : MonoBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;
+	[SerializeField] private Animator animator;
 
 	[SerializeField] private float GroundedOffset = -0.14f;
 	[SerializeField] private float GroundedRadius = 0.28f;
 
 	[SerializeField] private LayerMask GroundLayers;
+
+	int GroundedHash = Animator.StringToHash("Grounded");
+	int JumpHash = Animator.StringToHash("Jump");
+	int FreeFallHash = Animator.StringToHash("FreeFall");
+
 
 	// timeout deltatime
 	private float _jumpTimeoutDelta = 0.0f;
@@ -38,7 +44,6 @@ public class PlayerGroundCheckComponent : MonoBehaviour
 	private void OnEnable()
 	{
 		controller.IsGrounded += IsGrounded;
-		controller.IsFallTimeout += IsFallTimeout;
 		controller.IsNotYetJump += IsFirstJumpTrigger;
 		controller.onJump += OnJump;
 	}
@@ -46,7 +51,6 @@ public class PlayerGroundCheckComponent : MonoBehaviour
 	private void OnDisable()
 	{
 		controller.IsGrounded -= IsGrounded;
-		controller.IsFallTimeout -= IsFallTimeout;
 		controller.IsNotYetJump -= IsFirstJumpTrigger;
 		controller.onJump -= OnJump;
 	}
@@ -57,9 +61,36 @@ public class PlayerGroundCheckComponent : MonoBehaviour
 	}
 
 	private void Update()
-    {
+	{
 		JumpAndGravity();
+		CheckGrounded();
+		CheckFall();
 	}
+
+	private void CheckFall()
+	{
+		if (IsGrounded() == false)
+		{
+			if (IsFallTimeout())
+			{
+				animator.SetBool(FreeFallHash, true);
+			}
+		}
+	}
+
+
+	private void CheckGrounded()
+	{
+		bool isGrounded = IsGrounded();
+		if (isGrounded)
+		{
+			animator.SetBool(FreeFallHash, false);
+		}
+
+		animator.SetBool(GroundedHash, isGrounded);
+		animator.SetBool(JumpHash, !isGrounded);
+	}
+
 
 	private bool IsGrounded()
 	{
@@ -78,6 +109,7 @@ public class PlayerGroundCheckComponent : MonoBehaviour
 	private void OnJump()
 	{
 		_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+		animator.SetBool(JumpHash, true);
 	}
 
 	private void JumpAndGravity()
