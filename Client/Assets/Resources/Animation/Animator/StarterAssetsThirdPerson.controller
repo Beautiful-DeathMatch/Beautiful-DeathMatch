@@ -1057,9 +1057,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.058556497
+  m_TransitionDuration: 0.13164866
   m_TransitionOffset: 0
-  m_ExitTime: 0.85648614
+  m_ExitTime: 0.783394
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -2854,7 +2854,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: KnifeUse
-  m_Speed: 0.8
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 8727944663545988635}
@@ -3174,7 +3174,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 1161e504b506ec24aa11fe4edb350fb2,
+    m_Motion: {fileID: -203655887218126122, guid: e82bb7de0b92cd1448cbfb7d31ace1ee,
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
@@ -3228,7 +3228,7 @@ AnimatorStateMachine:
     m_Position: {x: 310, y: 140, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5824054079051471264}
-    m_Position: {x: 620, y: 140, z: 0}
+    m_Position: {x: 630, y: 140, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6185129203754592468}
     m_Position: {x: 310, y: 260, z: 0}

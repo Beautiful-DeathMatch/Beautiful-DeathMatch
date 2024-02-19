@@ -19,6 +19,8 @@ public class ItemSpriteDictionaryPropertyDrawer : SerializableDictionaryProperty
 [CustomPropertyDrawer(typeof(BoxSpawnAreaDictionary))]
 public class BoxSpawnAreaDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
 
+[CustomPropertyDrawer(typeof(CharacterViewAsset.AttachItemDictionary))]
+public class AttachItemDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
 
 
 

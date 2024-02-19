@@ -1,4 +1,5 @@
 using StarterAssets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,9 @@ public class CharacterViewAsset
 
 	[SerializeField] private Transform rightHandSocket;
 
+	[Serializable]
+	public class AttachItemDictionary : SerializableDictionary<ENUM_ITEM_TYPE, GameObject> { }
+	[SerializeField] private AttachItemDictionary attatchItemDictionary = new();
 	private GameObject currentItemObj = null;
 
 	public void SetController(ThirdPersonController controller)
@@ -37,7 +41,13 @@ public class CharacterViewAsset
 		}
 
 		// 새 아이템 타입으로 찾아서 삽입
-		// currentItemObj.SetActive(true);
+		if (attatchItemDictionary.TryGetValue(itemType, out var item))
+		{
+			currentItemObj = item;
+			currentItemObj.transform.parent = rightHandSocket;
+			currentItemObj.transform.localPosition = new Vector3(0, 0, 0);
+			currentItemObj.SetActive(true);
+		}
 	}
 }
 
