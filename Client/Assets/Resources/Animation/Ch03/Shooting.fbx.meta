@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 293c9d6f883706243822135affe71a1d
+guid: bd407656dcca754498d747c861905806
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,20 +33,20 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Knife_Idle
+      name: Shooting
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 135
+      lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 1
+      loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 1
