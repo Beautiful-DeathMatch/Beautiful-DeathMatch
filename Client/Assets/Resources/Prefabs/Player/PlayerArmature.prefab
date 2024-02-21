@@ -224,6 +224,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 9166746433292331882}
+  animator: {fileID: 3875929916425242375}
+  controller: {fileID: 5921198921731900175}
 --- !u!114 &9172186983609904865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,6 +239,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 5921198921731900175}
+  characterController: {fileID: 6862828568990067300}
+  groundCheckComponent: {fileID: 2720258355391405741}
+  animator: {fileID: 3875929916425242375}
+  MoveSpeed: 2
+  SprintSpeed: 5.335
+  RotationSmoothTime: 0.12
+  SpeedChangeRate: 10
 --- !u!114 &3172668859761069214
 MonoBehaviour:
   m_ObjectHideFlags: 0

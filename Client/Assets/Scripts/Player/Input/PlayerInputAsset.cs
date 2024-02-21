@@ -7,8 +7,8 @@ public class PlayerInputAsset : MonoBehaviour
 	public Vector2 lookDir { get; private set; }
 
 	public bool isSprint { get; private set; }	
-
 	public bool isInteract { get; private set; }
+	public bool isAim { get; private set; }
 
 	[Header("Movement Settings")]
 	public bool analogMovement;
@@ -21,6 +21,7 @@ public class PlayerInputAsset : MonoBehaviour
 	public event Action onSprint = null;
 	public event Action onUseItem = null;
 	public event Action<int> onClickNumber = null;
+	public event Action onAim = null;
 
 	public void OnMove(InputValue value)
 	{
@@ -93,6 +94,19 @@ public class PlayerInputAsset : MonoBehaviour
 	{
 		onClickNumber?.Invoke(5);
 		Debug.Log($"숫자 키 5 눌림");
+	}
+
+	public void OnAim(InputValue value)
+	{
+		isAim = value.isPressed;
+		if (isAim)
+		{
+			Debug.Log("조준 시작");
+		}
+		else
+		{
+			Debug.Log("조준 종료");
+		}
 	}
 
 	private void OnApplicationFocus(bool hasFocus)

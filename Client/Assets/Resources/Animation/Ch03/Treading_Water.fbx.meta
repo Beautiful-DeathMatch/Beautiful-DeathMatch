@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f109cd3f658cf134d8b83d3a44c9e5d9
+guid: 28b4b7310cf8d1a43804d968cd495440
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,22 +33,22 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Swimming
+      name: Treading_Water
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 136
+      lastFrame: 90
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0
+      level: 0.2
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 1
-      loopBlendPositionXZ: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0

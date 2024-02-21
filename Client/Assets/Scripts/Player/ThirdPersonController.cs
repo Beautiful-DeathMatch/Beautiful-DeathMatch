@@ -14,10 +14,13 @@ namespace StarterAssets
 
         public event Action<int> onClickNumber = null;
         public event Action onClickUse = null;
+        public event Action onStartAim = null;
+        public event Action onEndAim = null;
 
         public event Action<float, float> onRotate = null;
         public event Action onJump = null;
         public event Action<bool, bool, Vector2> onMove = null;
+        public event Action<bool, bool, Vector2> onSwim = null;
 
         public event Func<bool> IsInWater;
 
@@ -26,6 +29,7 @@ namespace StarterAssets
         public event Func<bool> IsUIOpened;
 
 		private bool isInteracting = false;
+		private bool isAimming = false;
 
 		public void SetInput(PlayerInputAsset inputAsset)
         {
@@ -73,6 +77,7 @@ namespace StarterAssets
 				CheckMove();
 				CheckInteract();
 				CheckSwim();
+				CheckAim();
 			}
         }
 
@@ -103,6 +108,9 @@ namespace StarterAssets
         {
 			if (IsUIOpened())
 				return;
+			
+			if (IsInWater())
+				return;
 
             onMove?.Invoke(inputAsset.isSprint, inputAsset.analogMovement, inputAsset.moveDir);
         }
@@ -110,7 +118,13 @@ namespace StarterAssets
 
         private void CheckSwim()
         {
+			if (IsUIOpened())
+				return;
+			
+			if (!IsInWater())
+				return;
 
+            onSwim?.Invoke(inputAsset.isSprint, inputAsset.analogMovement, inputAsset.moveDir);
 		}
 
 		private void CheckInteract()
@@ -150,6 +164,24 @@ namespace StarterAssets
 			onClickNumber?.Invoke(number);
 		}
 
+		private void CheckAim()
+		{
+			if (inputAsset.isAim && !IsUIOpened())
+			{
+				if (isAimming)
+					return;
+
+				onStartAim?.Invoke();
+				isAimming = true;
+			}
+			else if (isAimming)
+			{
+				onEndAim?.Invoke();
+				isAimming = false;
+			}
+				
+		}
+
 		/// <summary>
 		/// Left Click은 기획상 공격이 아니라 '아이템 사용' 입니다.
 		/// Gun, Knife를 장착하고 있을 때 해당 아이템을 사용한다면 총알이 나가는 형태로 로직을 구성합니다.
@@ -157,6 +189,9 @@ namespace StarterAssets
 		private void OnUseItem()
         {
 			if (IsUIOpened())
+				return;
+
+			if (IsInWater())
 				return;
 
 			onClickUse?.Invoke();
