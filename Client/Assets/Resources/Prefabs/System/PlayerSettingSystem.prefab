@@ -48,9 +48,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 928304269258043850}
   inputAsset: {fileID: 5637566273571236080}
-  characterType: 0
-  playerPrefab: {fileID: 3172668859761069214, guid: 4a48d9982aaf9244a955d6dab20560a1,
-    type: 3}
 --- !u!1 &3177698156310182166
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,9 +124,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damping: {x: 0.1, y: 0.25, z: 0.3}
-  ShoulderOffset: {x: 1, y: 0, z: 0}
+  ShoulderOffset: {x: 1, y: 0.5, z: 0}
   VerticalArmLength: 0
-  CameraSide: 0.6
+  CameraSide: 0.7
   CameraDistance: 4
   CameraCollisionFilter:
     serializedVersion: 2

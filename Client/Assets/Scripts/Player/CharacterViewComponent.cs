@@ -44,8 +44,6 @@ public class CharacterViewAsset
 		if (attatchItemDictionary.TryGetValue(itemType, out var item))
 		{
 			currentItemObj = item;
-			currentItemObj.transform.parent = rightHandSocket;
-			currentItemObj.transform.localPosition = new Vector3(0, 0, 0);
 			currentItemObj.SetActive(true);
 		}
 	}
