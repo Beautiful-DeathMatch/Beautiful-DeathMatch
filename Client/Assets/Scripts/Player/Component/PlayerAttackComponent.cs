@@ -6,20 +6,23 @@ using Mirror;
 
 public class PlayerAttackComponent : NetworkBehaviour
 {
-	[SerializeField] private Transform mussleTransform = null;
 	[SerializeField] private Transform cameraOriginTransform = null;
+	[SerializeField] private Transform aimTargetTransform = null;
+	
+	private Transform cameraTargetTransform = null;
+	private Transform muzzleTransform = null;
 
-	[SerializeField] private Animator animator;
 	[SerializeField] private ThirdPersonController controller = null;
 
-	private Transform shotTargetTransform = null;
+	private Animator animator;
 	private int AimHash = Animator.StringToHash("Aim");
 
 	private LayerMask attackLayerMask; // 공격 레이 무시용 레이어 마스크
 	private int playerId = -1;
 
 	private void OnEnable()
-	{		
+	{
+		animator = GetComponentInChildren<Animator>();
 		controller.onStartAim += OnStartAim;
 		controller.onEndAim += OnEndAim;
 	}
@@ -30,14 +33,27 @@ public class PlayerAttackComponent : NetworkBehaviour
 		controller.onEndAim -= OnEndAim;
 	}
 
+	private void LateUpdate()
+	{
+		if (cameraTargetTransform)
+		{
+			aimTargetTransform.position = cameraTargetTransform.position;
+		}
+	}
+
 	public void SetPlayerId(int playerId)
 	{
 		this.playerId = playerId;
 	}
 
-	public void SetShotTarget(Transform target)
+	public void SetCameraTarget(Transform target)
 	{
-		shotTargetTransform = target;
+		cameraTargetTransform = target;
+	}
+
+	public void SetMuzzle(Transform muzzle)
+	{
+		muzzleTransform = muzzle;
 	}
 
 	private void Awake()
@@ -52,7 +68,7 @@ public class PlayerAttackComponent : NetworkBehaviour
 
 	public void TryShotAttack(DynamicItemData itemData)
 	{
-		OnShotAttack(mussleTransform.position, shotTargetTransform.position, itemData.tableData.hpAmount);
+		OnShotAttack(muzzleTransform.position, cameraTargetTransform.position, itemData.tableData.hpAmount);
 	}
 
 	[Command]
@@ -60,7 +76,7 @@ public class PlayerAttackComponent : NetworkBehaviour
 	{
 		Debug.DrawRay(origin, dir * distance, Color.red, 1f);
 
-		if (Physics.Raycast(mussleTransform.position, cameraOriginTransform.forward, out RaycastHit hit, distance, attackLayerMask)) // 충돌 감지 시
+		if (Physics.Raycast(muzzleTransform.position, cameraOriginTransform.forward, out RaycastHit hit, distance, attackLayerMask)) // 충돌 감지 시
 		{
 			var damageable = hit.transform.GetComponent<IDamageable>();
 			if (damageable != null)

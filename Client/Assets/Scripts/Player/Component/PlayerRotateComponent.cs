@@ -2,14 +2,17 @@ using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerRotateComponent : MonoBehaviour
 {
 	[SerializeField] private Transform cameraTransform;
 	[SerializeField] private ThirdPersonController controller = null;
+	
+	[SerializeField] private float TopClamp = 70.0f;
+	[SerializeField] private float BottomClamp = -30.0f;
 
-	private float TopClamp = 70.0f;
-	private float BottomClamp = -30.0f;
+	private Rig[] rigs = null;
 
 	// cinemachine
 	private float _cinemachineTargetYaw = 0.0f;
@@ -23,12 +26,40 @@ public class PlayerRotateComponent : MonoBehaviour
 
 	private void OnEnable()
 	{
+		rigs = GetComponentsInChildren<Rig>();
 		controller.onRotate += Rotate;
 	}
 
 	private void OnDisable()
 	{
 		controller.onRotate -= Rotate;
+	}
+	private void LateUpdate()
+	{
+		float yAngleVector = cameraTransform.localRotation.eulerAngles.y;
+		foreach (var rig in rigs)
+		{
+			if (yAngleVector > 90.0f && yAngleVector <= 180.0f)
+			{
+				rig.weight = Mathf.Lerp(1, 0, (yAngleVector - 90.0f) / 90.0f);
+			}
+			else if (yAngleVector <= -180.0f && yAngleVector > -270.0f)
+			{
+				rig.weight = Mathf.Lerp(1, 0, (yAngleVector + 270.0f) / 90.0f);
+			}
+			else if (yAngleVector <= -90.0f && yAngleVector > -180.0f)
+			{
+				rig.weight = Mathf.Lerp(0, 1, (yAngleVector + 180.0f) / 90.0f);
+			}
+			else if (yAngleVector > 180.0f && yAngleVector <= 270.0f)
+			{
+				rig.weight = Mathf.Lerp(0, 1, (yAngleVector - 180.0f) / 90.0f);
+			}
+			else
+			{
+				rig.weight = 1;
+			}
+		}
 	}
 
 	public void Rotate(float yaw, float pitch)

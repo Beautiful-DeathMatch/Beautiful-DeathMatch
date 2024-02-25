@@ -8,29 +8,28 @@ using UnityEngine;
 public class CharacterViewAsset
 {
 	[SerializeField] private GameObject characterObj;
-	[SerializeField] private RuntimeAnimatorController animatorController;
-	[SerializeField] private Avatar avatar;
+	[SerializeField] private Animator animator;
 
-	[SerializeField] private Transform rightHandSocket;
+	[SerializeField] private Transform muzzle;
 
 	[Serializable]
 	public class AttachItemDictionary : SerializableDictionary<ENUM_ITEM_TYPE, GameObject> { }
 	[SerializeField] private AttachItemDictionary attatchItemDictionary = new();
 	private GameObject currentItemObj = null;
 
-	public void SetController(ThirdPersonController controller)
-	{
-		var animator = controller.GetComponent<Animator>();
-		if (animator == null)
-			return;
-
-		animator.runtimeAnimatorController = animatorController;
-		animator.avatar = avatar;
-	}
-
 	public void SetActiveCharacter(bool isActive)
 	{
 		characterObj.SetActive(isActive);
+	}
+
+	public Animator GetAnimator()
+	{
+		return animator;
+	}
+
+	public Transform GetMuzzle()
+	{
+		return muzzle;
 	}
 
 	public void AttachRightHand(ENUM_ITEM_TYPE itemType)
@@ -56,7 +55,7 @@ public class CharacterViewComponent : MonoBehaviour
 
 	private CharacterType characterType = CharacterType.MAX;
 
-	public void SetCharacter(CharacterType characterType, ThirdPersonController controller)
+	public void SetCharacter(CharacterType characterType)
 	{
 		if (characterType == CharacterType.MAX)
 			return;
@@ -66,13 +65,20 @@ public class CharacterViewComponent : MonoBehaviour
 		for (int i = 0; i < (int)CharacterType.MAX; i++)
 		{
 			bool isActive = (CharacterType)i == characterType;
-			if (isActive)
-			{
-				viewAssets[i].SetController(controller);
-			}
-
 			viewAssets[i].SetActiveCharacter(isActive);
 		}
+	}
+
+	public Animator GetCharacterAnimator(CharacterType characterType)
+	{
+		int i = (int)characterType;
+		return viewAssets[i].GetAnimator();
+	}
+
+	public Transform GetMuzzle(CharacterType characterType)
+	{
+		int i = (int)characterType;
+		return viewAssets[i].GetMuzzle();
 	}
 
 	public bool TryAttachRightHand(ENUM_ITEM_TYPE itemType)

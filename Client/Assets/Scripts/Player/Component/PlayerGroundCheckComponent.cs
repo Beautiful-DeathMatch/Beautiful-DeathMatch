@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerGroundCheckComponent : MonoBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;
-	[SerializeField] private Animator animator;
+	private Animator animator;
 
 	[SerializeField] private float GroundedOffset = -0.14f;
 	[SerializeField] private float GroundedRadius = 0.28f;
@@ -43,6 +43,7 @@ public class PlayerGroundCheckComponent : MonoBehaviour
 
 	private void OnEnable()
 	{
+		animator = GetComponentInChildren<Animator>();
 		controller.IsGrounded += IsGrounded;
 		controller.IsNotYetJump += IsFirstJumpTrigger;
 		controller.onJump += OnJump;

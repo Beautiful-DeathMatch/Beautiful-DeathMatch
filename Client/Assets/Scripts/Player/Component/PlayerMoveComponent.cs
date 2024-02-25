@@ -8,7 +8,7 @@ public class PlayerMoveComponent : MonoBehaviour
 	[SerializeField] private ThirdPersonController controller;
 	[SerializeField] private CharacterController characterController;
 	[SerializeField] private PlayerGroundCheckComponent groundCheckComponent;
-	[SerializeField] private Animator animator;
+	private Animator animator;
 
 	private Transform cameraTransform;
 
@@ -42,6 +42,7 @@ public class PlayerMoveComponent : MonoBehaviour
 
 	private void OnEnable()
 	{
+		animator = GetComponentInChildren<Animator>();
 		controller.onMove += Move;
 	}
 

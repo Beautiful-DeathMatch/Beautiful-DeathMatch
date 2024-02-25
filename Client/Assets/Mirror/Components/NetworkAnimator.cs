@@ -22,13 +22,7 @@ namespace Mirror
         [Tooltip("Set to true if animations come from owner client,  set to false if animations always come from server")]
         public bool clientAuthority;
 
-        /// <summary>
-        /// The animator component to synchronize.
-        /// </summary>
-        [FormerlySerializedAs("m_Animator")]
-        [Header("Animator")]
-        [Tooltip("Animator that will have parameters synchronized")]
-        public Animator animator;
+        private Animator animator;
 
         /// <summary>
         /// Syncs animator.speed
@@ -53,10 +47,13 @@ namespace Mirror
         {
             get
             {
-                bool b = parameters != null;
-                b &= animator.layerCount > 0;
+                if (animator == null)
+                    return false;
 
-                return b;
+                if (parameters == null)
+                    return false;
+
+                return animator.layerCount > 0;
 			}
         }
 
@@ -82,11 +79,12 @@ namespace Mirror
             }
         }
 
-        public void Initialize()
+        public void SetAnimator(Animator animator)
         {
-            // store the animator parameters in a variable - the "Animator.parameters" getter allocates
-            // a new parameter array every time it is accessed so we should avoid doing it in a loop
-            parameters = animator.parameters
+            this.animator = animator;
+			// store the animator parameters in a variable - the "Animator.parameters" getter allocates
+			// a new parameter array every time it is accessed so we should avoid doing it in a loop
+			parameters = animator.parameters
                 .Where(par => !animator.IsParameterControlledByCurve(par.nameHash))
                 .ToArray();
             lastIntParameters = new int[parameters.Length];

@@ -9,7 +9,7 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 	[SerializeField] private PlayerAttackComponent attackComponent = null;
 	[SerializeField] private ThirdPersonController controller = null;
 
-	[SerializeField] private Animator animator;
+	private Animator animator;
 
 	private string[] UseStateNames = new string[] { "KnifeUse", "GunUse", "SmokeUse", "ButtonUse"};
 	private int upperLayerIndex = 1;
@@ -23,7 +23,8 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 	public int currentItemSlotIndex { get; private set; } = 0;
 
 	private void OnEnable()
-	{		
+	{
+		animator = GetComponentInChildren<Animator>();
 		controller.onClickNumber += OnClickNumber;
 		controller.onClickUse += OnClickUse;
 	}

@@ -33,11 +33,12 @@ public static class AnimatorHelper
 /// </summary>
 public class PlayerStatusComponent : NetworkComponent<StatusSystem>, IDamageable
 {
-	[SerializeField] private Animator animator = null;
 	[SerializeField] private int hitLayerIndex = 2;
 
 	[SerializeField] private string standHitStateName = "Stand Hit";
 	[SerializeField] private string deadStateName = "Dead";
+
+	private Animator animator = null;
 
 	private int HitHash = Animator.StringToHash("IsHit"); 
 	private int playerId = -1;
@@ -46,7 +47,12 @@ public class PlayerStatusComponent : NetworkComponent<StatusSystem>, IDamageable
 	{
 		this.playerId = playerId;
 	}
-	
+
+	private void OnEnable()
+	{
+		animator = GetComponentInChildren<Animator>();
+	}
+
 	[Command]
 	public void RequestTakeDamage(int attackerPlayerId, int damageAmount)
 	{

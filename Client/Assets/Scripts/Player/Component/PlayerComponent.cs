@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 
 public enum CharacterType
@@ -38,6 +39,7 @@ public class PlayerComponent : NetworkBehaviour
 	[SerializeField] private NetworkAnimator networkAnimator = null;
 
 	public int playerId { get; private set; }
+	private CharacterType characterType;
 
 	public void Initialize(int playerId)
 	{
@@ -52,12 +54,14 @@ public class PlayerComponent : NetworkBehaviour
 
 	public void SetCharacter(CharacterType characterType)
 	{
-		characterViewComponent.SetCharacter(characterType, controller);
+		this.characterType = characterType;
+		characterViewComponent.SetCharacter(characterType);
 	}
 
 	public void SetAnimator()
 	{
-		networkAnimator.Initialize();
+		var animator = characterViewComponent.GetCharacterAnimator(characterType);
+		networkAnimator.SetAnimator(animator);
 	}
 
 	public void SetInput(PlayerInputAsset inputAsset)
@@ -72,7 +76,10 @@ public class PlayerComponent : NetworkBehaviour
 
 	public void SetCameraTarget(Transform target)
 	{
-		playerAttackComponent.SetShotTarget(target);
+		playerAttackComponent.SetCameraTarget(target);
+
+		var muzzle = characterViewComponent.GetMuzzle(characterType);
+		playerAttackComponent.SetMuzzle(muzzle);
 	}
 
 	public void SetPosition(Vector3 pos)

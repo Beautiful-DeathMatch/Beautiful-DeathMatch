@@ -8,8 +8,8 @@ public class PlayerSwimComponent : MonoBehaviour
 	[SerializeField] private ThirdPersonController controller = null;
 	[SerializeField] private CharacterController characterController;
 	[SerializeField] private PlayerGroundCheckComponent groundCheckComponent;
-	[SerializeField] private Animator animator;
-
+	
+	private Animator animator;
 	private Transform cameraTransform;
 
 	[Header("Player")]
@@ -46,6 +46,7 @@ public class PlayerSwimComponent : MonoBehaviour
 
 	private void OnEnable()
 	{
+		animator = GetComponentInChildren<Animator>();
 		controller.IsInWater += IsInWater;
 		controller.onSwim += Swim;
 	}
