@@ -10,12 +10,12 @@ public class NpcStatusComponent : MonoComponent<StatusSystem>, IDamageable
     [SerializeField] private TextMeshPro NameText;
     [SerializeField] private TextMeshPro HpText;
 
-	public bool TryTakeDamage(int attackerPlayerId, int damage)
+	public void RequestTakeDamage(int attackerPlayerId, int damage)
 	{
 		if (System.TryNpcChangeHealth(attackerPlayerId, -damage) == false)
-			return false;
+			return;
 
-		return true;
+		return;
 	}
 
     public int GetNpcId()

@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StarterAssets;
+using Mirror;
 
-public class PlayerAttackComponent : MonoBehaviour
+public class PlayerAttackComponent : NetworkBehaviour
 {
 	[SerializeField] private Transform cameraTransform = null;
 	[SerializeField] private Animator animator;
 	[SerializeField] private ThirdPersonController controller = null;
 	
+	[SerializeField] private string gunUseStateName = "GunUse";
+	[SerializeField] private string knifeUseStateName = "KnifeUse";
+
 	private int AimHash = Animator.StringToHash("Aim");
 
 	private LayerMask attackLayerMask; // 공격 레이 무시용 레이어 마스크
@@ -36,16 +40,22 @@ public class PlayerAttackComponent : MonoBehaviour
 		attackLayerMask = ~LayerMask.GetMask("Player") & ~LayerMask.GetMask("Interaction");
 	}
 
-	public void Attack(DynamicItemData itemData)
+	public void TryAttack(DynamicItemData itemData)
     {
-		Debug.DrawRay(cameraTransform.position, cameraTransform.forward * itemData.tableData.attackDistance, Color.red, 1f);
-		
-		if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out var hit, itemData.tableData.attackDistance, attackLayerMask)) // 충돌 감지 시
+		OnAttack(cameraTransform.position, cameraTransform.forward, itemData.tableData.attackDistance, itemData.tableData.hpAmount);
+	}
+
+	[Command]
+	private void OnAttack(Vector3 origin, Vector3 dir, float distance, int damageAmount)
+	{
+		Debug.DrawRay(origin, dir * distance, Color.red, 1f);
+
+		if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out var hit, distance, attackLayerMask)) // 충돌 감지 시
 		{
 			var damageable = hit.transform.GetComponent<IDamageable>();
 			if (damageable != null)
 			{
-				damageable.TryTakeDamage(playerId, itemData.tableData.hpAmount);
+				damageable.RequestTakeDamage(playerId, damageAmount);
 			}
 		}
 	}

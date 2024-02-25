@@ -33,6 +33,7 @@ public class PlayerComponent : NetworkBehaviour
 	[SerializeField] private PlayerAttackComponent playerAttackComponent = null;
 	[SerializeField] private PlayerMissionComponent playerMissionComponent = null;
 	[SerializeField] private PlayerInteractionComponent playerInteractionComponent = null;
+	[SerializeField] private PlayerStatusComponent playerStatusComponent = null;
 
 	[SerializeField] private NetworkAnimator networkAnimator = null;
 
@@ -46,6 +47,7 @@ public class PlayerComponent : NetworkBehaviour
 		playerAttackComponent.SetPlayerId(playerId);
 		playerMissionComponent.SetPlayerId(playerId);
 		playerInteractionComponent.SetPlayerId(playerId);
+		playerStatusComponent.SetPlayerId(playerId);
 	}
 
 	public void SetCharacter(CharacterType characterType)

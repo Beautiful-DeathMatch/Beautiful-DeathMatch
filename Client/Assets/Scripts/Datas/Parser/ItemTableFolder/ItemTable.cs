@@ -51,6 +51,7 @@ public partial class ItemTable : ScriptParser
 		public int hpAmount;
 		public int attackDistance;
 		public string nameKey;
+		public float attackDelay;
 	}
 
 	public List<ItemData> itemDataList = new List<ItemData>();

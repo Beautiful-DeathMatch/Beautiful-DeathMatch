@@ -18,31 +18,37 @@ MonoBehaviour:
     hpAmount: 20
     attackDistance: 10
     nameKey: sys.item.knife
+    attackDelay: 2
   - key: 1
     maxUsableCount: 5
     hpAmount: 30
     attackDistance: 30
     nameKey: sys.item.gun
+    attackDelay: 2
   - key: 3
     maxUsableCount: 1
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.armor
+    attackDelay: 1
   - key: 4
     maxUsableCount: 3
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.smoke
+    attackDelay: 1
   - key: 5
     maxUsableCount: 1
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.rader
+    attackDelay: 1
   - key: 6
     maxUsableCount: 1
     hpAmount: 0
     attackDistance: 0
     nameKey: sys.item.teleport
+    attackDelay: 1
   itemDataDictionary:
     m_keys: 020000000100000003000000040000000500000006000000
     m_values:
@@ -51,31 +57,37 @@ MonoBehaviour:
       hpAmount: 20
       attackDistance: 10
       nameKey: sys.item.knife
+      attackDelay: 2
     - key: 1
       maxUsableCount: 5
       hpAmount: 30
       attackDistance: 30
       nameKey: sys.item.gun
+      attackDelay: 2
     - key: 3
       maxUsableCount: 1
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.armor
+      attackDelay: 1
     - key: 4
       maxUsableCount: 3
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.smoke
+      attackDelay: 1
     - key: 5
       maxUsableCount: 1
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.rader
+      attackDelay: 1
     - key: 6
       maxUsableCount: 1
       hpAmount: 0
       attackDistance: 0
       nameKey: sys.item.teleport
+      attackDelay: 1
   itemTypeList:
   - key: 1
     itemType: 2

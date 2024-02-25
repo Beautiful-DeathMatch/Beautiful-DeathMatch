@@ -5,7 +5,7 @@ using TMPro;
 using UnityEditorInternal;
 using UnityEngine;
 
-public enum STATE
+public enum ENUM_STATUS_STATE
 {
 	None,
 	Ready,
@@ -31,7 +31,8 @@ public class DynamicStatusData : StatusData			// 이거 상속 안해도 될거�
 {
 	public int currentHealthPoint { get; private set; }
 	public bool isShield { get; private set; } = false;
-	public STATE state { get; private set; } = STATE.Live;
+	public bool isHit { get; private set; } = false;
+	public ENUM_STATUS_STATE state { get; private set; } = ENUM_STATUS_STATE.Live;
 	public float currentReviveTime { get; private set; }
 
 	public DynamicStatusData(StatusData statusData) : base(statusData.maxHealthPoint)
@@ -44,9 +45,9 @@ public class DynamicStatusData : StatusData			// 이거 상속 안해도 될거�
 	{
 		int resultHealthPoint = currentHealthPoint + amount;
 		currentHealthPoint = resultHealthPoint > 0 ? resultHealthPoint : 0;
-		if (currentHealthPoint == 0 && state == STATE.Live)
+		if (currentHealthPoint == 0 && state == ENUM_STATUS_STATE.Live)
 		{
-			ChangeState(STATE.Dead);
+			ChangeState(ENUM_STATUS_STATE.Dead);
 			currentReviveTime = maxReviveTime;
 		}
 	}
@@ -56,7 +57,12 @@ public class DynamicStatusData : StatusData			// 이거 상속 안해도 될거�
 		isShield = value;
 	}
 
-	public void ChangeState(STATE newState)
+	public void ChangeHitState(bool value)
+	{
+		isHit = value;
+	}
+
+	public void ChangeState(ENUM_STATUS_STATE newState)
 	{
 		state = newState;
 	}
@@ -65,6 +71,11 @@ public class DynamicStatusData : StatusData			// 이거 상속 안해도 될거�
 	{
 		float resultReviveTime = currentReviveTime + time;
 		currentReviveTime = resultReviveTime > 0 ? resultReviveTime : 0;
+	}
+
+	public void ResetReviveTime()
+	{
+		currentReviveTime = maxReviveTime;
 	}
 
 }
@@ -123,8 +134,29 @@ public class StatusSystem : NetworkSystem
 		if (statusData.isShield)
 			return false;
 
+		if (amount < 0)
+		{
+			ChangeHitState(playerId, true);
+		}
+
 		statusData.ChangeHealth(amount);
 		return true;
+	}
+
+	public void ChangeHitState(int playerId, bool value)
+	{
+		if (statusDataDictionary.TryGetValue(playerId, out DynamicStatusData statusData) == false)
+			return;
+
+		statusData.ChangeHitState(value);
+	}
+
+	public bool IsHitState(int playerId)
+	{
+		if (statusDataDictionary.TryGetValue(playerId, out DynamicStatusData statusData) == false)
+			return false;
+
+		return statusData.isHit;
 	}
 
 	public bool TryNpcChangeHealth(int npcId, int amount)
@@ -139,7 +171,7 @@ public class StatusSystem : NetworkSystem
 		return true;
 	}
 
-	public int GetHealth (int playerId)
+	public int GetHealth(int playerId)
 	{
 		if(statusDataDictionary.TryGetValue(playerId, out var data))
 			return data.currentHealthPoint;
@@ -147,7 +179,7 @@ public class StatusSystem : NetworkSystem
 		return -1;
 	}
 
-	public int GetNpcHealth (int NpcId)
+	public int GetNpcHealth(int NpcId)
 	{
 		if(npcStatusDataDictionary.TryGetValue(NpcId, out var data))
 			return data.currentHealthPoint;
@@ -155,12 +187,12 @@ public class StatusSystem : NetworkSystem
 		return -1;
 	}
 
-	public STATE GetState (int playerId)
+	public ENUM_STATUS_STATE GetState(int playerId)
 	{
 		if(statusDataDictionary.TryGetValue(playerId, out var data))
 			return data.state;
 
-		return STATE.None;
+		return ENUM_STATUS_STATE.None;
 	}
 
 	public bool TryStartRevive(int playerId)
@@ -168,7 +200,7 @@ public class StatusSystem : NetworkSystem
 		if (statusDataDictionary.TryGetValue(playerId, out DynamicStatusData statusData) == false)
 			return false;
 
-		statusData.ChangeState(STATE.Revive);
+		statusData.ChangeState(ENUM_STATUS_STATE.Revive);
 
 		// 부활 지점 선택 로직이 들어갈 예정
 
@@ -181,7 +213,7 @@ public class StatusSystem : NetworkSystem
 		if (statusDataDictionary.TryGetValue(playerId, out DynamicStatusData statusData) == false)
 			return false;
 
-		statusData.ChangeState(STATE.Live);
+		statusData.ChangeState(ENUM_STATUS_STATE.Live);
 		return true;
 	}
 
@@ -189,12 +221,15 @@ public class StatusSystem : NetworkSystem
     {
         base.OnUpdate(deltaFrameCount, deltaTime);
 
-		foreach(var status in statusDataDictionary.Values)
+		foreach (var status in statusDataDictionary.Values)
 		{
-			if(status.state == STATE.Dead)
+			if (status.state == ENUM_STATUS_STATE.Dead)
 			{
-				
 				status.ChangeReviveTime(-Time.deltaTime);
+			}
+			else
+			{
+				status.ResetReviveTime();
 			}
 		}
     }
