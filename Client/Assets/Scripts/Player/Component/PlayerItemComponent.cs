@@ -78,8 +78,11 @@ public class PlayerItemComponent : MonoComponent<ItemSystem>
 		switch (itemType)
 		{
 			case ENUM_ITEM_TYPE.Knife:
+				attackComponent.TrySlashAttack(usedItemData);
+				break;
+
 			case ENUM_ITEM_TYPE.Gun:
-				attackComponent.TryAttack(usedItemData);
+				attackComponent.TryShotAttack(usedItemData);
 				break;
 		}
 

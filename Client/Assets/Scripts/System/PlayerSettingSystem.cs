@@ -12,7 +12,7 @@ public class PlayerSettingSystem : MonoSystem
 {
 	[SerializeField] private Cinemachine.CinemachineVirtualCamera playerCamera = null;
 	[SerializeField] private PlayerInputAsset inputAsset = null;
-
+	[SerializeField] private Transform playerCameraTargetTransform = null;
 	private PlayerComponent myPlayerComponent;
 	private PlayerComponent[] playerComponents = null;
 
@@ -51,6 +51,7 @@ public class PlayerSettingSystem : MonoSystem
 
 			myPlayerComponent.SetAnimator();
 			myPlayerComponent.SetCamera(playerCamera);
+			myPlayerComponent.SetCameraTarget(playerCameraTargetTransform);
 			myPlayerComponent.SetInput(inputAsset);
 		}
 	}

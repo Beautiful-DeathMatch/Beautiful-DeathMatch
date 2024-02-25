@@ -70,6 +70,11 @@ public class PlayerComponent : NetworkBehaviour
 		virtualCamera.Follow = cameraHead;
 	}
 
+	public void SetCameraTarget(Transform target)
+	{
+		playerAttackComponent.SetShotTarget(target);
+	}
+
 	public void SetPosition(Vector3 pos)
     {
 		transform.position = pos;
