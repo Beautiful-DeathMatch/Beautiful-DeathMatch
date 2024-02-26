@@ -35,6 +35,8 @@ public class PlayerMoveComponent : MonoBehaviour
 	int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
 	int _animIDSpeed = Animator.StringToHash("Speed");
 
+	bool isAiming = false;
+
 	private void Awake()
 	{
 		cameraTransform = Camera.main.transform;
@@ -44,11 +46,18 @@ public class PlayerMoveComponent : MonoBehaviour
 	{
 		animator = GetComponentInChildren<Animator>();
 		controller.onMove += Move;
+		controller.onAiming += OnAiming;
 	}
 
 	private void OnDisable()
 	{
 		controller.onMove -= Move;
+		controller.onAiming -= OnAiming;
+	}
+
+	private void OnAiming(bool isAiming)
+	{
+		this.isAiming = isAiming;
 	}
 
 	public void Move(bool isSprint, bool analogMovement, Vector2 inputMoveVec)
@@ -92,14 +101,14 @@ public class PlayerMoveComponent : MonoBehaviour
 		// normalise input direction
 		Vector3 inputDirection = new Vector3(inputMoveVec.x, 0.0f, inputMoveVec.y).normalized;
 
+		_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+		float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+			RotationSmoothTime);
+
 		// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 		// if there is a move input rotate player when the player is moving
-		if (inputMoveVec != Vector2.zero)
+		if (inputMoveVec != Vector2.zero && isAiming == false)
 		{
-			_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
-			float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-				RotationSmoothTime);
-
 			// rotate to face input direction relative to camera position
 			transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 		}
@@ -108,8 +117,10 @@ public class PlayerMoveComponent : MonoBehaviour
 
 		// move the player
 		characterController.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-						 new Vector3(0.0f, groundCheckComponent._verticalVelocity, 0.0f) * Time.deltaTime);
+					 new Vector3(0.0f, groundCheckComponent._verticalVelocity, 0.0f) * Time.deltaTime);
 
+		// characterController.SimpleMove(targetDirection.normalized * (_speed * Time.deltaTime) +
+			//			 new Vector3(0.0f, groundCheckComponent._verticalVelocity, 0.0f) * Time.deltaTime);
 
 		animator.SetFloat(_animIDSpeed, _animationBlend);
 		animator.SetFloat(_animIDMotionSpeed, inputMagnitude);

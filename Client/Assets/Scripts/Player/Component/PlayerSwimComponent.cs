@@ -38,6 +38,7 @@ public class PlayerSwimComponent : MonoBehaviour
 
 	private int InWaterHash = Animator.StringToHash("InWater");
 	private bool isInWater = false;
+	private bool isAiming = false;
 
 	private void Awake()
 	{
@@ -49,12 +50,19 @@ public class PlayerSwimComponent : MonoBehaviour
 		animator = GetComponentInChildren<Animator>();
 		controller.IsInWater += IsInWater;
 		controller.onSwim += Swim;
+		controller.onAiming += OnAiming;
 	}
 
 	private void OnDisable()
 	{
 		controller.IsInWater -= IsInWater;
 		controller.onSwim -= Swim;
+		controller.onAiming -= OnAiming;
+	}
+
+	private void OnAiming(bool isAiming)
+	{
+		this.isAiming = isAiming;
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -134,16 +142,16 @@ public class PlayerSwimComponent : MonoBehaviour
 
 		// normalise input direction
 		Vector3 inputDirection = new Vector3(inputMoveVec.x, 0.0f, inputMoveVec.y).normalized;
+		
+		_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+		float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+			RotationSmoothTime);
 
+		_rotationX = (cameraTransform.eulerAngles.x > 180f ? cameraTransform.eulerAngles.x - 360f : cameraTransform.eulerAngles.x) * inputDirection.z;
 		// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 		// if there is a move input rotate player when the player is moving
-		if (inputMoveVec != Vector2.zero)
+		if (inputMoveVec != Vector2.zero && isAiming == false)
 		{
-			_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
-			float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-				RotationSmoothTime);
-
-			_rotationX = (cameraTransform.eulerAngles.x > 180f ? cameraTransform.eulerAngles.x-360f : cameraTransform.eulerAngles.x) * inputDirection.z;
 			// rotate to face input direction relative to camera position
 			transform.rotation = Quaternion.Euler(_rotationX, rotation, 0f);
 		}

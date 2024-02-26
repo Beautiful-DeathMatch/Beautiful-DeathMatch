@@ -20,7 +20,8 @@ public class BattleMainWindow : UIMainWindow
 
 	[SerializeField] private Image[] itemImages = null;
     [SerializeField] private TextMeshProUGUI[] currentItemTexts = null;
-    [SerializeField] private TextMeshProUGUI aimText = null;
+	[SerializeField] private TextMeshProUGUI aimText = null;
+	[SerializeField] private TextMeshProUGUI interactionText = null;
     [SerializeField] private TextMeshProUGUI interactionTimeText = null;
     [SerializeField] private TextMeshProUGUI healthText = null;
     [SerializeField] private TextMeshProUGUI stateText = null;
@@ -98,7 +99,7 @@ public class BattleMainWindow : UIMainWindow
         currentItemTexts[2].text = data.tableData.maxUsableCount.ToString();
     }
 
-    public void PrintAimText()
+    public void PrintInteractionText()
     {
         var interactionObject = myPlayerInteractionComponent.GetCurrentInteractableObject();
         stringBuilder.Clear();
@@ -125,7 +126,7 @@ public class BattleMainWindow : UIMainWindow
                     stringBuilder.AppendFormat(stringTable.GetStringByKey("sys.hud.interaction.mission"), missionName);
             }
         }
-        aimText.text = stringBuilder.ToString();
+        interactionText.text = stringBuilder.ToString();
     }
 
     public void PrintPlayerInteractionTime()
@@ -178,9 +179,11 @@ public class BattleMainWindow : UIMainWindow
         }
     }
 
+    // 실제 타겟 테스트를 위해 적용해두었음
+    // 어지러움을 유발하니 나중엔 빼야 함
     public void UpdateAimPosition(Vector2 aimScreenPos)
     {
-        aimText.rectTransform.anchoredPosition = aimScreenPos;
+		aimText.rectTransform.anchoredPosition = aimScreenPos;
 	}
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
@@ -189,7 +192,7 @@ public class BattleMainWindow : UIMainWindow
 
 		PrintPlayerItemSlot();
         PrintCurrentItemData();
-        PrintAimText();
+        PrintInteractionText();
         PrintPlayerInteractionTime();
         PrintStatus();
         PrintMission();

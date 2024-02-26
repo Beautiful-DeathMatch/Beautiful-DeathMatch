@@ -27,6 +27,7 @@ public class PlayerComponent : NetworkBehaviour
 {
 	[SerializeField] private ThirdPersonController controller = null;
 	[SerializeField] private Transform cameraHead = null;
+	[SerializeField] private Transform cameraTarget = null;
 
 	[SerializeField] private CharacterViewComponent characterViewComponent = null;
 
@@ -75,6 +76,9 @@ public class PlayerComponent : NetworkBehaviour
 	public void SetCamera(Cinemachine.CinemachineVirtualCamera virtualCamera)
 	{
 		virtualCamera.Follow = cameraHead;
+		virtualCamera.LookAt = cameraTarget;
+
+		playerAttackComponent.SetFollowCamera(virtualCamera);
 	}
 
 }

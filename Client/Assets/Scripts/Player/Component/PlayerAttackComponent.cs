@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarterAssets;
 using Mirror;
+using Cinemachine;
 
 public class PlayerAttackComponent : NetworkBehaviour
 {
 	[SerializeField] private Transform cameraOriginTransform = null;
 	[SerializeField] private Transform aimTargetTransform = null;
-	
-	private Transform muzzleTransform = null;
-
 	[SerializeField] private ThirdPersonController controller = null;
 
+	private Cinemachine3rdPersonFollow cinemachineFollow = null;
+	private Transform muzzleTransform = null;
 	private Animator animator;
 	private int AimHash = Animator.StringToHash("Aim");
 	private bool isAiming = false;
@@ -39,6 +39,12 @@ public class PlayerAttackComponent : NetworkBehaviour
 	public void SetMuzzle(Transform muzzle)
 	{
 		muzzleTransform = muzzle;
+	}
+
+	public void SetFollowCamera(CinemachineVirtualCamera virtualCamera)
+	{
+		cinemachineFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+		cinemachineFollow.CameraDistance = 5.0f;
 	}
 
 	private void Awake()
@@ -97,5 +103,15 @@ public class PlayerAttackComponent : NetworkBehaviour
 	{
 		this.isAiming = isAiming;
 		animator.SetBool(AimHash, isAiming);
+
+		// 코루틴 등으로 제어해야 함
+		if (isAiming)
+		{
+			cinemachineFollow.CameraDistance = 2.0f;
+		}
+		else
+		{
+			cinemachineFollow.CameraDistance = 5.0f;
+		}
 	}
 }

@@ -10284,7 +10284,6 @@ MonoBehaviour:
   itemSystem: {fileID: 1487653534}
   missionSystem: {fileID: 432824213496361243}
   statusSystem: {fileID: 580053518368750837}
-  cameraAimSetter: {fileID: 0}
   itemImages:
   - {fileID: 1050138384}
   - {fileID: 1336066081}
@@ -10295,7 +10294,8 @@ MonoBehaviour:
   - {fileID: 1018381063}
   - {fileID: 1060398377}
   - {fileID: 1075080286}
-  aimText: {fileID: 1729161332}
+  aimText: {fileID: 1948501269}
+  interactionText: {fileID: 1729161332}
   interactionTimeText: {fileID: 545314288}
   healthText: {fileID: 899420099}
   stateText: {fileID: 2097558337}
@@ -33511,7 +33511,7 @@ GameObject:
   - component: {fileID: 1729161333}
   - component: {fileID: 1729161332}
   m_Layer: 5
-  m_Name: AimText
+  m_Name: InteractionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

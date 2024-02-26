@@ -17,6 +17,8 @@ public class PlayerRotateComponent : MonoBehaviour
 	private float _cinemachineTargetYaw = 0.0f;
 	private float _cinemachineTargetPitch = 0.0f;
 
+	private bool isAiming = false;
+
 	private void Start()
 	{
 		_cinemachineTargetPitch = cameraTransform.rotation.eulerAngles.y;
@@ -27,11 +29,18 @@ public class PlayerRotateComponent : MonoBehaviour
 	{
 		rigs = GetComponentsInChildren<Rig>();
 		controller.onRotate += Rotate;
+		controller.onAiming += OnAiming;
 	}
 
 	private void OnDisable()
 	{
 		controller.onRotate -= Rotate;
+		controller.onAiming -= OnAiming;
+	}
+
+	private void OnAiming(bool isAiming)
+	{
+		this.isAiming = isAiming;
 	}
 
 	private void LateUpdate()
@@ -68,6 +77,9 @@ public class PlayerRotateComponent : MonoBehaviour
 
 	public void Rotate(float yaw, float pitch)
     {
+		if (isAiming)
+			return;
+
 		_cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw + yaw, float.MinValue, float.MaxValue);
 		_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch + pitch, BottomClamp, TopClamp);
 
