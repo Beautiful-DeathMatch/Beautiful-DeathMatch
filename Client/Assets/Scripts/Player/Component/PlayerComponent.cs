@@ -62,6 +62,9 @@ public class PlayerComponent : NetworkBehaviour
 	{
 		var animator = characterViewComponent.GetCharacterAnimator(characterType);
 		networkAnimator.SetAnimator(animator);
+
+		var muzzle = characterViewComponent.GetMuzzle(characterType);
+		playerAttackComponent.SetMuzzle(muzzle);
 	}
 
 	public void SetInput(PlayerInputAsset inputAsset)
@@ -74,16 +77,4 @@ public class PlayerComponent : NetworkBehaviour
 		virtualCamera.Follow = cameraHead;
 	}
 
-	public void SetCameraTarget(Transform target)
-	{
-		playerAttackComponent.SetCameraTarget(target);
-
-		var muzzle = characterViewComponent.GetMuzzle(characterType);
-		playerAttackComponent.SetMuzzle(muzzle);
-	}
-
-	public void SetPosition(Vector3 pos)
-    {
-		transform.position = pos;
-    }
 }

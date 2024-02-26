@@ -11,14 +11,14 @@ public class BattleMainWindow : UIMainWindow
     [SerializeField] private ItemSystem itemSystem;
     [SerializeField] private MissionSystem missionSystem;
     [SerializeField] private StatusSystem statusSystem;
+
     private PlayerComponent myPlayerComponent = null;
 	private PlayerItemComponent myPlayerItemComponent = null;
 	private PlayerAttackComponent myPlayerAttackComponent = null;
 	private PlayerMissionComponent myPlayerMissionComponent = null;
 	private PlayerInteractionComponent myPlayerInteractionComponent = null;
-	
 
-    [SerializeField] private Image[] itemImages = null;
+	[SerializeField] private Image[] itemImages = null;
     [SerializeField] private TextMeshProUGUI[] currentItemTexts = null;
     [SerializeField] private TextMeshProUGUI aimText = null;
     [SerializeField] private TextMeshProUGUI interactionTimeText = null;
@@ -178,16 +178,22 @@ public class BattleMainWindow : UIMainWindow
         }
     }
 
+    public void UpdateAimPosition(Vector2 aimScreenPos)
+    {
+        aimText.rectTransform.anchoredPosition = aimScreenPos;
+	}
+
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
     {
         base.OnUpdate(deltaFrameCount, deltaTime);
 
-        PrintPlayerItemSlot();
+		PrintPlayerItemSlot();
         PrintCurrentItemData();
         PrintAimText();
         PrintPlayerInteractionTime();
         PrintStatus();
         PrintMission();
+
         for (int i = 0; i < playerIdList.Count; i++)
         {
             PrintMission(i);

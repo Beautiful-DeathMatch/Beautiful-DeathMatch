@@ -14,8 +14,7 @@ namespace StarterAssets
 
         public event Action<int> onClickNumber = null;
         public event Action onClickUse = null;
-        public event Action onStartAim = null;
-        public event Action onEndAim = null;
+        public event Action<bool> onAiming = null;
 
         public event Action<float, float> onRotate = null;
         public event Action onJump = null;
@@ -29,7 +28,6 @@ namespace StarterAssets
         public event Func<bool> IsUIOpened;
 
 		private bool isInteracting = false;
-		private bool isAimming = false;
 
 		public void SetInput(PlayerInputAsset inputAsset)
         {
@@ -166,20 +164,8 @@ namespace StarterAssets
 
 		private void CheckAim()
 		{
-			if (inputAsset.isAim && !IsUIOpened())
-			{
-				if (isAimming)
-					return;
-
-				onStartAim?.Invoke();
-				isAimming = true;
-			}
-			else if (isAimming)
-			{
-				onEndAim?.Invoke();
-				isAimming = false;
-			}
-				
+			bool isAiming = inputAsset.isAim && !IsUIOpened();
+			onAiming(isAiming);
 		}
 
 		/// <summary>

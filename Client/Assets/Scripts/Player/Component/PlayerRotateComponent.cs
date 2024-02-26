@@ -14,7 +14,6 @@ public class PlayerRotateComponent : MonoBehaviour
 
 	private Rig[] rigs = null;
 
-	// cinemachine
 	private float _cinemachineTargetYaw = 0.0f;
 	private float _cinemachineTargetPitch = 0.0f;
 
@@ -34,9 +33,14 @@ public class PlayerRotateComponent : MonoBehaviour
 	{
 		controller.onRotate -= Rotate;
 	}
+
 	private void LateUpdate()
 	{
-		float yAngleVector = cameraTransform.localRotation.eulerAngles.y;
+		UpdateRigWeightByAngle(cameraTransform.localRotation.eulerAngles.y);
+	}
+
+	private void UpdateRigWeightByAngle(float yAngleVector)
+	{
 		foreach (var rig in rigs)
 		{
 			if (yAngleVector > 90.0f && yAngleVector <= 180.0f)

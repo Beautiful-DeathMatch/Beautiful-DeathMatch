@@ -20,9 +20,9 @@ MonoBehaviour:
     nameKey: sys.item.knife
     attackDelay: 2
   - key: 1
-    maxUsableCount: 5
+    maxUsableCount: 100
     hpAmount: 30
-    attackDistance: 30
+    attackDistance: 100
     nameKey: sys.item.gun
     attackDelay: 2
   - key: 3
@@ -59,9 +59,9 @@ MonoBehaviour:
       nameKey: sys.item.knife
       attackDelay: 2
     - key: 1
-      maxUsableCount: 5
+      maxUsableCount: 100
       hpAmount: 30
-      attackDistance: 30
+      attackDistance: 100
       nameKey: sys.item.gun
       attackDelay: 2
     - key: 3
