@@ -6,6 +6,7 @@ using UnityEngine.InputSystem; // For Debug
 
 public class DebugSystem : MonoSystem   
 {
+	[SerializeField] SceneType loadSceneType = SceneType.Battle;
     [SerializeField] PlayerInputAsset starterAssetsInputs;
 	[SerializeField] CharacterType characterType;
 
@@ -19,7 +20,7 @@ public class DebugSystem : MonoSystem
 			infos[0].selectedCharacterType = (int)characterType;
 
 			var dummyParam = new BattleSceneModule.Param(true, 0, infos);
-			SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Battle, dummyParam);
+			SceneModuleSystemManager.Instance.TryEnterSceneModule(loadSceneType, dummyParam);
 		}
 		else if (GUI.Button(new Rect(600, 0, 300, 150), "캐릭터 커서 제거 치트"))
 		{

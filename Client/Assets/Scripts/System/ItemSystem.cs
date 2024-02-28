@@ -174,6 +174,9 @@ public class ItemSystem : NetworkSystem
 				continue;
 
 			var boxObj = CreateBox(boxId, spawnAreaIndex);
+			if (boxObj == null)
+				continue;
+
 			boxComponentDictionary.Add(boxId, boxObj);     // FieldDictionary
 
 		}

@@ -13,6 +13,7 @@ public enum SceneType
     Title = 0,
     Match = 1,
     Battle = 2,
+    BattleLevel = 1000,
 }
 
 public class SceneModuleParam

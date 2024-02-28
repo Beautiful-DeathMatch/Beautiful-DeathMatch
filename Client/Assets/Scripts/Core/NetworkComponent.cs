@@ -14,7 +14,7 @@ public class NetworkComponent<TSystem> : NetworkBehaviour where TSystem : Networ
 			if (cachedSystem == null)
 			{
 				var systems = FindObjectsOfType<TSystem>();
-				if (systems == null)
+				if (systems == null || systems.Length == 0)
 				{
 					Debug.LogError($"{typeof(TSystem)}가 현재 씬에 존재하지 않습니다.");
 					return null;

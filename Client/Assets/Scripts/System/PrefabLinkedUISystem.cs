@@ -36,7 +36,10 @@ public class PrefabLinkedUISystem : MonoSystem
 	{
 		base.OnUpdate(deltaFrameCount, deltaTime);
 
-		currentMainWindow.OnUpdate(deltaFrameCount, deltaTime);
+		if (currentMainWindow != null)
+		{
+			currentMainWindow.OnUpdate(deltaFrameCount, deltaTime);
+		}
 	}
 
 	public override void OnExit()

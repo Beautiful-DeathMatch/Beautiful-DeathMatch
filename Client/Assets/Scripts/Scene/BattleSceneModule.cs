@@ -89,17 +89,41 @@ public class BattleSceneModule : NetworkSceneModule
 
 		networkBlackBoard.OnStartSync();
 
-		itemSystem.OnStartSync(networkBlackBoard);
-		statusSystem.OnStartSync(networkBlackBoard);
-		missionSystem.OnStartSync(networkBlackBoard);
+		if (itemSystem)
+		{
+			itemSystem.OnStartSync(networkBlackBoard);
+		}
+		if (statusSystem)
+		{
+			statusSystem.OnStartSync(networkBlackBoard);
+		}
+		if (missionSystem)
+		{
+			missionSystem.OnStartSync(networkBlackBoard);
+		}
 
 		base.OnEnter(param);
 
-		playerSettingSystem.OnEnter(param);
-		itemSystem.OnEnter(param);
-		statusSystem.OnEnter(param);
-		missionSystem.OnEnter(param);
-		uiSystem.OnEnter(param);
+		if (playerSettingSystem)
+		{
+			playerSettingSystem.OnEnter(param);
+		}
+		if (itemSystem)
+		{
+			itemSystem.OnEnter(param);
+		}
+		if (statusSystem)
+		{
+			statusSystem.OnEnter(param);
+		}
+		if(missionSystem)
+		{
+			missionSystem.OnEnter(param);
+		}
+		if (uiSystem)
+		{
+			uiSystem.OnEnter(param);
+		}
 	}
 
 	public override void OnExit()
@@ -109,9 +133,18 @@ public class BattleSceneModule : NetworkSceneModule
 		if (networkBlackBoard != null)
 			networkBlackBoard.OnStopClient();
 
-		itemSystem.OnStopSync();
-		statusSystem.OnStopSync();
-		missionSystem.OnStopSync();
+		if (itemSystem != null)
+		{
+			itemSystem.OnStopSync();
+		}
+		if(statusSystem != null)
+		{
+			statusSystem.OnStopSync();
+		}
+		if (missionSystem != null)
+		{
+			missionSystem.OnStopSync();
+		}
 
 		// 로직 추가
 	}
@@ -133,7 +166,10 @@ public class BattleSceneModule : NetworkSceneModule
 				await UniTask.Yield();
 			}
 
-			await playerSettingSystem.OnPrepareEnterRoutine(param);
+			if (playerSettingSystem)
+			{
+				await playerSettingSystem.OnPrepareEnterRoutine(param);
+			}
 		}
 	}
 
@@ -147,8 +183,11 @@ public class BattleSceneModule : NetworkSceneModule
 	{
 		base.OnUpdate(deltaFrameCount, deltaTime);
 
-		uiSystem.OnUpdate(deltaFrameCount, deltaTime);
-		
+		if (uiSystem)
+		{
+			uiSystem.OnUpdate(deltaFrameCount, deltaTime);
+		}
+
 		// 로직 추가
 	}
 }
