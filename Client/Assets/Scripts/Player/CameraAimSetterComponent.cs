@@ -20,6 +20,10 @@ public class CameraAimSetterComponent : MonoComponent<PrefabLinkedUISystem>
 	private void Update()
 	{
 		UpdateTargetPosition(cameraOrigin.position, cameraOrigin.forward, aimDistance, aimLayerMask);
+	}
+
+	private void OnPreRender() 
+	{
 		UpdateAimPosition();
 	}
 
@@ -33,6 +37,7 @@ public class CameraAimSetterComponent : MonoComponent<PrefabLinkedUISystem>
 		{
 			cameraTarget.position = origin + dir * aimDistance;
 		}
+		Debug.DrawRay(origin, dir * distance, Color.green, 0.3f);
 	}
 
 	private void UpdateAimPosition()

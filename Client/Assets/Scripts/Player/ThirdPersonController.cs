@@ -73,6 +73,7 @@ namespace StarterAssets
             if (inputAsset)
             {
 				CheckMove();
+				CheckRotation();
 				CheckInteract();
 				CheckSwim();
 				CheckAim();
@@ -84,7 +85,7 @@ namespace StarterAssets
             if (inputAsset)
 			{
                 // 얘도 가도 됨
-				CheckRotation();
+				//CheckRotation(); => Late에 두면 오류 발생 예상
 			}
 		}
 
