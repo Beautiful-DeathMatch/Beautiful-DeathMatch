@@ -36273,6 +36273,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerSettingSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 836843894789329483, guid: f359efb61f3392b4c9349ca591ec4779,
+        type: 3}
+      propertyPath: ShoulderOffset.x
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 4903498860305902190, guid: f359efb61f3392b4c9349ca591ec4779,
         type: 3}
       propertyPath: mainCamera

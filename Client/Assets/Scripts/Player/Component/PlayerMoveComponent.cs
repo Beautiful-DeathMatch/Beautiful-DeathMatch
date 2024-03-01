@@ -31,11 +31,17 @@ public class PlayerMoveComponent : MonoBehaviour
 	private float _animationBlend;
 	private float _targetRotation = 0.0f;
 	private float _rotationVelocity;
+	private float _twistRotationVelocity;
 
 	int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
 	int _animIDSpeed = Animator.StringToHash("Speed");
+	int _animIDSpeedX = Animator.StringToHash("SpeedX");
+	int _animIDSpeedY = Animator.StringToHash("SpeedY");
 
 	bool isAiming = false;
+	[SerializeField] private float maxTwistViewAngle;
+
+	Vector3 lastInputDirection = new Vector3(0f,0f,0f);
 
 	private void Awake()
 	{
@@ -63,7 +69,7 @@ public class PlayerMoveComponent : MonoBehaviour
 	public void Move(bool isSprint, bool analogMovement, Vector2 inputMoveVec)
 	{
 		// set target speed based on move speed, sprint speed and if sprint is pressed
-		float targetSpeed = isSprint ? SprintSpeed : MoveSpeed;
+		float targetSpeed = isSprint && !isAiming ? SprintSpeed : MoveSpeed;
 
 		// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -100,29 +106,52 @@ public class PlayerMoveComponent : MonoBehaviour
 
 		// normalise input direction
 		Vector3 inputDirection = new Vector3(inputMoveVec.x, 0.0f, inputMoveVec.y).normalized;
+		if(inputDirection.magnitude > 0)
+			lastInputDirection = new Vector3(inputDirection.x, 0f, inputDirection.z);
 
-		_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+		_targetRotation = (lastInputDirection.z >= 0 ? Mathf.Atan2(lastInputDirection.x, lastInputDirection.z) : Mathf.Atan2(-lastInputDirection.x, -lastInputDirection.z)  )
+								* Mathf.Rad2Deg + cameraTransform.eulerAngles.y; // z < 0 인 경우 뒤돌기 방지를 위한 처리 추가
 		float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
 			RotationSmoothTime);
 
 		// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 		// if there is a move input rotate player when the player is moving
-		if (inputMoveVec != Vector2.zero && isAiming == false)
+		if (inputMoveVec != Vector2.zero)
 		{
 			// rotate to face input direction relative to camera position
 			transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+		}
+		else
+		{
+			float angleGap = cameraTransform.eulerAngles.y - transform.rotation.eulerAngles.y;
+			angleGap = angleGap < -180f ? angleGap + 360f : (angleGap > 180f ? angleGap - 360f : angleGap);
+			if (angleGap > maxTwistViewAngle)
+			{
+				float _targetTwistRotation = cameraTransform.eulerAngles.y - maxTwistViewAngle;
+				rotation = Mathf.SmoothDampAngle(transform.rotation.eulerAngles.y, _targetTwistRotation, ref _twistRotationVelocity, RotationSmoothTime);
+				transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+			}
+			else if (angleGap < -maxTwistViewAngle)
+			{
+				float _targetTwistRotation = cameraTransform.eulerAngles.y + maxTwistViewAngle;
+				rotation = Mathf.SmoothDampAngle(transform.rotation.eulerAngles.y, _targetTwistRotation, ref _twistRotationVelocity, RotationSmoothTime);
+				transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+			}
+			Debug.Log(new Vector3(cameraTransform.eulerAngles.y, transform.rotation.eulerAngles.y, angleGap));
 		}
 
 		Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
 		// move the player
-		characterController.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-					 new Vector3(0.0f, groundCheckComponent._verticalVelocity, 0.0f) * Time.deltaTime);
+		characterController.Move(targetDirection.normalized * ((lastInputDirection.z >= 0 ?_speed : -_speed) * Time.deltaTime) +
+					 new Vector3(0.0f, groundCheckComponent._verticalVelocity, 0.0f) * Time.deltaTime); // z < 0 인 경우 speed 는 음수 (앞을 보고 뒤로 가므로)
 
 		// characterController.SimpleMove(targetDirection.normalized * (_speed * Time.deltaTime) +
 			//			 new Vector3(0.0f, groundCheckComponent._verticalVelocity, 0.0f) * Time.deltaTime);
 
 		animator.SetFloat(_animIDSpeed, _animationBlend);
 		animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+		animator.SetFloat(_animIDSpeedX, _animationBlend * lastInputDirection.x);
+		animator.SetFloat(_animIDSpeedY, _animationBlend * lastInputDirection.z);
 	}
 }

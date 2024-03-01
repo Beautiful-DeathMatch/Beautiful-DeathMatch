@@ -73,9 +73,9 @@ namespace StarterAssets
             if (inputAsset)
             {
 				CheckMove();
+				CheckSwim();
 				CheckRotation();
 				CheckInteract();
-				CheckSwim();
 				CheckAim();
 			}
         }

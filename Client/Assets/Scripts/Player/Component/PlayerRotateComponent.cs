@@ -77,8 +77,6 @@ public class PlayerRotateComponent : MonoBehaviour
 
 	public void Rotate(float yaw, float pitch)
     {
-		if (isAiming)
-			return;
 
 		_cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw + yaw, float.MinValue, float.MaxValue);
 		_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch + pitch, BottomClamp, TopClamp);
