@@ -984,6 +984,9 @@ MonoBehaviour:
   cameraOriginTransform: {fileID: 9166746433292331882}
   aimTargetTransform: {fileID: 4956442583982987551}
   controller: {fileID: 5921198921731900175}
+  defaultCamDistance: 5
+  aimingCamDistance: 2
+  aimingSmoothTime: 0.1
 --- !u!114 &9172186983609904865
 MonoBehaviour:
   m_ObjectHideFlags: 0

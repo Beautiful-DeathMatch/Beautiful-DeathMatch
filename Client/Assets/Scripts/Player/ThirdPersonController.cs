@@ -165,7 +165,7 @@ namespace StarterAssets
 
 		private void CheckAim()
 		{
-			bool isAiming = inputAsset.isAim && !IsUIOpened();
+			bool isAiming = inputAsset.isAim && !IsUIOpened() && !IsInWater();
 			onAiming(isAiming);
 		}
 

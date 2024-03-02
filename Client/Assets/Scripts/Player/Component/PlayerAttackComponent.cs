@@ -20,6 +20,14 @@ public class PlayerAttackComponent : NetworkBehaviour
 	private LayerMask attackLayerMask; // 공격 레이 무시용 레이어 마스크
 	private int playerId = -1;
 
+	[SerializeField] private float defaultCamDistance = 5f;
+	[SerializeField] private float aimingCamDistance = 2f;
+	[SerializeField] private float defaultCamOffsetY = 0.5f;
+	[SerializeField] private float aimingCamOffsetY = 0.2f;
+	[SerializeField] private float aimingSmoothTime = 0.5f;
+	private float _distanceVelocity;
+	private float _offsetYVelocity;
+
 	private void OnEnable()
 	{
 		animator = GetComponentInChildren<Animator>();
@@ -104,14 +112,20 @@ public class PlayerAttackComponent : NetworkBehaviour
 		this.isAiming = isAiming;
 		animator.SetBool(AimHash, isAiming);
 
-		// 코루틴 등으로 제어해야 함
+		float distance;
+		float offsetY;
 		if (isAiming)
 		{
-			cinemachineFollow.CameraDistance = 2.0f;
+			distance = Mathf.SmoothDamp(cinemachineFollow.CameraDistance, aimingCamDistance, ref _distanceVelocity, aimingSmoothTime);
+			offsetY = Mathf.SmoothDamp(cinemachineFollow.ShoulderOffset.y, aimingCamOffsetY, ref _offsetYVelocity, aimingSmoothTime);
 		}
 		else
 		{
-			cinemachineFollow.CameraDistance = 5.0f;
+			distance = Mathf.SmoothDamp(cinemachineFollow.CameraDistance, defaultCamDistance, ref _distanceVelocity, aimingSmoothTime);
+			offsetY = Mathf.SmoothDamp(cinemachineFollow.ShoulderOffset.y, defaultCamOffsetY, ref _offsetYVelocity, aimingSmoothTime);
 		}
+
+		cinemachineFollow.CameraDistance = distance;
+		cinemachineFollow.ShoulderOffset.y = offsetY;
 	}
 }
