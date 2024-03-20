@@ -25,7 +25,7 @@ public partial class MatchSessionManager
 		base.OnServerReady(conn);
 
 		waitingConnections.Add(conn);
-		playerInfoDictionary.Add(conn, new PlayerInfo { playerId = conn.connectionId, ready = false });
+		playerInfoDictionary.Add(conn, new PlayerInfo { playerId = conn.connectionId, selectedCharacterType = 1, ready = false });
 
 		SendMatchList();
 	}

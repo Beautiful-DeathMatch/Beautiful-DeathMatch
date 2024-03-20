@@ -242,6 +242,8 @@ namespace Mirror
             if (isOwned && clientAuthority)
                 return;
 
+            if (IsInitialized == false)
+                return;
 
             // usually transitions will be triggered by parameters, if not, play anims directly.
             // NOTE: this plays "animations", not transitions, so any transitions will be skipped.
@@ -382,14 +384,15 @@ namespace Mirror
         }
 
         public override void OnSerialize(NetworkWriter writer, bool initialState)
-        {
-            if (IsInitialized == false)
-                return;
+		{
+			base.OnSerialize(writer, initialState);
 
-            base.OnSerialize(writer, initialState);
-            if (initialState)
+			if (initialState)
             {
-                for (int i = 0; i < animator.layerCount; i++)
+                int layerCount = animator != null ? animator.layerCount : 0;
+				writer.WriteInt(layerCount);
+
+				for (int i = 0; i < layerCount; i++)
                 {
                     if (animator.IsInTransition(i))
                     {
@@ -411,18 +414,23 @@ namespace Mirror
 
         public override void OnDeserialize(NetworkReader reader, bool initialState)
         {
-			if (IsInitialized == false)
-				return;
-
 			base.OnDeserialize(reader, initialState);
-            if (initialState)
+
+			int layerCount = reader.ReadInt();
+
+			if (initialState)
             {
-                for (int i = 0; i < animator.layerCount; i++)
+                for (int i = 0; i < layerCount; i++)
                 {
                     int stateHash = reader.ReadInt();
                     float normalizedTime = reader.ReadFloat();
-                    animator.SetLayerWeight(i, reader.ReadFloat());
-                    animator.Play(stateHash, i, normalizedTime);
+                    float layerWeight = reader.ReadFloat();
+
+					if (animator)
+                    {
+						animator.SetLayerWeight(i, layerWeight);
+						animator.Play(stateHash, i, normalizedTime);
+					}
                 }
 
                 ReadParameters(reader);
@@ -534,10 +542,13 @@ namespace Mirror
             if (!clientAuthority)
                 return;
 
-            //Debug.Log($"OnAnimationMessage for netId {netId}");
+			if (IsInitialized == false)
+				return;
 
-            // handle and broadcast
-            using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
+			//Debug.Log($"OnAnimationMessage for netId {netId}");
+
+			// handle and broadcast
+			using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
             {
                 HandleAnimMsg(stateHash, normalizedTime, layerId, weight, networkReader);
                 RpcOnAnimationClientMessage(stateHash, normalizedTime, layerId, weight, parameters);
@@ -551,8 +562,11 @@ namespace Mirror
             if (!clientAuthority)
                 return;
 
-            // handle and broadcast
-            using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
+			if (IsInitialized == false)
+				return;
+
+			// handle and broadcast
+			using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
             {
                 HandleAnimParamsMsg(networkReader);
                 RpcOnAnimationParametersClientMessage(parameters);
@@ -566,9 +580,12 @@ namespace Mirror
             if (!clientAuthority)
                 return;
 
-            // handle and broadcast
-            // host should have already the trigger
-            bool isHostOwner = isClient && isOwned;
+			if (IsInitialized == false)
+				return;
+
+			// handle and broadcast
+			// host should have already the trigger
+			bool isHostOwner = isClient && isOwned;
             if (!isHostOwner)
             {
                 HandleAnimTriggerMsg(hash);
@@ -584,9 +601,12 @@ namespace Mirror
             if (!clientAuthority)
                 return;
 
-            // handle and broadcast
-            // host should have already the trigger
-            bool isHostOwner = isClient && isOwned;
+			if (IsInitialized == false)
+				return;
+
+			// handle and broadcast
+			// host should have already the trigger
+			bool isHostOwner = isClient && isOwned;
             if (!isHostOwner)
             {
                 HandleAnimResetTriggerMsg(hash);
@@ -598,8 +618,11 @@ namespace Mirror
         [Command]
         void CmdSetAnimatorSpeed(float newSpeed)
         {
-            // set animator
-            animator.speed = newSpeed;
+			if (IsInitialized == false)
+				return;
+
+			// set animator
+			animator.speed = newSpeed;
             animatorSpeed = newSpeed;
         }
 
@@ -610,22 +633,31 @@ namespace Mirror
         [ClientRpc]
         void RpcOnAnimationClientMessage(int stateHash, float normalizedTime, int layerId, float weight, byte[] parameters)
         {
-            using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
+			if (IsInitialized == false)
+				return;
+
+			using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
                 HandleAnimMsg(stateHash, normalizedTime, layerId, weight, networkReader);
         }
 
         [ClientRpc]
         void RpcOnAnimationParametersClientMessage(byte[] parameters)
         {
-            using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
+			if (IsInitialized == false)
+				return;
+
+			using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(parameters))
                 HandleAnimParamsMsg(networkReader);
         }
 
         [ClientRpc]
         void RpcOnAnimationTriggerClientMessage(int hash)
         {
-            // host/owner handles this before it is sent
-            if (isServer || (clientAuthority && isOwned)) return;
+			if (IsInitialized == false)
+				return;
+
+			// host/owner handles this before it is sent
+			if (isServer || (clientAuthority && isOwned)) return;
 
             HandleAnimTriggerMsg(hash);
         }
@@ -633,8 +665,11 @@ namespace Mirror
         [ClientRpc]
         void RpcOnAnimationResetTriggerClientMessage(int hash)
         {
-            // host/owner handles this before it is sent
-            if (isServer || (clientAuthority && isOwned)) return;
+			if (IsInitialized == false)
+				return;
+
+			// host/owner handles this before it is sent
+			if (isServer || (clientAuthority && isOwned)) return;
 
             HandleAnimResetTriggerMsg(hash);
         }
